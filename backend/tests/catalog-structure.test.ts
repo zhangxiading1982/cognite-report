@@ -19,11 +19,18 @@ describe('catalog directory plan',()=>{
 
   it('keeps the resource directory hierarchy valid',()=>{
     expect(validateFolderPlan(ASSET_FOLDERS)).toEqual([]);
-    expect(ASSET_FOLDERS.map(folder=>folder.name)).toEqual(expect.arrayContaining(['图标','矢量图','图片']));
+    expect(ASSET_FOLDERS.map(folder=>folder.name)).toEqual(expect.arrayContaining([
+      '图标','矢量图','图片','办公商务','物流供应链','科技制造','可持续发展',
+    ]));
   });
 
   it('keeps bundled resources unique, licensed and assigned to a directory',async()=>{
     const manifest=JSON.parse(await readFile(new URL('../fixtures/assets/manifest.json',import.meta.url),'utf8'));
     expect(validateBuiltinAssetManifest(manifest,ASSET_FOLDERS)).toEqual([]);
+    const counts=manifest.items.reduce((result:Record<string,number>,item:{kind:string})=>{
+      result[item.kind]=(result[item.kind]||0)+1;
+      return result;
+    },{});
+    expect(counts).toMatchObject({icon:36,vector:15,image:12});
   });
 });

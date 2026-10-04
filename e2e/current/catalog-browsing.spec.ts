@@ -18,7 +18,15 @@ test('catalog directories organize templates, resources and the add-page picker'
   await page.getByRole('button',{name:'目录 商业表达',exact:true}).click();
   await expect(page.getByRole('button',{name:'预览 增长图表',exact:true})).toBeVisible();
   await expect(page.getByRole('button',{name:'预览 彩色握手',exact:true})).toBeVisible();
-  await page.screenshot({path:'/tmp/review25-resource-library.png'});
+  await expect(page.getByRole('button',{name:'预览 彩色柱图',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'目录 办公商务',exact:true}).click();
+  await expect(page.getByRole('button',{name:'预览 协作会议',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'预览 方案演示',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'目录 物流供应链',exact:true}).click();
+  await expect(page.getByRole('button',{name:'预览 仓储货架',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'预览 港口物流',exact:true})).toBeVisible();
+  await page.waitForFunction(()=>[...document.images].filter(image=>image.offsetParent!==null).every(image=>image.complete&&image.naturalWidth>0));
+  await page.screenshot({path:'/tmp/review26-expanded-assets.png'});
 
   await page.goto('/contents');
   const created=page.waitForResponse(response=>response.url().endsWith('/api/contents')&&response.request().method()==='POST');

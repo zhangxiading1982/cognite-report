@@ -28,6 +28,10 @@ export const ASSET_FOLDERS: CatalogFolder[] = [
   {id:'asset-folder-images',kind:'assets',name:'图片'},
   {id:'asset-folder-images-covers',kind:'assets',name:'封面背景',parentId:'asset-folder-images'},
   {id:'asset-folder-images-products',kind:'assets',name:'商品摄影',parentId:'asset-folder-images'},
+  {id:'asset-folder-images-office',kind:'assets',name:'办公商务',parentId:'asset-folder-images'},
+  {id:'asset-folder-images-logistics',kind:'assets',name:'物流供应链',parentId:'asset-folder-images'},
+  {id:'asset-folder-images-industry',kind:'assets',name:'科技制造',parentId:'asset-folder-images'},
+  {id:'asset-folder-images-sustainability',kind:'assets',name:'可持续发展',parentId:'asset-folder-images'},
 ];
 
 const templateFoldersById = new Map<string,string>([
@@ -60,4 +64,3 @@ export function validateFolderPlan(folders:CatalogFolder[]):string[]{
   }
   return errors;
 }
-

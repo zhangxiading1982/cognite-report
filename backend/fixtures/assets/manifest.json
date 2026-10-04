@@ -704,6 +704,750 @@
         "sha256": "9ada8eb8570cf189e3ea81be429a1ae75abb68560cdc949eb9cad60402a7317a",
         "modifications": "Removed xml:space metadata and added attribution desc; shapes unchanged. Preview rasterized locally."
       }
+    },
+    {
+      "id": "builtin-lucide-activity",
+      "file": "lucide-activity.svg",
+      "name": "经营活力",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "经营分析",
+        "趋势"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/activity.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/activity.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "050fbcda05e13c2051cf857683645e19c6b180861ef4d0cc28a6f09ba1ea1666",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-badge-dollar-sign",
+      "file": "lucide-badge-dollar-sign.svg",
+      "name": "营收认证",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "财务",
+        "营收"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/badge-dollar-sign.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/badge-dollar-sign.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "766e630b40c6a588d818685b97a6d074ff6d2ec6d1862c8a99b62f6cdc3d80f2",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-banknote",
+      "file": "lucide-banknote.svg",
+      "name": "现金流",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "财务",
+        "现金流"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/banknote.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/banknote.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "212d628014554424ec0041ab56e8869149d255b7077cfd6977d4ab2be32e8cb1",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-chart-pie",
+      "file": "lucide-chart-pie.svg",
+      "name": "构成分析",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "图表",
+        "构成"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/chart-pie.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/chart-pie.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "1ae765b638fe588b392f7da6e2c274fb438b257d936f9f4c7d548c73d5f9d8a1",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-chart-no-axes-combined",
+      "file": "lucide-chart-no-axes-combined.svg",
+      "name": "趋势组合",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "图表",
+        "趋势"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/chart-no-axes-combined.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/chart-no-axes-combined.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "2f8a708c357488cfde7428d9b055b9bb4a99c08dc71e9296da03ecc19291c4ab",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-factory",
+      "file": "lucide-factory.svg",
+      "name": "生产制造",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "制造",
+        "生产"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/factory.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/factory.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "5482b8d73276e072a951f4c1be530d31efa584c8d1a7affbeec22a560f0d5cc0",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-landmark",
+      "file": "lucide-landmark.svg",
+      "name": "金融机构",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "金融",
+        "机构"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/landmark.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/landmark.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "28408ef995796bffc390e8f217cdaa61e383627789d66300d4ff839248a3f144",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-presentation",
+      "file": "lucide-presentation.svg",
+      "name": "汇报演示",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "汇报",
+        "演示"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/presentation.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/presentation.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "5d15abfdfca21e40abe3b8daead5e8f6a7d38e623fb1a4dd8890448c79e75342",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-trophy",
+      "file": "lucide-trophy.svg",
+      "name": "业绩达成",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业绩",
+        "目标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/trophy.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/trophy.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "c641553befdb899b2eb01075c0962c73b4b0e0d1835d9d407f5d5d4d70f77d03",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-business"
+    },
+    {
+      "id": "builtin-lucide-store",
+      "file": "lucide-store.svg",
+      "name": "零售门店",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "零售",
+        "门店"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/store.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/store.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "ab2cb92d8cff487f5a53a06f5ee3ba0c2cf522b95281adc1de9ec8410c26e99a",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-commerce"
+    },
+    {
+      "id": "builtin-lucide-truck",
+      "file": "lucide-truck.svg",
+      "name": "运输配送",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "物流",
+        "运输"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/truck.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/truck.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "1476faa56b56414ba5d5f01d15e851b8bfd79bef6c36f5855811c27590136e50",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-commerce"
+    },
+    {
+      "id": "builtin-lucide-package-check",
+      "file": "lucide-package-check.svg",
+      "name": "履约完成",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "商品",
+        "履约"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/package-check.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/package-check.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "ce6b0e8a3102a9dc0a00b68f613dfd43ca6fa45182bc13786aafc338c1961fcf",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-commerce"
+    },
+    {
+      "id": "builtin-lucide-user-round-check",
+      "file": "lucide-user-round-check.svg",
+      "name": "人员确认",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人员",
+        "确认"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-round-check.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-round-check.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "f9e893b8eb5bb11cbc25c2cc02bf2c675813e7be193b47f3a0ab45d0a459370e",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-collaboration"
+    },
+    {
+      "id": "builtin-lucide-message-square-text",
+      "file": "lucide-message-square-text.svg",
+      "name": "沟通反馈",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "沟通",
+        "反馈"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/message-square-text.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/message-square-text.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "b2564066702194c600d91b6def8e897cdbf4c6205c80d39e459ff0a12e13950d",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-collaboration"
+    },
+    {
+      "id": "builtin-lucide-calendar-check-2",
+      "file": "lucide-calendar-check-2.svg",
+      "name": "计划完成",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "计划",
+        "日程"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/calendar-check-2.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/calendar-check-2.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "b137a185c1170ca5c7dec3743381030c29bcceeb315051eec103a06e84ca9013",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-collaboration"
+    },
+    {
+      "id": "builtin-lucide-shield-check",
+      "file": "lucide-shield-check.svg",
+      "name": "风险合规",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "风险",
+        "合规"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/shield-check.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/shield-check.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "8d4fcdbde5bba4abb1a2f6fe53e37ceb6343a1d5449a9d88f6f97c1971d26c4e",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-collaboration"
+    },
+    {
+      "id": "builtin-twemoji-bar-chart",
+      "file": "twemoji-bar-chart.svg",
+      "name": "彩色柱图",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "图表",
+        "分析"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4ca.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4ca.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "0d2b3df370bc26eeaba561ec30a4360b71558bd669f86fb1d1db286fe1a0ea39",
+        "sha256": "79802254cc5b18c8fa5b4d1f81201353402c762bb1a0cbc54dcaf95ffaec3cb5",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-business"
+    },
+    {
+      "id": "builtin-twemoji-money-bag",
+      "file": "twemoji-money-bag.svg",
+      "name": "资金收益",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "财务",
+        "收益"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4b0.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4b0.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "100ecea07468a02c810a78e200b9e7e874d508e859d3106aa19260bebc46c88b",
+        "sha256": "81e24d2b68262137fe520e8621bda9bd2fd7e4151f1948366772fb05067ad42b",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-business"
+    },
+    {
+      "id": "builtin-twemoji-briefcase",
+      "file": "twemoji-briefcase.svg",
+      "name": "商务项目",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "商务",
+        "项目"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4bc.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4bc.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "b7244d06499e782eb58335018c80c0f5dca9454d7dab0c9b85e3ced8a2ec1ab9",
+        "sha256": "c4bc61535f0252a8b8116e68004c8023f0c09c0b53c8b59712dd983807b2873c",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-business"
+    },
+    {
+      "id": "builtin-twemoji-megaphone",
+      "file": "twemoji-megaphone.svg",
+      "name": "市场传播",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "市场",
+        "传播"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4e3.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4e3.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "d54e9bc9bba49d0fbeeb0a47349c430e3e66b0731bc642cce0e1e5691d185d02",
+        "sha256": "c54014abe196f0750990dea03c801a52a8f97065a7204425b56f47c08d41995e",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-business"
+    },
+    {
+      "id": "builtin-twemoji-clipboard",
+      "file": "twemoji-clipboard.svg",
+      "name": "任务清单",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "任务",
+        "清单"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4cb.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4cb.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "5ca5e373d368aa3fdec96fcc0c23252eb17661aa02b07eb0ed49f2280c5602ea",
+        "sha256": "fe20f9af32b9549ed1a8957120f5d4811b112f603dc0bc0a664605107c9dc774",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-business"
+    },
+    {
+      "id": "builtin-twemoji-check-mark",
+      "file": "twemoji-check-mark.svg",
+      "name": "确认完成",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "确认",
+        "完成"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/2705.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/2705.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "1f026beb67630abcdbc341651b1c17591aa76261296a9fb118793765964eb4e9",
+        "sha256": "da10ca779b0675c919117f0b7ccb95eaf100c3e3fd867c4f6fd3eddf334ce62e",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-business"
+    },
+    {
+      "id": "builtin-twemoji-warning",
+      "file": "twemoji-warning.svg",
+      "name": "风险预警",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "风险",
+        "预警"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/26a0.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/26a0.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "03382ac2fd7fe0d58ae2f81964b332bd34dfc9cc5145a10e61cb5e776aef5e2b",
+        "sha256": "cad7cf014b507dfc65e314dccfa7c5993440483c1a429ba28957c8f6b0d49915",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-business"
+    },
+    {
+      "id": "builtin-twemoji-globe",
+      "file": "twemoji-globe.svg",
+      "name": "全球业务",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "全球",
+        "市场"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f30d.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f30d.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "593d59f9f319875b02111ac46a9f70df2c1e0f3a5fd92810c3f5ddbb598ca62c",
+        "sha256": "ab60fc148cd0cc4f653280dc5aab3826b6d3e14576bd5fff02e21f3c2a2e3a9c",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-business"
+    },
+    {
+      "id": "builtin-pexels-office-collaboration",
+      "file": "pexels-office-collaboration.jpg",
+      "name": "协作会议",
+      "kind": "image",
+      "tags": [
+        "办公",
+        "会议",
+        "协作"
+      ],
+      "source": {
+        "author": "Mikhail Nilov",
+        "license": "Pexels License",
+        "url": "https://www.pexels.com/photo/people-having-a-business-meeting-in-the-office-7988219/",
+        "downloadUrl": "https://images.pexels.com/photos/7988219/pexels-photo-7988219.jpeg?cs=srgb&dl=pexels-mikhail-nilov-7988219.jpg&fm=jpg",
+        "licenseFile": "licenses/REVIEW26-SOURCES.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "02aaff7342cdbd2d0a05d33e3305109b9b296c9937959dae028f8494ee8966cb",
+        "sha256": "340d9e7423fc93b0b280889aea803379b6625603f259aa1d54c131924fca6b5d",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      },
+      "folderId": "asset-folder-images-office"
+    },
+    {
+      "id": "builtin-pexels-presentation",
+      "file": "pexels-presentation.jpg",
+      "name": "方案演示",
+      "kind": "image",
+      "tags": [
+        "办公",
+        "演示",
+        "汇报"
+      ],
+      "source": {
+        "author": "Pavel Danilyuk",
+        "license": "Pexels License",
+        "url": "https://www.pexels.com/photo/people-having-a-business-meeting-6340631/",
+        "downloadUrl": "https://images.pexels.com/photos/6340631/pexels-photo-6340631.jpeg?cs=srgb&dl=pexels-pavel-danilyuk-6340631.jpg&fm=jpg",
+        "licenseFile": "licenses/REVIEW26-SOURCES.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "0a6826311c41df8e20ba529fc8d2a97989ba33bb06be4a0031c3268198282610",
+        "sha256": "bed2d10f36f2cb4c9fd6ac2802e612fe6288648a9ced2a7d9f2d78ff6cfeb849",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      },
+      "folderId": "asset-folder-images-office"
+    },
+    {
+      "id": "builtin-pexels-warehouse",
+      "file": "pexels-warehouse.jpg",
+      "name": "仓储货架",
+      "kind": "image",
+      "tags": [
+        "仓储",
+        "库存",
+        "供应链"
+      ],
+      "source": {
+        "author": "Maor Attias",
+        "license": "Pexels License",
+        "url": "https://www.pexels.com/photo/boxes-on-shelves-inside-a-warehouse-5156696/",
+        "downloadUrl": "https://images.pexels.com/photos/5156696/pexels-photo-5156696.jpeg?cs=srgb&dl=pexels-maorattias-5156696.jpg&fm=jpg",
+        "licenseFile": "licenses/REVIEW26-SOURCES.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "6f4ccb209e28d05d226359d3318317f0f8181ee3402cdc314a263f3f21a4af4b",
+        "sha256": "088d0f8d5d5850713f58c6148b8847f3a6dc08e6584ee36340d46de5e7e307aa",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      },
+      "folderId": "asset-folder-images-logistics"
+    },
+    {
+      "id": "builtin-pexels-delivery",
+      "file": "pexels-delivery.jpg",
+      "name": "港口物流",
+      "kind": "image",
+      "tags": [
+        "港口",
+        "物流",
+        "供应链"
+      ],
+      "source": {
+        "author": "Coral Grandbois",
+        "license": "Pexels License",
+        "url": "https://www.pexels.com/photo/aerial-view-of-shipping-containers-on-the-port-13559095/",
+        "downloadUrl": "https://images.pexels.com/photos/13559095/pexels-photo-13559095.jpeg?cs=srgb&dl=pexels-crgrandbois-13559095.jpg&fm=jpg",
+        "licenseFile": "licenses/REVIEW26-SOURCES.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "d6d9b6f9ada5e4607533923973b4a7c0cdf4e9dc6457020e93396e5d2e815771",
+        "sha256": "33fa2bd61d88ef9ebd89978289b1450ddf9eb57ca0fb15914fcc8d88c8a6d601",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      },
+      "folderId": "asset-folder-images-logistics"
+    },
+    {
+      "id": "builtin-pexels-factory",
+      "file": "pexels-factory.jpg",
+      "name": "制造车间",
+      "kind": "image",
+      "tags": [
+        "制造",
+        "工厂",
+        "生产"
+      ],
+      "source": {
+        "author": "Gökhan Sirkeci",
+        "license": "Pexels License",
+        "url": "https://www.pexels.com/photo/man-working-at-factory-18469652/",
+        "downloadUrl": "https://images.pexels.com/photos/18469652/pexels-photo-18469652.jpeg?cs=srgb&dl=pexels-gokhan-sirkeci-676467750-18469652.jpg&fm=jpg",
+        "licenseFile": "licenses/REVIEW26-SOURCES.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "231adf522a6a4c32f5ba1c1ea90d52a31a1e272663168156478fde650a388857",
+        "sha256": "c728d52a4e47f9693b0ce236ee7f3cb42c75f63f09a986dc1a3ef4ce7ba0a598",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      },
+      "folderId": "asset-folder-images-industry"
+    },
+    {
+      "id": "builtin-pexels-solar",
+      "file": "pexels-solar.jpg",
+      "name": "光伏能源",
+      "kind": "image",
+      "tags": [
+        "光伏",
+        "能源",
+        "可持续"
+      ],
+      "source": {
+        "author": "Mark Stebnicki",
+        "license": "Pexels License",
+        "url": "https://www.pexels.com/photo/solar-panels-on-a-field-15751130/",
+        "downloadUrl": "https://images.pexels.com/photos/15751130/pexels-photo-15751130.jpeg?cs=srgb&dl=pexels-nc-farm-bureau-mark-15751130.jpg&fm=jpg",
+        "licenseFile": "licenses/REVIEW26-SOURCES.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "577ec78ab9fc2d64594d1ca42d07cbdabd83f81d0154c04a3f78dd6f778995a2",
+        "sha256": "ec1f8855af7c60c16762f25f71e9f3d731b736f95082a28e4984f2275865ec14",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      },
+      "folderId": "asset-folder-images-sustainability"
+    },
+    {
+      "id": "builtin-pexels-wind",
+      "file": "pexels-wind.jpg",
+      "name": "风力发电",
+      "kind": "image",
+      "tags": [
+        "风电",
+        "能源",
+        "可持续"
+      ],
+      "source": {
+        "author": "CV Media",
+        "license": "Pexels License",
+        "url": "https://www.pexels.com/photo/a-wind-turbine-photo-14010872/",
+        "downloadUrl": "https://images.pexels.com/photos/14010872/pexels-photo-14010872.jpeg?cs=srgb&dl=pexels-cv-media-334691464-14010872.jpg&fm=jpg",
+        "licenseFile": "licenses/REVIEW26-SOURCES.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "70a6896f297418d429280505cbfff0c484c2fd0b7059d5bc9b4d543703c52398",
+        "sha256": "11f5055223cb42697d25fb4a70abd47f770a62c1952252e1c5d6c7bc320831df",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      },
+      "folderId": "asset-folder-images-sustainability"
+    },
+    {
+      "id": "builtin-pexels-city-aerial",
+      "file": "pexels-city-aerial.jpg",
+      "name": "城市俯瞰",
+      "kind": "image",
+      "tags": [
+        "城市",
+        "市场",
+        "封面"
+      ],
+      "source": {
+        "author": "Luk Sauvage",
+        "license": "Pexels License",
+        "url": "https://www.pexels.com/photo/aerial-view-of-modern-city-skyline-at-daytime-36789238/",
+        "downloadUrl": "https://images.pexels.com/photos/36789238/pexels-photo-36789238.jpeg?cs=srgb&dl=pexels-tempssauvage-36789238.jpg&fm=jpg",
+        "licenseFile": "licenses/REVIEW26-SOURCES.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "484fa3aaba0d75d9c17515d52207f8abbb5a5e5a8872ed93e5a251356d0cf127",
+        "sha256": "5281cab4440d9313e639fd2328a07ade1e4fdd44cb670bf510ecf82319c1e990",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      },
+      "folderId": "asset-folder-images-covers"
     }
   ]
 }
