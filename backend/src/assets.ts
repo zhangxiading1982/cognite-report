@@ -10,7 +10,9 @@ import { processAssetImage } from './image-processing.ts';
 import { ASSET_FOLDERS } from './catalog-structure.ts';
 import { validateBuiltinAssetManifest, type BuiltinAssetManifest } from './asset-manifest.ts';
 
-export async function normalizeAssetImage(input: Buffer) {
+type NormalizedAssetImage = {png:Buffer;original:Buffer;originalMime:'image/svg+xml'|'image/jpeg'|'image/png'};
+
+export async function normalizeAssetImage(input: Buffer):Promise<NormalizedAssetImage> {
   const pngMagic = input.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
   const jpegMagic = input[0] === 255 && input[1] === 216 && input[2] === 255;
   const isSvg = !pngMagic && !jpegMagic;
@@ -25,6 +27,19 @@ export async function normalizeAssetImage(input: Buffer) {
     if (error instanceof HttpError) throw error;
     fail(422, 'INVALID_IMAGE', '图片无法解码，或尺寸超过限制');
   }
+}
+
+// App instances are created repeatedly by integration tests and local hot reloads.
+// Cache immutable built-in previews by their verified source hash so each process
+// rasterizes a bundled SVG only once.
+const builtinPreviewCache=new Map<string,Promise<NormalizedAssetImage>>();
+function normalizeBuiltinAsset(input:Buffer,sha256:string):Promise<NormalizedAssetImage>{
+  const cached=builtinPreviewCache.get(sha256);
+  if(cached)return cached;
+  const pending=normalizeAssetImage(input);
+  builtinPreviewCache.set(sha256,pending);
+  pending.catch(()=>builtinPreviewCache.delete(sha256));
+  return pending;
 }
 function metadata(name: unknown, rawTags: unknown) {
   if (typeof name !== 'string' || !name.trim() || name.trim().length > 200) fail(422, 'INVALID_ASSET_NAME', '名称需为1至200字');
@@ -49,10 +64,14 @@ async function materialize(storageDir: string, bytes: Buffer, ext: string) {
   try { await writeFile(path.join(storageDir, key), bytes, { flag: 'wx' }); } catch (error: any) { if (error.code !== 'EEXIST') throw error; }
   return key;
 }
-async function persist(pool: Pool, storageDir: string, input: Buffer, data: { id: string; owner: number | null; name: string; tags: string[]; kind: string; folderId?: string | null; source?: unknown }) {
-  const image = await normalizeAssetImage(input);
+async function materializeAsset(storageDir:string,image:NormalizedAssetImage){
   const pngKey = await materialize(storageDir, image.png, 'png');
   const originalKey = await materialize(storageDir, image.original, image.originalMime === 'image/svg+xml' ? 'svg' : image.originalMime === 'image/jpeg' ? 'jpg' : 'png');
+  return {pngKey,originalKey};
+}
+async function persist(pool: Pool, storageDir: string, input: Buffer, data: { id: string; owner: number | null; name: string; tags: string[]; kind: string; folderId?: string | null; source?: unknown }, normalized?:NormalizedAssetImage) {
+  const image = normalized??await normalizeAssetImage(input);
+  const {pngKey,originalKey}=await materializeAsset(storageDir,image);
   await transaction(pool, async db => {
     const object = async (key: string, bytes: Buffer, mime: string) => {
       await db.query('INSERT INTO app.storage_objects(storage_key,sha256,mime_type,byte_size) VALUES($1,$2,$3,$4) ON CONFLICT(storage_key) DO NOTHING', [key, bytesHash(bytes), mime, bytes.length]);
@@ -68,11 +87,14 @@ export async function registerAssetRoutes(app: Express, pool: Pool, actor: numbe
   const manifest: BuiltinAssetManifest = JSON.parse(await readFile(new URL('../fixtures/assets/manifest.json', import.meta.url), 'utf8'));
   const manifestErrors = validateBuiltinAssetManifest(manifest, ASSET_FOLDERS);
   if (manifestErrors.length) throw new Error(`Builtin asset manifest is invalid: ${manifestErrors.join('; ')}`);
+  const existingBuiltinIds=new Set((await pool.query('SELECT id FROM app.assets WHERE id=ANY($1::text[])',[manifest.items.map(item=>item.id)])).rows.map(row=>row.id));
   for (const item of manifest.items) {
     // Materialize into each app's storage root, even when the DB is already seeded.
     const bytes = await readFile(new URL(`../fixtures/assets/${item.file}`, import.meta.url));
     if (bytesHash(bytes) !== item.source.sha256) throw new Error(`Builtin asset checksum mismatch: ${item.file}`);
-    await persist(pool, storageDir, bytes, { ...item, owner: null });
+    const normalized=await normalizeBuiltinAsset(bytes,item.source.sha256);
+    if(existingBuiltinIds.has(item.id))await materializeAsset(storageDir,normalized);
+    else await persist(pool, storageDir, bytes, { ...item, owner: null },normalized);
   }
   async function get(aid: string, embedded = false) {
     const a = (await pool.query(`${projection} WHERE a.id=$1 AND (a.owner_id=$2 OR a.visibility IN ('builtin','public') OR ($3 AND (EXISTS(SELECT 1 FROM app.slide_asset_refs ar JOIN app.slides s ON s.id=ar.slide_id LEFT JOIN app.decks d ON d.id=s.content_deck_id WHERE ar.asset_id=a.id AND s.archived_at IS NULL AND (s.owner_id=$2 OR (d.visibility='public' AND d.archived_at IS NULL AND ar.revision=s.current_revision))) OR EXISTS(SELECT 1 FROM app.template_asset_refs ar JOIN app.templates t ON t.id=ar.template_id WHERE ar.asset_id=a.id AND t.archived_at IS NULL AND (t.owner_id=$2 OR (t.visibility='public' AND ar.template_version=(SELECT max(v.version) FROM app.template_versions v WHERE v.template_id=t.id)))))))`, [aid, Number(actor),embedded])).rows[0];

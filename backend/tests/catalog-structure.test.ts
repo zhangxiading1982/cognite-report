@@ -20,7 +20,13 @@ describe('catalog directory plan',()=>{
   it('keeps the resource directory hierarchy valid',()=>{
     expect(validateFolderPlan(ASSET_FOLDERS)).toEqual([]);
     expect(ASSET_FOLDERS.map(folder=>folder.name)).toEqual(expect.arrayContaining([
-      '图标','矢量图','图片','办公商务','物流供应链','科技制造','可持续发展',
+      '图标','矢量图','图片','人物角色','数据技术','办公商务','物流供应链','科技制造','可持续发展',
+    ]));
+    expect(ASSET_FOLDERS).toEqual(expect.arrayContaining([
+      expect.objectContaining({id:'asset-folder-icons-people',parentId:'asset-folder-icons'}),
+      expect.objectContaining({id:'asset-folder-icons-data-tech',parentId:'asset-folder-icons'}),
+      expect.objectContaining({id:'asset-folder-vectors-people',parentId:'asset-folder-vectors'}),
+      expect.objectContaining({id:'asset-folder-vectors-data-tech',parentId:'asset-folder-vectors'}),
     ]));
   });
 
@@ -31,6 +37,12 @@ describe('catalog directory plan',()=>{
       result[item.kind]=(result[item.kind]||0)+1;
       return result;
     },{});
-    expect(counts).toMatchObject({icon:36,vector:15,image:12});
+    expect(counts).toMatchObject({icon:62,vector:38,image:12});
+    expect(manifest.items).toEqual(expect.arrayContaining([
+      expect.objectContaining({name:'数据分析师',kind:'icon',folderId:'asset-folder-icons-people'}),
+      expect.objectContaining({name:'开发工程师头像',kind:'vector',folderId:'asset-folder-vectors-people'}),
+      expect.objectContaining({name:'Apache Spark（单色）',kind:'icon',folderId:'asset-folder-icons-data-tech'}),
+      expect.objectContaining({name:'PostgreSQL（彩色）',kind:'vector',folderId:'asset-folder-vectors-data-tech'}),
+    ]));
   });
 });

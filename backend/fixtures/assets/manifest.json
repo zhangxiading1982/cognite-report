@@ -1448,6 +1448,1260 @@
         "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
       },
       "folderId": "asset-folder-images-covers"
+    },
+    {
+      "id": "builtin-lucide-user-round-cog",
+      "file": "lucide-user-round-cog.svg",
+      "name": "系统管理员",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "管理员",
+        "运维"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-round-cog.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-round-cog.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "e2a0800581b8f4df232961dbf8dcd53b4548f3d807274fa4378375619d992274",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-user-round-search",
+      "file": "lucide-user-round-search.svg",
+      "name": "数据分析师",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "数据",
+        "分析"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-round-search.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-round-search.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "058596df7225fec313c3dfa3d9068a4a6b8f85e47d4d07fa5e1050720ed14a35",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-user-round-pen",
+      "file": "lucide-user-round-pen.svg",
+      "name": "内容编辑",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "内容",
+        "编辑"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-round-pen.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-round-pen.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "24eb45160f6318f855493aafd106c15112d16d6fb3ac9a3665dcc4b3cc082195",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-user-star",
+      "file": "lucide-user-star.svg",
+      "name": "业务负责人",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "管理",
+        "负责人"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-star.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/user-star.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "687c994d96daf88ee7738a2360328d5ec5fa16a8f04de7aaf51ff72a569d97d4",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-users-round",
+      "file": "lucide-users-round.svg",
+      "name": "团队成员",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "团队",
+        "成员"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/users-round.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/users-round.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "8b41ee3ada1609e25a410d64056aa333952cf27d770f0c379a100065270de7f7",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-contact-round",
+      "file": "lucide-contact-round.svg",
+      "name": "客户联系人",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "客户",
+        "联系人"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/contact-round.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/contact-round.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "626df5e99895ce1b0c8c62f80d6ff2aef227bf7e1b937d3898edb389656ce574",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-hard-hat",
+      "file": "lucide-hard-hat.svg",
+      "name": "工程技术人员",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "工程",
+        "技术"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/hard-hat.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/hard-hat.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "f2c7bcce1b99a42ad4b6f5041f055a4ce618c06a7927691c98d81c8c4fe4dde2",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-stethoscope",
+      "file": "lucide-stethoscope.svg",
+      "name": "医疗人员",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "医疗",
+        "行业"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/stethoscope.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/stethoscope.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "a5621a048bcb911d4d51a6b8e6b5821dc68b0e7554dc001389ee9bc5f251c3ad",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-graduation-cap",
+      "file": "lucide-graduation-cap.svg",
+      "name": "教育工作者",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "教育",
+        "行业"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/graduation-cap.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/graduation-cap.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "326b4a1c18429509a697cbc0c49fdfcf9316da34bcf581569c2fc73cc772b86f",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-lucide-headset",
+      "file": "lucide-headset.svg",
+      "name": "客户服务",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "人物",
+        "客服",
+        "服务"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/headset.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/headset.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "sha256": "685de90f65108f523577a3fc9202f4e7f812ea7d4609a981aac3b36d3b33fc01",
+        "modifications": "None; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-people"
+    },
+    {
+      "id": "builtin-twemoji-technologist-avatar",
+      "file": "twemoji-technologist-avatar.svg",
+      "name": "开发工程师头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "开发",
+        "技术"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f469-1f3fd-200d-1f4bb.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f469-1f3fd-200d-1f4bb.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "d8f5c97b3fcedce65a9a8f74eb56df359728020329439b59dda84d9448d1e5e3",
+        "sha256": "5dbcbb137aa7c4ef40c6d161bb2092761589fb2a0076cc5eda2c4538c71a3add",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-scientist-avatar",
+      "file": "twemoji-scientist-avatar.svg",
+      "name": "科学研究员头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "科研",
+        "实验"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f468-1f3fb-200d-1f52c.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f468-1f3fb-200d-1f52c.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "713a4e7ac3ad3336ed6db8f79b6292df44a9ddceb46280c41debd01710b8acd2",
+        "sha256": "5061871ed9138e934d097e71e4a0591578ec439552056611372b46b8f038a1d0",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-teacher-avatar",
+      "file": "twemoji-teacher-avatar.svg",
+      "name": "教师头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "教师",
+        "教育"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f469-1f3ff-200d-1f3eb.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f469-1f3ff-200d-1f3eb.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "b6e824306696bb4ac5125291f87dc93b0a32225856386a8a080f2215c19cf0a1",
+        "sha256": "cbc8570d8e5d301f4e8f64ac73f623470762aebc97a1257a22a92c98136ef309",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-office-worker-avatar",
+      "file": "twemoji-office-worker-avatar.svg",
+      "name": "办公室职员头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "职员",
+        "商务"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f468-1f3fe-200d-1f4bc.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f468-1f3fe-200d-1f4bc.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "dfaea42c9f23b58430fd683f95a26697054d74db42be55dc3dcbd8333c716f4a",
+        "sha256": "2a2d94c38066cbc0dde05e7a66f97913d4cd80dfe174117662bf71e567fb135a",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-health-worker-avatar",
+      "file": "twemoji-health-worker-avatar.svg",
+      "name": "医疗人员头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "医疗",
+        "行业"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f469-1f3fc-200d-2695-fe0f.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f469-1f3fc-200d-2695-fe0f.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "80c12bdd5da4c916b7efb5862b8fd09b7e8b4ea12043225065ca62d4d21dd8b4",
+        "sha256": "42f36723aa71fbe6f137ce6ce21c4174a733a4819eff0de14110448bc4cb4e50",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-construction-worker-avatar",
+      "file": "twemoji-construction-worker-avatar.svg",
+      "name": "施工人员头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "工程",
+        "施工"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f477-1f3fd-200d-2642-fe0f.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f477-1f3fd-200d-2642-fe0f.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "a4cde49bded6d67417def752fee18eb5f885bb86a49ed6880d756bf5e10ac460",
+        "sha256": "906b06ac31135b50033389899fd090535afc2b653ccc563b49b913390752428f",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-farmer-avatar",
+      "file": "twemoji-farmer-avatar.svg",
+      "name": "农业人员头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "农业",
+        "行业"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f468-1f3ff-200d-1f33e.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f468-1f3ff-200d-1f33e.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "86afb6653f57230fc2caf2eb801114bc9e6f98bce24cf089da2fa9a42cd8fd78",
+        "sha256": "476619760c500b646d53a601a52b83e9f772c4d120ce91afe295eb010718f2e5",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-mechanic-avatar",
+      "file": "twemoji-mechanic-avatar.svg",
+      "name": "维修工程师头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "维修",
+        "工程"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f469-1f3fd-200d-1f527.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f469-1f3fd-200d-1f527.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "cf3c2a910df276de3ae8dbdaa719b0e2285010d909de57712e9d9f5bafacca19",
+        "sha256": "823067e3c8d2f70cf4c68cbc32b59d7b003cf8946aaef7cbb5a4ad69a9db91c5",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-judge-avatar",
+      "file": "twemoji-judge-avatar.svg",
+      "name": "法律人员头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "法律",
+        "行业"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f468-1f3fc-200d-2696-fe0f.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f468-1f3fc-200d-2696-fe0f.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "d56bde9dc1abda1a70ae45982f18fcf6d9e706e74c0f9fff0ef52135c491db6c",
+        "sha256": "9c715d365dce5871053fe0be78cf34a193e6510baab2d8e8a8d09e4c9db36be1",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-twemoji-astronaut-avatar",
+      "file": "twemoji-astronaut-avatar.svg",
+      "name": "航天人员头像",
+      "kind": "vector",
+      "tags": [
+        "Twemoji",
+        "人物",
+        "航天",
+        "科技"
+      ],
+      "source": {
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f469-1f3fb-200d-1f680.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f469-1f3fb-200d-1f680.svg",
+        "revision": "v14.0.2",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "5bd46b4631d299cd7fb991c23ab67424d380f36fb1c05ceeb4948e8ad57354b2",
+        "sha256": "c419a728b4cf623914554832ed82a79047254ad08e87500ec295af133f7fa772",
+        "modifications": "Added an SVG desc attribution node; removed xml:space when present. Shapes and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-people"
+    },
+    {
+      "id": "builtin-simpleicons-apachehadoop",
+      "file": "simpleicons-apachehadoop.svg",
+      "name": "Apache Hadoop（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "大数据",
+        "Apache Hadoop"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/apachehadoop.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/apachehadoop.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://apache.org/logos",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "d0eddd21ea431a24ab150961c00fa7318746fb3d0b69c87f26deb1235b3b71b5",
+        "sha256": "11dca92959735c90bca2ad3abc3da6bdda17cf12821b3e295b43537c658c32ef",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally.",
+        "brandLicense": "Apache-2.0"
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-apachespark",
+      "file": "simpleicons-apachespark.svg",
+      "name": "Apache Spark（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "计算引擎",
+        "Apache Spark"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/apachespark.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/apachespark.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://apache.org/logos",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "3d7bc046bb2d203cc667c1e2ff9460e082dafe2505c60885a60ac8cff5821bac",
+        "sha256": "2a1111fbdf5aa0e3ee82714739634b07b364a6d128ea8703fdbbb084ee96213b",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally.",
+        "brandLicense": "Apache-2.0"
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-apacheflink",
+      "file": "simpleicons-apacheflink.svg",
+      "name": "Apache Flink（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "流计算",
+        "Apache Flink"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/apacheflink.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/apacheflink.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://apache.org/logos",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "6553a12cf4dd2fd4e775b40f7c629194223349b36ffed3313c68f97335fa61a5",
+        "sha256": "dcfddd9b9885474a6f310a8f5a59c6fd52e43f953f6633bb538f2bffae9e0122",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally.",
+        "brandLicense": "Apache-2.0"
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-apachekafka",
+      "file": "simpleicons-apachekafka.svg",
+      "name": "Apache Kafka（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "消息流",
+        "Apache Kafka"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/apachekafka.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/apachekafka.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://apache.org/logos",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "659f015de2ae3aebdf75cf8b16ecff44026fee6031a4e98bc8102a19eef34c26",
+        "sha256": "4ce5bfbaaba7f5e49b52bc3d7627f4c5897371a5540c32151c4933739959f1b2",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally.",
+        "brandLicense": "Apache-2.0"
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-apacheairflow",
+      "file": "simpleicons-apacheairflow.svg",
+      "name": "Apache Airflow（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "数据调度",
+        "Apache Airflow"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/apacheairflow.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/apacheairflow.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://apache.org/logos",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "6c3d96863141cf36871ea51fad9a26690f1ae2168c980abd132c80a11a9f0d2c",
+        "sha256": "2e662f98351fe5809b7e95c66a5397d2c457c6cfbe93b5e16f951f473b59f187",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally.",
+        "brandLicense": "Apache-2.0"
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-apachehive",
+      "file": "simpleicons-apachehive.svg",
+      "name": "Apache Hive（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "数据仓库",
+        "Apache Hive"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/apachehive.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/apachehive.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://apache.org/logos",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "6b34b43167077946fdd4fc28898747f733fe3aa02e09925145e5af91ac331fd6",
+        "sha256": "830b818f9e8b7a45fb369dace50192282c0b49de93ff6125834f5f336df62021",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally.",
+        "brandLicense": "Apache-2.0"
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-trino",
+      "file": "simpleicons-trino.svg",
+      "name": "Trino（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "查询引擎",
+        "Trino"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/trino.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/trino.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://github.com/trinodb/docs.trino.io/blob/653a46f6bdc64b5f67302dc9ab8a0c432ca25e70/352/_static/trino.svg",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "e6f1e523411389b61be7352d42830572f15fc52b98d4f7f733c32dc935a52595",
+        "sha256": "adca41fbc36be76db5f00a0f0be5e84a808f5acc87d5ca0341112836231f2fbc",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-elasticsearch",
+      "file": "simpleicons-elasticsearch.svg",
+      "name": "Elasticsearch（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "搜索分析",
+        "Elasticsearch"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/elasticsearch.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/elasticsearch.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://www.elastic.co/brand",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "f866863bb80c3f1e22cb49541442c9db2112bba74b8c1210328bd3536984e6a3",
+        "sha256": "a1335c4eb7078a5cddc6960d817fa94baf7b9d6d92d7c4dae25339497a95babe",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-postgresql",
+      "file": "simpleicons-postgresql.svg",
+      "name": "PostgreSQL（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "数据库",
+        "PostgreSQL"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/postgresql.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/postgresql.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://wiki.postgresql.org/wiki/Logo",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "c8ccadbd88c9312c2ad3734c4861b31d3485ce179ee91d64793143f83cfa745c",
+        "sha256": "4604545fb88e1eed959e362d040f9b0f0ca7412efbab4e0d375e5a075bdf9f05",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-mysql",
+      "file": "simpleicons-mysql.svg",
+      "name": "MySQL（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "数据库",
+        "MySQL"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/mysql.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/mysql.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://www.mysql.com/about/legal/logos.html",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "67c144cc3e44ad14062a3f20ebe29c5e7eeb2c2c9c0f43cf48d87fe6291a8b2d",
+        "sha256": "04966d7ba6ae8135978bc70a3ba5a284842ab703aecbc6e175ce47fe502fe504",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-mariadb",
+      "file": "simpleicons-mariadb.svg",
+      "name": "MariaDB（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "数据库",
+        "MariaDB"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/mariadb.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/mariadb.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://mariadb.com/about-us/logos/",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "477435746bb2024048c7b71529f615fb70d7e679618f37bac49f78fd07e67dfe",
+        "sha256": "fa64ac620c3d130f8f193db0dfd42075fec0f11025ec50512e9e5bfa62535b81",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-mongodb",
+      "file": "simpleicons-mongodb.svg",
+      "name": "MongoDB（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "数据库",
+        "MongoDB"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/mongodb.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/mongodb.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://www.mongodb.com/pressroom",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "6698757ee85997e8167b2eacaff8395d6987954185488f2e90b88ef387fec6c7",
+        "sha256": "a1e22f6d28b40550317fdea664333b16555d13f9ef0334ec4a13fd0da413a62d",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-redis",
+      "file": "simpleicons-redis.svg",
+      "name": "Redis（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "缓存数据库",
+        "Redis"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/redis.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/redis.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://redis.io/brand-guidelines",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "428b86deb14c8bdacdcdf75987fe454f367bcd078a7e4ae3f84de29aa5bdf136",
+        "sha256": "b695b6c21a1112c7b6ac2edce48c228e1143b069cec0dc48962c5d4b4b248ced",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-clickhouse",
+      "file": "simpleicons-clickhouse.svg",
+      "name": "ClickHouse（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "分析数据库",
+        "ClickHouse"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/clickhouse.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/clickhouse.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://github.com/ClickHouse/ClickHouse/blob/12bd453a43819176d25ecf247033f6cb1af54beb/website/images/logo-clickhouse.svg",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "9fa7c12613763111ca26bbc1fe10994960028bc3da9faf47247de231a0b27589",
+        "sha256": "84aaf9d3f45510a831f81050db10a3e30d334d7594ac5dc98cac800a3a29762d",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-duckdb",
+      "file": "simpleicons-duckdb.svg",
+      "name": "DuckDB（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "分析数据库",
+        "DuckDB"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/duckdb.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/duckdb.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://duckdb.org",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "2d53f8978d58ac12411fc618569a492922bb15e3e1798b56ba1511e72c62f826",
+        "sha256": "8a5e7a9a940318e78352c180668181534ca87775323977a86e944f33fc30a394",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-simpleicons-apachecassandra",
+      "file": "simpleicons-apachecassandra.svg",
+      "name": "Apache Cassandra（单色）",
+      "kind": "icon",
+      "tags": [
+        "Simple Icons",
+        "数据技术",
+        "分布式数据库",
+        "Apache Cassandra"
+      ],
+      "source": {
+        "author": "Simple Icons contributors / respective trademark owner",
+        "license": "Simple Icons CC0-1.0 collection; trademark rights reserved",
+        "url": "https://github.com/simple-icons/simple-icons/blob/16.19.0/icons/apachecassandra.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.19.0/icons/apachecassandra.svg",
+        "revision": "16.19.0",
+        "brandSource": "https://www.apache.org/logos",
+        "licenseFile": "licenses/SIMPLE-ICONS-LICENSE.md",
+        "disclaimerFile": "licenses/SIMPLE-ICONS-DISCLAIMER.md",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "d13ce7537c308b71b8254a2dc879c3781d3358074c02a621b89d70ead36af5ce",
+        "sha256": "aa1c2927047bc1a36d4ba4c81c0e39da6a5e6483bfe509dbffc34210cede93b3",
+        "modifications": "Added a desc notice and removed the unsupported role attribute. Path geometry is unchanged; PNG preview is rasterized locally.",
+        "brandLicense": "Apache-2.0"
+      },
+      "folderId": "asset-folder-icons-data-tech"
+    },
+    {
+      "id": "builtin-devicon-hadoop",
+      "file": "devicon-hadoop.svg",
+      "name": "Apache Hadoop（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "大数据",
+        "Apache Hadoop"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/hadoop/hadoop-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/hadoop/hadoop-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "9a2eca34378dc1c0d7bf7d16a9993ef76ce7e4382075eda1c3ad513bf374afc3",
+        "sha256": "a17f16ee11513125205ff715b2f025f30060a9616d8f7982ddc478d0248e5af3",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-apachespark",
+      "file": "devicon-apachespark.svg",
+      "name": "Apache Spark（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "计算引擎",
+        "Apache Spark"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/apachespark/apachespark-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/apachespark/apachespark-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "c9eea5d3f0bc25067fa5d2f8ec6c40226854ae85b7658e3d9cf07a15f702cc9a",
+        "sha256": "6b9126b25e46c771cf0a29452270fa0a8f67a301b1d7f52a4ad0fd10cb032aa6",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-apachekafka",
+      "file": "devicon-apachekafka.svg",
+      "name": "Apache Kafka（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "消息流",
+        "Apache Kafka"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/apachekafka/apachekafka-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/apachekafka/apachekafka-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "2505c5b688c18c8fd5dd8e888561eb7b23a56a75d291ff17e8ee18770193f3e8",
+        "sha256": "e9a8e2c48b3516ec82d82cb9e7b5f585874f52a72d2c1df32bbae77dae00170a",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-apacheairflow",
+      "file": "devicon-apacheairflow.svg",
+      "name": "Apache Airflow（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "数据调度",
+        "Apache Airflow"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/apacheairflow/apacheairflow-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/apacheairflow/apacheairflow-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "0c83b226d54e77eda3336a4a7138a8ba61d82b5a8fee2bc026c135a239ec1814",
+        "sha256": "54cd7c07e68ec8f9a8907e52401622444e55efed9cd4b5b8e8d3bccda5321551",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-elasticsearch",
+      "file": "devicon-elasticsearch.svg",
+      "name": "Elasticsearch（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "搜索分析",
+        "Elasticsearch"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/elasticsearch/elasticsearch-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/elasticsearch/elasticsearch-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "7efc44ea67eac2a877248c0502e498bca8f61de490852c1a5c572db0b5d3f84d",
+        "sha256": "93913a54b5d55e262d86c94ffb385a52ffb017491be6d9709aa02f831e8b0836",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-postgresql",
+      "file": "devicon-postgresql.svg",
+      "name": "PostgreSQL（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "数据库",
+        "PostgreSQL"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/postgresql/postgresql-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/postgresql/postgresql-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "f220a436258ed014c512ba4f9c0de6b9e5c2c4b55331a0a29f8c7a1a12c36443",
+        "sha256": "e5582295a56d39c614f31d2760ba79553e8cda8b130ad914c7c4ad99e34d7285",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-mysql",
+      "file": "devicon-mysql.svg",
+      "name": "MySQL（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "数据库",
+        "MySQL"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/mysql/mysql-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/mysql/mysql-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "f73fa5d6b9da33fbf540ff96f5360c24b6d29d883ecfe6fcaecf89a8d3456067",
+        "sha256": "5bd129a3e8a9042c92e5a9c500429325ea2743e86f03a9ff58223e7af5107c44",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-mariadb",
+      "file": "devicon-mariadb.svg",
+      "name": "MariaDB（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "数据库",
+        "MariaDB"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/mariadb/mariadb-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/mariadb/mariadb-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "90f14c26b478447171ad800791535f5f5ab0f9abf80387edefb410b6fc85cbdc",
+        "sha256": "75f5ecb0982ecb0410292cd8ecf84d626ef4688e71ce416689c11bc2b26a4b25",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-mongodb",
+      "file": "devicon-mongodb.svg",
+      "name": "MongoDB（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "数据库",
+        "MongoDB"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/mongodb/mongodb-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/mongodb/mongodb-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "d9f2bf7041264f4747e9969fb82ede0199c0ac97dfa8632aa0687d702ec05f7b",
+        "sha256": "4fcad7e302481a9173970ab6a9c345d8a20675ecf2b63db04f255e3c56185e7f",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-redis",
+      "file": "devicon-redis.svg",
+      "name": "Redis（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "缓存数据库",
+        "Redis"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/redis/redis-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/redis/redis-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "4707378b190878f36f7e6e1c01fa3ee7e7884c76101809d191dddd943a2e6bdb",
+        "sha256": "b8c828c863cf4ccab11cbe4ae2c801bef263ecdaf997f074f3a4d108588d4b2a",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-clickhouse",
+      "file": "devicon-clickhouse.svg",
+      "name": "ClickHouse（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "分析数据库",
+        "ClickHouse"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/clickhouse/clickhouse-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/clickhouse/clickhouse-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "12cde67e9662314d8934293bc609875d111f761cb4ebb71a946f1a46cd66f841",
+        "sha256": "35481954eeea343c1e67b577e2480088ff9497bce2b3a79e0c1c4614d5352d04",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-duckdb",
+      "file": "devicon-duckdb.svg",
+      "name": "DuckDB（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "分析数据库",
+        "DuckDB"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/duckdb/duckdb-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/duckdb/duckdb-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "06be219668a471b16413677305b9765e41d56e927c7b72146f99e492bef36bcb",
+        "sha256": "dd98d21e125edc7a4204efd0f9eb88f93d0e11b68f8cb807f9de1e72e66d4ab3",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
+    },
+    {
+      "id": "builtin-devicon-cassandra",
+      "file": "devicon-cassandra.svg",
+      "name": "Apache Cassandra（彩色）",
+      "kind": "vector",
+      "tags": [
+        "Devicon",
+        "数据技术",
+        "分布式数据库",
+        "Apache Cassandra"
+      ],
+      "source": {
+        "author": "Devicon contributors / respective trademark owner",
+        "license": "Devicon MIT collection; trademark rights reserved",
+        "url": "https://github.com/devicons/devicon/blob/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/cassandra/cassandra-original.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/devicons/devicon/7330accdbc47e2dc0c19789a48533c4a3c50fe58/icons/cassandra/cassandra-original.svg",
+        "revision": "7330accdbc47e2dc0c19789a48533c4a3c50fe58",
+        "licenseFile": "licenses/DEVICON-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "9b768d3057b8963787ebddf6ecd83ad876956884c8354455b6ac99343df382ae",
+        "sha256": "da97618eacf394f21f689c46e95ebe82476125c87180dc006439bb9a693afcd7",
+        "modifications": "Added a desc notice and removed unsupported class/clip-rule attributes when present. Path geometry and colors are unchanged; PNG preview is rasterized locally."
+      },
+      "folderId": "asset-folder-vectors-data-tech"
     }
   ]
 }

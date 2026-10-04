@@ -27,6 +27,18 @@ test('catalog directories organize templates, resources and the add-page picker'
   await expect(page.getByRole('button',{name:'预览 港口物流',exact:true})).toBeVisible();
   await page.waitForFunction(()=>[...document.images].filter(image=>image.offsetParent!==null).every(image=>image.complete&&image.naturalWidth>0));
   await page.screenshot({path:'/tmp/review26-expanded-assets.png'});
+  await page.getByRole('button',{name:'目录 人物角色',exact:true}).first().click();
+  await expect(page.getByRole('button',{name:'预览 系统管理员',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'目录 人物角色',exact:true}).last().click();
+  await expect(page.getByRole('button',{name:'预览 开发工程师头像',exact:true})).toBeVisible();
+  await page.waitForFunction(()=>[...document.images].filter(image=>image.offsetParent!==null).every(image=>image.complete&&image.naturalWidth>0));
+  await page.screenshot({path:'/tmp/review27-role-assets.png'});
+  await page.getByRole('button',{name:'目录 数据技术',exact:true}).first().click();
+  await expect(page.getByRole('button',{name:'预览 Apache Spark（单色）',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'目录 数据技术',exact:true}).last().click();
+  await expect(page.getByRole('button',{name:'预览 PostgreSQL（彩色）',exact:true})).toBeVisible();
+  await page.waitForFunction(()=>[...document.images].filter(image=>image.offsetParent!==null).every(image=>image.complete&&image.naturalWidth>0));
+  await page.screenshot({path:'/tmp/review27-data-tech-assets.png'});
 
   await page.goto('/contents');
   const created=page.waitForResponse(response=>response.url().endsWith('/api/contents')&&response.request().method()==='POST');
