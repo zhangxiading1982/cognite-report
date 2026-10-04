@@ -1,0 +1,131 @@
+{
+  "specVersion": "1.0",
+  "id": "slide-trend",
+  "revision": 1,
+  "title": "2026年1–3月收入趋势",
+  "scene": "monthlyTrend",
+  "templateRef": {
+    "id": "monthly-trend",
+    "version": 1
+  },
+  "themeRef": {
+    "id": "corporate-blue",
+    "version": 1
+  },
+  "canvas": {
+    "width": 960,
+    "height": 540,
+    "unit": "pt"
+  },
+  "snapshotRef": "snapshot-2026-03-demo-v1",
+  "bindings": {
+    "main": {
+      "resultSetId": "trend",
+      "roles": {
+        "categoryKey": "month",
+        "categoryLabel": "month",
+        "series": [
+          "revenue"
+        ]
+      },
+      "computations": [
+        {
+          "id": "lastMoM",
+          "rule": "lastAdjacentMonthGrowth",
+          "field": "revenue",
+          "dateField": "month"
+        }
+      ]
+    }
+  },
+  "elements": [
+    {
+      "id": "slide-trend-title",
+      "type": "text",
+      "rect": {
+        "x": 24,
+        "y": 24,
+        "w": 912,
+        "h": 68
+      },
+      "z": 1,
+      "style": {
+        "fontSize": 28
+      },
+      "runs": [
+        {
+          "text": "2026年1–3月收入趋势"
+        }
+      ]
+    },
+    {
+      "id": "slide-trend-chart",
+      "type": "chart",
+      "rect": {
+        "x": 24,
+        "y": 108,
+        "w": 632,
+        "h": 352
+      },
+      "z": 2,
+      "bindingRef": "main",
+      "chartType": "line",
+      "options": {
+        "showLegend": true,
+        "showLabels": true,
+        "numberFormat": {
+          "displayDivisor": "10000",
+          "decimals": 0,
+          "suffix": "万元",
+          "percent": false
+        },
+        "nullPolicy": "gap"
+      },
+      "exportPolicy": "nativeChart"
+    },
+    {
+      "id": "slide-trend-note",
+      "type": "text",
+      "rect": {
+        "x": 680,
+        "y": 108,
+        "w": 256,
+        "h": 270
+      },
+      "z": 3,
+      "style": {
+        "fontSize": 16
+      },
+      "runs": [
+        {
+          "text": "收入连续增长；增长原因需结合实际业务证据复核。"
+        }
+      ]
+    },
+    {
+      "id": "slide-trend-source",
+      "type": "sourceFooter",
+      "rect": {
+        "x": 24,
+        "y": 486,
+        "w": 912,
+        "h": 30
+      },
+      "z": 4,
+      "style": {
+        "fontSize": 10
+      },
+      "fields": [
+        "source.system",
+        "snapshot.dataAsOf",
+        "snapshot.consistency"
+      ]
+    }
+  ],
+  "annotations": [],
+  "layoutOverrides": {},
+  "reviewState": {
+    "status": "needsReview",
+    "snapshotId": "snapshot-2026-03-demo-v1"
+  }
+}

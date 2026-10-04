@@ -1,0 +1,6 @@
+import {expect,it} from 'vitest';
+import {validateDataSpec} from '@slidebi/presentation';
+import {toDataSpec} from './table-import';
+it('imports typed table with numeric measures and named category without model metadata',()=>{const data=toDataSpec({schema:[{name:'月份',type:'string'},{name:'收入',type:'number',unit:'元'}],rows:[['1月',120],['2月',135.5]]});expect(validateDataSpec(data).errors).toEqual([]);expect(data.resultSets[0].rows[1]).toEqual({f1:'2月',f2:'135.5'});expect(data.measures[0].unit.baseUnit).toBe('元');expect(data.source.system).toBe('manual')});
+it('accepts object rows and passes full DataSpec unchanged',()=>{const input={specVersion:'1.0',resultSets:[]};expect(toDataSpec(input)).toBe(input);const data=toDataSpec({schema:[{name:'月份',type:'string'},{name:'收入',type:'integer'}],rows:[{'月份':'1月','收入':120}]});expect(validateDataSpec(data).valid).toBe(true)});
+it('rejects uneven rows, duplicate fields and invalid typed values instead of silently coercing',()=>{expect(()=>toDataSpec({schema:[{name:'值',type:'number'}],rows:[[1,2]]})).toThrow('列数');expect(()=>toDataSpec({schema:[{name:'值',type:'number'},{name:'值',type:'string'}],rows:[]})).toThrow('重复');expect(()=>toDataSpec({schema:[{name:'月份',type:'string'},{name:'收入',type:'number'}],rows:[['1月','abc']]})).toThrow()});

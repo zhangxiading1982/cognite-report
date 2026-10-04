@@ -1,0 +1,130 @@
+{
+  "specVersion": "1.0",
+  "id": "slide-bridge",
+  "revision": 1,
+  "title": "2026年3月收入变动归因",
+  "scene": "revenueBridge",
+  "templateRef": {
+    "id": "revenue-bridge",
+    "version": 1
+  },
+  "themeRef": {
+    "id": "corporate-blue",
+    "version": 1
+  },
+  "canvas": {
+    "width": 960,
+    "height": 540,
+    "unit": "pt"
+  },
+  "snapshotRef": "snapshot-2026-03-demo-v1",
+  "bindings": {
+    "main": {
+      "resultSetId": "bridge",
+      "roles": {
+        "stepKey": "stepId",
+        "label": "label",
+        "role": "role",
+        "value": "amount",
+        "sort": "order"
+      },
+      "computations": [
+        {
+          "id": "bridgeBalance",
+          "rule": "validateWaterfallBalance",
+          "absoluteTolerance": "0.01"
+        }
+      ]
+    }
+  },
+  "elements": [
+    {
+      "id": "slide-bridge-title",
+      "type": "text",
+      "rect": {
+        "x": 24,
+        "y": 24,
+        "w": 912,
+        "h": 68
+      },
+      "z": 1,
+      "style": {
+        "fontSize": 28
+      },
+      "runs": [
+        {
+          "text": "2026年3月收入变动归因"
+        }
+      ]
+    },
+    {
+      "id": "slide-bridge-chart",
+      "type": "chart",
+      "rect": {
+        "x": 24,
+        "y": 108,
+        "w": 632,
+        "h": 352
+      },
+      "z": 2,
+      "bindingRef": "main",
+      "chartType": "waterfall",
+      "options": {
+        "showLegend": true,
+        "showLabels": true,
+        "numberFormat": {
+          "displayDivisor": "10000",
+          "decimals": 0,
+          "suffix": "万元",
+          "percent": false
+        },
+        "nullPolicy": "gap"
+      },
+      "exportPolicy": "nativeShapes"
+    },
+    {
+      "id": "slide-bridge-note",
+      "type": "text",
+      "rect": {
+        "x": 680,
+        "y": 108,
+        "w": 256,
+        "h": 270
+      },
+      "z": 3,
+      "style": {
+        "fontSize": 16
+      },
+      "runs": [
+        {
+          "text": "新客户贡献为上游演示口径，图表只展示并校验贡献合计。"
+        }
+      ]
+    },
+    {
+      "id": "slide-bridge-source",
+      "type": "sourceFooter",
+      "rect": {
+        "x": 24,
+        "y": 486,
+        "w": 912,
+        "h": 30
+      },
+      "z": 4,
+      "style": {
+        "fontSize": 10
+      },
+      "fields": [
+        "source.system",
+        "snapshot.dataAsOf",
+        "snapshot.consistency"
+      ]
+    }
+  ],
+  "annotations": [],
+  "layoutOverrides": {},
+  "reviewState": {
+    "status": "needsReview",
+    "snapshotId": "snapshot-2026-03-demo-v1"
+  }
+}

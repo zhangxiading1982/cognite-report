@@ -1,0 +1,14 @@
+**/node_modules/
+**/dist/
+backend/var/
+.env
+.env.*
+!.env.example
+coverage/
+test-results/
+playwright-report/
+*.log
+*.pptx
+.DS_Store
+.idea/
+.vscode/

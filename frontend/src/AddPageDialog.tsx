@@ -1,0 +1,10 @@
+import React,{useState} from 'react';
+import {FilePlus2,LayoutTemplate,Copy} from 'lucide-react';
+import {post,Template} from './api';
+import {Modal} from './ui';
+import {TemplateThumbnail} from './TemplateThumbnail';
+export function AddPageDialog({templates,onClose,onCreated,onImport}:{templates:Template[];onClose:()=>void;onCreated:(slide:any)=>void;onImport:()=>void}){
+ const[mode,M]=useState<'template'|'blank'>('template'),[tid,T]=useState(templates[0]?.id||''),[name,N]=useState(''),[busy,B]=useState(false),[error,E]=useState('');
+ async function create(){B(true);E('');try{const slide=await post(mode==='blank'?'/slides/blank':'/slides/from-template',mode==='blank'?{title:name.trim()||'空白页'}:{templateId:tid,...(name.trim()?{title:name.trim()}:{})});onCreated(slide);}catch(e:any){E(e.message)}finally{B(false)}}
+ return <Modal title="新增页面" wide onClose={()=>{if(!busy)onClose()}}><div className="add-page-modes" role="tablist" aria-label="新增方式"><button role="tab" aria-selected={mode==='template'} onClick={()=>M('template')}><LayoutTemplate size={18}/>导入模板</button><button role="tab" aria-selected={mode==='blank'} onClick={()=>M('blank')}><FilePlus2 size={18}/>空白页</button><button className="add-page-copy" onClick={onImport}><Copy size={17}/>从其他文稿复制</button></div>{error&&<p role="alert" className="error">{error}</p>}{mode==='template'?<><div className="add-page-templates">{templates.map(t=><button key={t.id} aria-pressed={tid===t.id} onClick={()=>T(t.id)}><TemplateThumbnail templateId={t.id} name={t.name}/><strong>{t.name}</strong></button>)}</div><p className="callout">新增页面将直接使用模板自带数据。创建后可在图表的“数据”属性中维护或重新绑定。</p></>:<div className="add-page-blank"><FilePlus2 size={36}/><p>空白画布，可插入文字、资源和图表。</p></div>}<label className="field">页面名称<input aria-label="页面名称" maxLength={120} placeholder={mode==='blank'?'空白页':'沿用模板名称'} value={name} onChange={e=>N(e.target.value)}/></label><footer><button disabled={busy} onClick={onClose}>取消</button><button className="primary" disabled={busy||(mode==='template'&&!tid)} onClick={create}>{busy?'创建中…':'添加页面'}</button></footer></Modal>
+}

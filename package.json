@@ -1,0 +1,35 @@
+{
+  "name": "slidebi",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "backend",
+    "backend/packages/presentation",
+    "frontend"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "dev": "concurrently -k 'npm run dev -w @slidebi/backend' 'npm run dev -w @slidebi/frontend'",
+    "dev:backend": "npm run dev -w @slidebi/backend",
+    "dev:frontend": "npm run dev -w @slidebi/frontend",
+    "build": "npm run build -w @slidebi/frontend",
+    "db:setup": "tsx backend/src/setup-db.ts",
+    "db:init": "bash scripts/init-database.sh",
+    "test:e2e": "playwright test",
+    "db:test:setup": "SLIDEBI_DB_NAME=slidebi_test tsx backend/src/setup-db.ts",
+    "data:review15:reset": "npm run data:review15:reset -w @slidebi/backend",
+    "verify": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "tsx": "^4.20.5",
+    "vitest": "^3.2.4",
+    "concurrently": "^9.2.1",
+    "@types/node": "^22.18.0",
+    "@playwright/test": "^1.55.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

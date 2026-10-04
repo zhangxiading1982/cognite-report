@@ -1,0 +1,194 @@
+{
+  "specVersion": "1.0",
+  "id": "slide-budget",
+  "revision": 1,
+  "title": "2026年3月收入预算对比",
+  "scene": "budgetComparison",
+  "templateRef": {
+    "id": "budget-comparison",
+    "version": 1
+  },
+  "themeRef": {
+    "id": "corporate-blue",
+    "version": 1
+  },
+  "canvas": {
+    "width": 960,
+    "height": 540,
+    "unit": "pt"
+  },
+  "snapshotRef": "snapshot-2026-03-demo-v1",
+  "bindings": {
+    "main": {
+      "resultSetId": "budget",
+      "roles": {
+        "categoryKey": "regionId",
+        "categoryLabel": "regionName",
+        "series": [
+          "actual",
+          "budget"
+        ]
+      },
+      "computations": [
+        {
+          "id": "actualTotal",
+          "rule": "sumAdditive",
+          "field": "actual"
+        },
+        {
+          "id": "budgetTotal",
+          "rule": "sumAdditive",
+          "field": "budget"
+        },
+        {
+          "id": "delta",
+          "rule": "difference",
+          "left": "actualTotal",
+          "right": "budgetTotal"
+        },
+        {
+          "id": "deltaRate",
+          "rule": "positiveBaseRate",
+          "numerator": "delta",
+          "denominator": "budgetTotal"
+        }
+      ]
+    }
+  },
+  "elements": [
+    {
+      "id": "slide-budget-title",
+      "type": "text",
+      "rect": {
+        "x": 24,
+        "y": 24,
+        "w": 912,
+        "h": 68
+      },
+      "z": 1,
+      "style": {
+        "fontSize": 28
+      },
+      "runs": [
+        {
+          "text": "2026年3月收入预算对比"
+        }
+      ]
+    },
+    {
+      "id": "slide-budget-chart",
+      "type": "chart",
+      "rect": {
+        "x": 24,
+        "y": 108,
+        "w": 632,
+        "h": 352
+      },
+      "z": 2,
+      "bindingRef": "main",
+      "chartType": "comparison",
+      "options": {
+        "showLegend": true,
+        "showLabels": true,
+        "numberFormat": {
+          "displayDivisor": "10000",
+          "decimals": 0,
+          "suffix": "万元",
+          "percent": false
+        },
+        "nullPolicy": "gap"
+      },
+      "exportPolicy": "nativeChart"
+    },
+    {
+      "id": "slide-budget-note",
+      "type": "text",
+      "rect": {
+        "x": 680,
+        "y": 108,
+        "w": 256,
+        "h": 270
+      },
+      "z": 3,
+      "style": {
+        "fontSize": 16
+      },
+      "runs": [
+        {
+          "text": "请补充对偏差的业务解释，并在核对数据后确认结论。"
+        }
+      ]
+    },
+    {
+      "id": "slide-budget-kpi",
+      "type": "text",
+      "rect": {
+        "x": 680,
+        "y": 394,
+        "w": 256,
+        "h": 60
+      },
+      "z": 4,
+      "style": {
+        "fontSize": 20
+      },
+      "runs": [
+        {
+          "text": "预算差异："
+        },
+        {
+          "inlineValue": {
+            "bindingId": "main",
+            "computationId": "delta",
+            "format": {
+              "displayDivisor": "10000",
+              "decimals": 0,
+              "suffix": "万元",
+              "percent": false
+            }
+          }
+        },
+        {
+          "text": "\n差异率："
+        },
+        {
+          "inlineValue": {
+            "bindingId": "main",
+            "computationId": "deltaRate",
+            "format": {
+              "percent": true,
+              "decimals": 1,
+              "suffix": "%",
+              "displayDivisor": "1"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "slide-budget-source",
+      "type": "sourceFooter",
+      "rect": {
+        "x": 24,
+        "y": 486,
+        "w": 912,
+        "h": 30
+      },
+      "z": 4,
+      "style": {
+        "fontSize": 10
+      },
+      "fields": [
+        "source.system",
+        "snapshot.dataAsOf",
+        "snapshot.consistency"
+      ]
+    }
+  ],
+  "annotations": [],
+  "layoutOverrides": {},
+  "reviewState": {
+    "status": "needsReview",
+    "snapshotId": "snapshot-2026-03-demo-v1"
+  }
+}

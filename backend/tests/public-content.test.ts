@@ -1,0 +1,48 @@
+import {afterAll,test,expect} from 'vitest';
+import request from 'supertest';
+import {Pool} from 'pg';
+import {randomUUID} from 'node:crypto';
+import {createApp} from '../src/app.ts';
+import {fixture} from '../src/db.ts';
+const pool=new Pool({connectionString:'postgresql://slidebi_app@localhost:5432/slidebi_test'});
+afterAll(()=>pool.end());
+async function user(){const id=Number((await pool.query("INSERT INTO app.users(identity_provider,external_subject,display_name) VALUES('test',$1,'permission test') RETURNING id",[randomUUID()])).rows[0].id);return {id,app:await createApp({pool,actorId:id,workerEnabled:false})};}
+test('public document allows preview and export but denies all viewer mutations and private data listing',async()=>{
+ const owner=await user(),viewer=await user();
+ const s=(await request(owner.app).post('/api/slides/from-import').set('Idempotency-Key',randomUUID()).send({dataSpec:await fixture(),templateId:'budget-comparison',title:'公共汇报'})).body;
+ const d=(await request(owner.app).get('/api/contents')).body.items.find((x:any)=>x.pages.some((p:any)=>p.slideId===s.id));
+ expect((await request(viewer.app).get(`/api/contents/${d.id}`)).status).toBe(404);
+ expect((await request(owner.app).patch(`/api/management/contents/${d.id}`).send({visibility:'public',name:'公开示例'})).status).toBe(200);
+ const shared=await request(viewer.app).get(`/api/contents/${d.id}`);expect(shared.status).toBe(200);expect(shared.body.canEdit).toBe(false);expect(shared.body.title).toBe('公开示例');
+ expect((await request(viewer.app).get('/api/contents')).body.items.some((x:any)=>x.id===d.id)).toBe(true);
+ expect((await request(viewer.app).put(`/api/slides/${s.id}`).set('If-Match','1').send(s)).status).toBe(403);
+ expect((await request(viewer.app).post(`/api/contents/${d.id}/archive`)).status).toBe(403);
+ expect((await request(viewer.app).put(`/api/contents/${d.id}`).send({revision:shared.body.revision,spec:shared.body.spec})).status).toBe(403);
+ expect((await request(viewer.app).patch(`/api/management/contents/${d.id}`).send({visibility:'private'})).status).toBe(403);
+ const preview=await request(viewer.app).post(`/api/decks/${d.id}/preview`).send({revision:shared.body.revision,dataPolicy:'snapshot',deliveryMode:'draft'});expect(preview.status,JSON.stringify(preview.body)).toBe(200);
+ const job=await request(viewer.app).post(`/api/decks/${d.id}/export`).set('Idempotency-Key',randomUUID()).send({revision:shared.body.revision,previewId:preview.body.previewId,deliveryMode:'draft'});expect(job.status,JSON.stringify(job.body)).toBe(202);
+ expect((await request(owner.app).get(`/api/export-jobs/${job.body.id}`)).status).toBe(404);
+ expect((await request(viewer.app).get(`/api/datasets/${s.extensions?.dataset?.id}`)).status).toBe(404);
+ expect((await request(owner.app).patch(`/api/management/contents/${d.id}`).send({visibility:'private'})).status).toBe(200);
+ expect((await request(viewer.app).get(`/api/slides/${s.id}`)).status).toBe(404);
+ expect((await request(viewer.app).get(`/api/data-snapshots/${s.snapshotRef}`)).status).toBe(404);
+});
+test('shared data and public pages are copied into viewer-owned inputs and deny encoded owner mutations',async()=>{
+ const owner=await user(),viewer=await user();
+ const data=(await request(owner.app).post('/api/datasets').send({name:'共享图表数据',dataSpec:await fixture()})).body;
+ expect((await request(owner.app).patch(`/api/management/data/${data.id}`).send({visibility:'public'})).status).toBe(200);
+ const made=await request(viewer.app).post('/api/slides').set('Idempotency-Key',randomUUID()).send({datasetId:data.id,templateId:'budget-comparison',datasetVersion:data.version});
+ expect(made.status,JSON.stringify(made.body)).toBe(201);expect(made.body.snapshotRef).not.toBe(data.currentSnapshotId);
+ const source=(await request(owner.app).post('/api/slides').set('Idempotency-Key',randomUUID()).send({datasetId:data.id,templateId:'budget-comparison'})).body;
+ const contents=(await request(owner.app).get('/api/contents')).body.items,doc=contents.find((d:any)=>d.pages.some((p:any)=>p.slideId===source.id));
+ await request(owner.app).patch(`/api/management/contents/${doc.id}`).send({visibility:'public'});
+ const shared=(await request(viewer.app).get(`/api/contents/${doc.id}`)).body;
+ expect((await request(viewer.app).put(`/api/Contents/${doc.id}`).send({revision:shared.revision,spec:shared.spec})).status).toBe(403);
+ expect((await request(viewer.app).put(`/api/contents/%64${doc.id.slice(1)}`).send({revision:shared.revision,spec:shared.spec})).status).toBe(403);
+ const dest=(await request(viewer.app).post('/api/contents').send({title:'独立导入'})).body;
+ const imported=await request(viewer.app).post(`/api/contents/${dest.id}/import-pages`).set('Idempotency-Key',randomUUID()).send({revision:1,sourceContentId:doc.id,instanceIds:[doc.pages[0].instanceId]});
+ expect(imported.status,JSON.stringify(imported.body)).toBe(201);
+ await request(owner.app).patch(`/api/management/contents/${doc.id}`).send({visibility:'private'});
+ await request(owner.app).patch(`/api/management/data/${data.id}`).send({visibility:'private'});
+ const copied=await request(viewer.app).get(`/api/slides/${imported.body.pages[0].slideId}`);expect(copied.status).toBe(200);expect((await request(viewer.app).get(`/api/data-snapshots/${copied.body.snapshotRef}`)).status).toBe(200);
+});

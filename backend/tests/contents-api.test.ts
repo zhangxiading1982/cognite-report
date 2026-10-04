@@ -1,0 +1,55 @@
+import {beforeAll,afterAll,test,expect} from 'vitest';
+import request from 'supertest';
+import {Pool} from 'pg';
+import {randomUUID} from 'node:crypto';
+import {mkdtemp,rm} from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {createApp} from '../src/app.ts';
+import {fixture} from '../src/db.ts';
+const pool=new Pool({connectionString:'postgresql://slidebi_app@localhost:5432/slidebi_test'});let storageDir:string;
+beforeAll(async()=>{storageDir=await mkdtemp(path.join(os.tmpdir(),'slidebi-contents-'))});afterAll(async()=>{await pool.end();await rm(storageDir,{recursive:true,force:true})});
+async function context(){const actor=Number((await pool.query("INSERT INTO app.users(identity_provider,external_subject,display_name) VALUES('test',$1,'contents') RETURNING id",[randomUUID()])).rows[0].id);return {actor,app:await createApp({pool,actorId:actor,storageDir,workerEnabled:false})};}
+async function page(app:any){const d=await request(app).post('/api/datasets').send({name:'数据',dataSpec:await fixture()});return (await request(app).post('/api/slides').set('Idempotency-Key',randomUUID()).send({datasetId:d.body.id,templateId:'budget-comparison'})).body;}
+test('native content starts empty, owns pages, resolves latest edits and removes safely',async()=>{const {app}=await context();let c=(await request(app).post('/api/contents').send({title:'原生文稿'}));expect(c.status).toBe(201);expect(c.body.pages).toEqual([]);const s=await page(app);c=await request(app).post(`/api/contents/${c.body.id}/pages`).send({revision:1,slideId:s.id});expect(c.status).toBe(201);expect(c.body.pages[0].slideId).toBe(s.id);const content=c.body;s.title='新标题';expect((await request(app).put(`/api/slides/${s.id}`).set('If-Match','1').send(s)).status).toBe(200);const p=await request(app).post(`/api/decks/${content.id}/preview`).send({revision:content.revision,dataPolicy:'snapshot',deliveryMode:'draft'});expect(p.status).toBe(200);expect(p.body.slides).toHaveLength(1);expect(p.body.provenance.pages[0].revision).toBe(2);expect((await request(app).get(`/api/contents/${content.id}`)).body.pages[0].title).toBe('新标题');const removed=await request(app).post(`/api/contents/${content.id}/pages/${content.pages[0].instanceId}/remove`).send({revision:content.revision});expect(removed.status).toBe(200);expect(removed.body.pages).toEqual([]);expect((await request(app).post(`/api/decks/${content.id}/preview`).send({revision:removed.body.revision,dataPolicy:'snapshot',deliveryMode:'draft'})).status).toBe(422);});
+test('import copies independent current pages, preserves data link, is atomic, idempotent and owner isolated',async()=>{const {app}=await context(),other=await context(),s=await page(app);const list=await request(app).get('/api/contents');expect(list.status).toBe(200);const source=(await request(app).get(`/api/contents/${list.body.items[0].id}`)).body;const target=(await request(app).post('/api/contents').send({title:'目标'})).body;const body={revision:1,sourceContentId:source.id,instanceIds:[source.pages[0].instanceId]},key=randomUUID();const imported=await request(app).post(`/api/contents/${target.id}/import-pages`).set('Idempotency-Key',key).send(body);expect(imported.status).toBe(201);expect(imported.body.pages[0].slideId).not.toBe(s.id);const clone=(await request(app).get(`/api/slides/${imported.body.pages[0].slideId}`)).body;expect(clone.snapshotRef).toBe(s.snapshotRef);expect(clone.elements.map((x:any)=>x.id)).not.toEqual(s.elements.map((x:any)=>x.id));expect((await request(app).post(`/api/contents/${target.id}/import-pages`).set('Idempotency-Key',key).send(body)).body.pages).toEqual(imported.body.pages);expect((await request(other.app).post(`/api/contents/${target.id}/import-pages`).set('Idempotency-Key',randomUUID()).send(body)).status).toBe(404);const bad=await request(app).post(`/api/contents/${target.id}/import-pages`).set('Idempotency-Key',randomUUID()).send({...body,revision:2,instanceIds:[body.instanceIds[0],'missing']});expect(bad.status).toBe(422);expect((await request(app).get(`/api/contents/${target.id}`)).body.pages).toHaveLength(1);const injection={...imported.body.spec,instances:[{...imported.body.spec.instances[0],slideRef:{id:s.id,revision:1}}]};expect((await request(app).put(`/api/contents/${target.id}`).send({revision:2,spec:injection})).status).toBe(422);});
+test('legacy decks become independent contents once while historical revisions remain intact',async()=>{const {app,actor}=await context(),s=await page(app),orphan=await page(app);const old=(await request(app).post('/api/decks').send({title:'旧汇报',slideIds:[s.id,s.id]})).body;const list=await request(app).get('/api/contents');expect(list.status).toBe(200);expect(list.body.items).toHaveLength(2);const c=(await request(app).get(`/api/contents/${old.id}`)).body;expect(c.pages).toHaveLength(2);expect(new Set(c.pages.map((p:any)=>p.slideId)).size).toBe(2);expect(c.pages[0].slideId).not.toBe(s.id);expect((await pool.query('SELECT spec FROM app.deck_revisions WHERE deck_id=$1 AND revision=1',[old.id])).rows[0].spec).toEqual(old.spec);expect((await request(app).get('/api/contents')).body.items).toHaveLength(2);expect((await pool.query('SELECT content_deck_id FROM app.slides WHERE id=$1 AND owner_id=$2',[orphan.id,actor])).rows[0].content_deck_id).toBeTruthy();});
+test('copied layout edits are isolated but dataset corrections update both pages and freezing remains stable',async()=>{
+ const {app}=await context(),s=await page(app);const contents=(await request(app).get('/api/contents')).body.items,source=contents[0];const target=(await request(app).post('/api/contents').send({title:'数据联动'})).body;
+ const copied=(await request(app).post(`/api/contents/${target.id}/import-pages`).set('Idempotency-Key',randomUUID()).send({revision:1,sourceContentId:source.id,instanceIds:[source.pages[0].instanceId]})).body;
+ const cid=copied.pages[0].slideId,clone=(await request(app).get(`/api/slides/${cid}`)).body;clone.elements[0].rect.x+=10;expect((await request(app).put(`/api/slides/${cid}`).set('If-Match','1').send(clone)).status).toBe(200);
+ expect((await request(app).get(`/api/slides/${s.id}`)).body.elements[0].rect.x).toBe(s.elements[0].rect.x);
+ const dataset=(await request(app).get(`/api/datasets/${s.extensions.dataset.id}`)).body;const dataSpec=structuredClone(dataset.dataSpec);dataSpec.resultSets[0].rows[0].actual+=5;
+ expect((await request(app).put(`/api/datasets/${dataset.id}`).set('If-Match',String(dataset.version)).send({name:dataset.name,dataSpec})).status).toBe(200);
+ const originalNow=(await request(app).get(`/api/slides/${s.id}`)).body,copiedNow=(await request(app).get(`/api/slides/${cid}`)).body;expect(copiedNow.snapshotRef).toBe(originalNow.snapshotRef);expect(copiedNow.snapshotRef).not.toBe(s.snapshotRef);expect(copiedNow.elements[0].rect.x).toBe(clone.elements[0].rect.x);
+ const injected={...copied.spec,instances:[{...copied.spec.instances[0],slideRef:{id:s.id,revision:originalNow.revision}}]};expect((await request(app).put(`/api/decks/${copied.id}`).send({revision:copied.revision,spec:injected})).status).toBe(422);
+});
+test('content pages use export order even when stored section and instance arrays are shuffled',async()=>{
+ const {app}=await context(),s=await page(app);let c=(await request(app).get('/api/contents')).body.items[0];
+ for(let n=0;n<3;n++)c=(await request(app).post(`/api/contents/${c.id}/import-pages`).set('Idempotency-Key',randomUUID()).send({revision:c.revision,sourceContentId:c.id,instanceIds:[c.pages[0].instanceId]})).body;
+ const spec=structuredClone(c.spec);spec.sections=[{id:'later',title:'后章',order:2},{id:'b',title:'乙章',order:1},{id:'a',title:'甲章',order:1}];
+ spec.instances=spec.instances.map((i:any,n:number)=>({...i,instanceId:['late','b-page','a-z','a-a'][n],sectionId:['later','b','a','a'][n],order:0}));
+ const saved=await request(app).put(`/api/contents/${c.id}`).send({revision:c.revision,spec});expect(saved.status).toBe(200);
+ expect(saved.body.pages.map((p:any)=>p.instanceId)).toEqual(['a-a','a-z','b-page','late']);
+ expect((await request(app).get(`/api/contents/${c.id}`)).body.pages.map((p:any)=>p.instanceId)).toEqual(['a-a','a-z','b-page','late']);
+});
+test('active native contents repair referenced archived pages and save current page revisions',async()=>{
+ const {app}=await context();let c=(await request(app).post('/api/contents').send({title:'待修复文稿'})).body;const s=await page(app);
+ c=(await request(app).post(`/api/contents/${c.id}/pages`).send({revision:c.revision,slideId:s.id})).body;
+ const edited={...(await request(app).get(`/api/slides/${s.id}`)).body,title:'当前页面'};
+ expect((await request(app).put(`/api/slides/${s.id}`).set('If-Match',String(edited.revision)).send(edited)).status).toBe(200);
+ await pool.query('UPDATE app.slides SET archived_at=now() WHERE id=$1',[s.id]);
+ const opened=await request(app).get(`/api/contents/${c.id}`);expect(opened.status).toBe(200);
+ expect((await pool.query('SELECT archived_at FROM app.slides WHERE id=$1',[s.id])).rows[0].archived_at).toBeNull();
+ const input=structuredClone(opened.body.spec);input.title='修复后可保存';input.instances[0].slideRef.revision=1;
+ const saved=await request(app).put(`/api/contents/${c.id}`).send({revision:opened.body.revision,spec:input});
+ expect(saved.status,JSON.stringify(saved.body)).toBe(200);expect(saved.body.spec.instances[0].slideRef.revision).toBe(2);
+});
+test('saving a document snapshot reviews every current page and records immutable deck refs',async()=>{
+ const {app}=await context();let c=(await request(app).post('/api/contents').send({title:'待确认文稿'})).body;const s=await page(app);c=(await request(app).post(`/api/contents/${c.id}/pages`).send({revision:c.revision,slideId:s.id})).body;
+ const current=(await request(app).get(`/api/slides/${s.id}`)).body;current.title='已自动保存页面';const edited=(await request(app).put(`/api/slides/${s.id}`).set('If-Match',String(current.revision)).send(current)).body;expect(edited.reviewState.status).toBe('needsReview');
+ const snapshot=await request(app).post(`/api/contents/${c.id}/snapshots`).send({revision:c.revision});expect(snapshot.status,JSON.stringify(snapshot.body)).toBe(200);expect(snapshot.body.revision).toBe(c.revision+1);expect(snapshot.body.pages[0].revision).toBe(edited.revision+1);
+ const reviewed=(await request(app).get(`/api/slides/${s.id}`)).body;expect(reviewed.reviewState).toMatchObject({status:'reviewed',snapshotId:reviewed.snapshotRef});expect(snapshot.body.spec.instances[0].slideRef).toEqual({id:s.id,revision:reviewed.revision});
+ const frozen=(await pool.query('SELECT spec FROM app.deck_revisions WHERE deck_id=$1 AND revision=$2',[c.id,snapshot.body.revision])).rows[0].spec;expect(frozen.instances[0].slideRef.revision).toBe(reviewed.revision);
+ const preview=await request(app).post(`/api/decks/${c.id}/preview`).send({revision:snapshot.body.revision,dataPolicy:'snapshot',deliveryMode:'final'});expect(preview.status,JSON.stringify(preview.body)).toBe(200);expect(preview.body.diagnostics?.filter((d:any)=>['NEEDS_REVIEW','REVIEW_REQUIRED'].includes(d.code))).toEqual([]);
+});

@@ -1,0 +1,26 @@
+{
+  "name": "@slidebi/backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "data:review15:reset": "tsx src/review15-reset.ts"
+  },
+  "dependencies": {
+    "@slidebi/presentation": "*",
+    "express": "^5.1.0",
+    "jszip": "^3.10.2",
+    "multer": "^2.4.0",
+    "pg": "^8.16.3",
+    "pptxgenjs": "^4.0.1",
+    "saxes": "6.0.0",
+    "sharp": "^0.35.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "@types/pg": "^8.15.5",
+    "@types/supertest": "^6.0.3",
+    "supertest": "^7.1.4"
+  }
+}

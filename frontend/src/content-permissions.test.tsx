@@ -1,0 +1,10 @@
+// @vitest-environment jsdom
+import React from 'react';
+import {test,expect,vi,afterEach} from 'vitest';
+import {render,screen,cleanup,fireEvent} from '@testing-library/react';
+import {ContentWorkspace} from './ContentWorkspace';
+vi.mock('./Editor',()=>({Editor:()=> <div>危险编辑器</div>}));
+afterEach(()=>{cleanup();vi.unstubAllGlobals();history.replaceState({},'','/contents')});
+test('public document viewer cannot enter editor or modify structure',async()=>{const doc={id:'shared',canEdit:false,canDelete:false,visibility:'public',revision:1,spec:{title:'公开文稿',sections:[],instances:[],structurePolicy:{},numbering:{mode:'contentOnly'}},pages:[{instanceId:'page',slideId:'s1',title:'首页',revision:1,order:0}]};vi.stubGlobal('fetch',async(url:string)=>new Response(JSON.stringify(url==='/api/contents'?{items:[doc]}:url==='/api/contents/shared'?doc:{id:'s1',elements:[],snapshotRef:'x'})));render(<ContentWorkspace templates={[]} initialId="shared" onExports={()=>{}}/>);await screen.findByText('公开文稿');expect(screen.queryByText('危险编辑器')).toBeNull();expect(screen.queryByRole('button',{name:'添加页面'})).toBeNull();expect(screen.queryByRole('button',{name:'保存文稿'})).toBeNull();expect(screen.getByRole('button',{name:'导出 PPT'})).toBeTruthy()});
+
+test('document list exposes owner maintenance and only searches names',async()=>{vi.stubGlobal('fetch',async()=>new Response(JSON.stringify({items:[{id:'mine',title:'预算复盘',revision:1,canEdit:true,canDelete:true,visibility:'private'},{id:'public',title:'季度汇报',revision:1,canEdit:false,canDelete:false,visibility:'public'}]})));render(<ContentWorkspace templates={[]} onExports={()=>{}}/>);await screen.findByRole('button',{name:'打开文稿 预算复盘'});expect(screen.getByRole('button',{name:'打开文稿 季度汇报'})).toBeTruthy();expect((screen.getByRole('button',{name:'季度汇报 · 公开，点击设为私有'}) as HTMLButtonElement).disabled).toBe(true);expect(screen.queryByRole('button',{name:'删除 季度汇报'})).toBeNull();fireEvent.change(screen.getByPlaceholderText('文稿名称'),{target:{value:'预算'}});expect(screen.queryByText('季度汇报')).toBeNull();expect(screen.getByRole('button',{name:'删除 预算复盘'})).toBeTruthy()});

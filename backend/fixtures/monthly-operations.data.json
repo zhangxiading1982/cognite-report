@@ -1,0 +1,497 @@
+{
+  "specVersion": "1.0",
+  "id": "monthly-operations-demo",
+  "mode": "snapshot",
+  "source": {
+    "system": "fixture",
+    "modelId": "operations-demo",
+    "modelRevision": "1"
+  },
+  "snapshot": {
+    "id": "snapshot-2026-03-demo-v1",
+    "capturedAt": "2026-04-01T09:00:00+08:00",
+    "dataAsOf": "2026-03-31T23:59:59+08:00",
+    "consistency": "fixture"
+  },
+  "context": {
+    "locale": "zh-CN",
+    "timezone": "Asia/Shanghai",
+    "parameters": {
+      "reportMonth": {
+        "type": "date",
+        "value": "2026-03-01"
+      },
+      "trendMonths": {
+        "type": "integer",
+        "value": 3
+      }
+    },
+    "filters": [],
+    "effectiveFilters": []
+  },
+  "semanticSchema": {
+    "coverage": "referencedSubset",
+    "tables": [
+      {
+        "id": "dim-region",
+        "name": "Region",
+        "columns": [
+          {
+            "id": "region-id",
+            "name": "Id",
+            "type": "string"
+          },
+          {
+            "id": "region-name",
+            "name": "Name",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "id": "dim-month",
+        "name": "Month",
+        "columns": [
+          {
+            "id": "month-date",
+            "name": "Date",
+            "type": "date"
+          }
+        ]
+      },
+      {
+        "id": "fact-sales",
+        "name": "FactSales",
+        "columns": [
+          {
+            "id": "sales-region",
+            "name": "RegionId",
+            "type": "string"
+          },
+          {
+            "id": "sales-month",
+            "name": "Month",
+            "type": "date"
+          },
+          {
+            "id": "sales-revenue",
+            "name": "Revenue",
+            "type": "decimal"
+          }
+        ]
+      },
+      {
+        "id": "fact-budget",
+        "name": "FactBudget",
+        "columns": [
+          {
+            "id": "budget-region",
+            "name": "RegionId",
+            "type": "string"
+          },
+          {
+            "id": "budget-month",
+            "name": "Month",
+            "type": "date"
+          },
+          {
+            "id": "budget-revenue",
+            "name": "Revenue",
+            "type": "decimal"
+          }
+        ]
+      },
+      {
+        "id": "fact-bridge",
+        "name": "FactBridge",
+        "columns": [
+          {
+            "id": "bridge-step",
+            "name": "StepId",
+            "type": "string"
+          },
+          {
+            "id": "bridge-label",
+            "name": "Label",
+            "type": "string"
+          },
+          {
+            "id": "bridge-role",
+            "name": "Role",
+            "type": "string"
+          },
+          {
+            "id": "bridge-order",
+            "name": "SortOrder",
+            "type": "integer"
+          },
+          {
+            "id": "bridge-month",
+            "name": "Month",
+            "type": "date"
+          },
+          {
+            "id": "bridge-amount",
+            "name": "Amount",
+            "type": "decimal"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "id": "rel-region-sales",
+        "oneColumnId": "region-id",
+        "manyColumnId": "sales-region",
+        "filterDirection": "oneToMany"
+      },
+      {
+        "id": "rel-region-budget",
+        "oneColumnId": "region-id",
+        "manyColumnId": "budget-region",
+        "filterDirection": "oneToMany"
+      },
+      {
+        "id": "rel-month-sales",
+        "oneColumnId": "month-date",
+        "manyColumnId": "sales-month",
+        "filterDirection": "oneToMany"
+      },
+      {
+        "id": "rel-month-budget",
+        "oneColumnId": "month-date",
+        "manyColumnId": "budget-month",
+        "filterDirection": "oneToMany"
+      },
+      {
+        "id": "rel-month-bridge",
+        "oneColumnId": "month-date",
+        "manyColumnId": "bridge-month",
+        "filterDirection": "oneToMany"
+      }
+    ]
+  },
+  "measures": [
+    {
+      "id": "revenue-actual",
+      "name": "实际收入",
+      "dax": "SUM(FactSales[Revenue])",
+      "description": "演示口径：人民币、不含税、扣除退货后的期间收入。",
+      "unit": {
+        "baseUnit": "CNY",
+        "currency": "CNY"
+      },
+      "format": {
+        "displayDivisor": "10000",
+        "decimals": 0,
+        "suffix": "万元",
+        "percent": false
+      },
+      "aggregationBehavior": "additive",
+      "favorableDirection": "higher",
+      "dependencies": [
+        "sales-revenue"
+      ]
+    },
+    {
+      "id": "revenue-budget",
+      "name": "预算收入",
+      "dax": "SUM(FactBudget[Revenue])",
+      "description": "演示口径：与实际相同期间、地区及币种的已批准预算。",
+      "unit": {
+        "baseUnit": "CNY",
+        "currency": "CNY"
+      },
+      "format": {
+        "displayDivisor": "10000",
+        "decimals": 0,
+        "suffix": "万元",
+        "percent": false
+      },
+      "aggregationBehavior": "additive",
+      "favorableDirection": "higher",
+      "dependencies": [
+        "budget-revenue"
+      ]
+    },
+    {
+      "id": "bridge-value",
+      "name": "桥图步骤值",
+      "dax": "SUM(FactBridge[Amount])",
+      "description": "仅在单StepId上下文读取预先计算的值；start/end为绝对额，delta为归因贡献；禁止跨角色求总和。演示贡献值不是在工作台推导。",
+      "unit": {
+        "baseUnit": "CNY",
+        "currency": "CNY"
+      },
+      "format": {
+        "displayDivisor": "10000",
+        "decimals": 0,
+        "suffix": "万元",
+        "percent": false
+      },
+      "aggregationBehavior": "nonAdditive",
+      "favorableDirection": "higher",
+      "dependencies": [
+        "bridge-amount"
+      ],
+      "validation": {
+        "absoluteTolerance": "0.01"
+      }
+    }
+  ],
+  "queries": [
+    {
+      "id": "q-budget",
+      "provider": "fixture",
+      "definition": {
+        "kind": "fixture",
+        "fixtureId": "budget-by-region",
+        "parameterBindings": {
+          "month": "reportMonth"
+        }
+      },
+      "effectiveFilters": [
+        {
+          "fieldId": "month-date",
+          "operator": "eq",
+          "type": "date",
+          "value": "2026-03-01"
+        }
+      ]
+    },
+    {
+      "id": "q-trend",
+      "provider": "fixture",
+      "definition": {
+        "kind": "fixture",
+        "fixtureId": "revenue-by-month",
+        "parameterBindings": {
+          "endingMonth": "reportMonth",
+          "months": "trendMonths"
+        }
+      },
+      "effectiveFilters": [
+        {
+          "fieldId": "month-date",
+          "operator": "between",
+          "type": "date",
+          "values": [
+            "2026-01-01",
+            "2026-03-01"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "q-bridge",
+      "provider": "fixture",
+      "definition": {
+        "kind": "fixture",
+        "fixtureId": "revenue-bridge",
+        "parameterBindings": {
+          "endingMonth": "reportMonth"
+        }
+      },
+      "effectiveFilters": [
+        {
+          "fieldId": "bridge-month",
+          "operator": "eq",
+          "type": "date",
+          "value": "2026-03-01"
+        }
+      ]
+    }
+  ],
+  "resultSets": [
+    {
+      "id": "budget",
+      "queryId": "q-budget",
+      "grain": [
+        "regionId"
+      ],
+      "primaryKey": [
+        "regionId"
+      ],
+      "fields": [
+        {
+          "id": "regionId",
+          "type": "string",
+          "nullable": false,
+          "semanticRef": "region-id"
+        },
+        {
+          "id": "regionName",
+          "type": "string",
+          "nullable": false,
+          "semanticRef": "region-name"
+        },
+        {
+          "id": "actual",
+          "type": "decimal",
+          "nullable": false,
+          "semanticRef": "revenue-actual"
+        },
+        {
+          "id": "budget",
+          "type": "decimal",
+          "nullable": false,
+          "semanticRef": "revenue-budget"
+        }
+      ],
+      "rows": [
+        {
+          "regionId": "east",
+          "regionName": "华东",
+          "actual": "12000000",
+          "budget": "10000000"
+        },
+        {
+          "regionId": "west",
+          "regionName": "华西",
+          "actual": "8000000",
+          "budget": "9000000"
+        },
+        {
+          "regionId": "south",
+          "regionName": "华南",
+          "actual": "11000000",
+          "budget": "11000000"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "id": "trend",
+      "queryId": "q-trend",
+      "grain": [
+        "month"
+      ],
+      "primaryKey": [
+        "month"
+      ],
+      "fields": [
+        {
+          "id": "month",
+          "type": "date",
+          "nullable": false,
+          "semanticRef": "month-date"
+        },
+        {
+          "id": "revenue",
+          "type": "decimal",
+          "nullable": true,
+          "semanticRef": "revenue-actual"
+        }
+      ],
+      "rows": [
+        {
+          "month": "2026-01-01",
+          "revenue": "25000000"
+        },
+        {
+          "month": "2026-02-01",
+          "revenue": "28000000"
+        },
+        {
+          "month": "2026-03-01",
+          "revenue": "31000000"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "id": "bridge",
+      "queryId": "q-bridge",
+      "grain": [
+        "stepId"
+      ],
+      "primaryKey": [
+        "stepId"
+      ],
+      "fields": [
+        {
+          "id": "stepId",
+          "type": "string",
+          "nullable": false,
+          "semanticRef": "bridge-step"
+        },
+        {
+          "id": "label",
+          "type": "string",
+          "nullable": false,
+          "semanticRef": "bridge-label"
+        },
+        {
+          "id": "role",
+          "type": "string",
+          "nullable": false,
+          "semanticRef": "bridge-role"
+        },
+        {
+          "id": "amount",
+          "type": "decimal",
+          "nullable": false,
+          "semanticRef": "bridge-value"
+        },
+        {
+          "id": "order",
+          "type": "integer",
+          "nullable": false,
+          "semanticRef": "bridge-order"
+        }
+      ],
+      "rows": [
+        {
+          "stepId": "opening",
+          "label": "上月收入",
+          "role": "start",
+          "amount": "28000000",
+          "order": 0
+        },
+        {
+          "stepId": "new",
+          "label": "新客户贡献",
+          "role": "delta",
+          "amount": "5000000",
+          "order": 1
+        },
+        {
+          "stepId": "churn",
+          "label": "客户流失",
+          "role": "delta",
+          "amount": "-1000000",
+          "order": 2
+        },
+        {
+          "stepId": "existing",
+          "label": "存量收缩",
+          "role": "delta",
+          "amount": "-1000000",
+          "order": 3
+        },
+        {
+          "stepId": "closing",
+          "label": "本月收入",
+          "role": "end",
+          "amount": "31000000",
+          "order": 4
+        }
+      ],
+      "truncated": false
+    }
+  ],
+  "chartHints": [
+    {
+      "resultSetId": "budget",
+      "chartType": "comparison"
+    },
+    {
+      "resultSetId": "trend",
+      "chartType": "line"
+    },
+    {
+      "resultSetId": "bridge",
+      "chartType": "waterfall"
+    }
+  ]
+}

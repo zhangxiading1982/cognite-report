@@ -1,0 +1,384 @@
+{
+  "items": [
+    {
+      "id": "builtin-lucide-trending-up",
+      "file": "lucide-trending-up.svg",
+      "name": "业务增长",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/trending-up.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/trending-up.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "c86a4afe20ceccd7a28e829a2cd83dbc40a8af51ffa9547332a9bac9a50a90ae",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-chart-column",
+      "file": "lucide-chart-column.svg",
+      "name": "柱形分析",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/chart-column.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/chart-column.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "80664a4c5ca1bca10bcb88c1a99f62593c94d61d72d3a4bbf577eb3f3ea4da57",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-target",
+      "file": "lucide-target.svg",
+      "name": "目标",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/target.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/target.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "96a6b16628825a1a207a77e9a5818f74c3e74ea3664783ff5c2a44e6347b90df",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-users",
+      "file": "lucide-users.svg",
+      "name": "团队",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/users.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/users.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "eeed488a1ec95ba730dd69996536fb65061d6ea273afb2429ae47e65eebf401c",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-briefcase",
+      "file": "lucide-briefcase.svg",
+      "name": "业务",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/briefcase.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/briefcase.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "7c9e6bea85d15affdc5802bacbb7aae548c6031f246e4faef3747f36847365d0",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-building-2",
+      "file": "lucide-building-2.svg",
+      "name": "企业",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/building-2.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/building-2.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "e0d46029dac60bf48ecac4532d39e15772cf484e4d230a6b40aee98775ffae85",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-globe",
+      "file": "lucide-globe.svg",
+      "name": "全球市场",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/globe.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/globe.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "82c6b8fa0b8e8d775ec9becd86f74a4e50bff7bee4c81f7362de45348504f14d",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-leaf",
+      "file": "lucide-leaf.svg",
+      "name": "可持续发展",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/leaf.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/leaf.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "ac2b65d8d35b5038c9388cd1f161e74570fce6ef6a4c3d99a6b0c2bd68e0cb28",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-clock",
+      "file": "lucide-clock.svg",
+      "name": "时间",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/clock.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/clock.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "e9d3e3acf4d1c280fcf8092293439dc0a4756a908ceb859de144b12451cd1cb9",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-check",
+      "file": "lucide-check.svg",
+      "name": "完成",
+      "kind": "icon",
+      "tags": [
+        "Lucide",
+        "业务图标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/check.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/check.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-09",
+        "sha256": "7f33acc9a77a61659531044525fc008edebe215bf4dcf1c789c8674ad3277db0",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-city-skyline",
+      "file": "chicago-skyline.jpg",
+      "name": "城市天际线",
+      "kind": "image",
+      "tags": [
+        "城市",
+        "市场",
+        "封面"
+      ],
+      "source": {
+        "author": "Buphoff",
+        "license": "Public domain (author dedication worldwide)",
+        "url": "https://commons.wikimedia.org/wiki/File:Chicago_Skyline_ver2.jpg",
+        "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Chicago_Skyline_ver2.jpg",
+        "licenseFile": "licenses/PHOTO-SOURCES.md",
+        "retrievedAt": "2026-09-09",
+        "downloadSha256": "bc0100c800992dd78dc2ff66c252cc34eb96ecabb17ebcb0c7ec2bb798c3a789",
+        "sha256": "818b417cb2f7d2a6f63f4c1c49cc6c23303d41cff8cbd47f3077cc3ff4e1ad54",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      }
+    },
+    {
+      "id": "builtin-blue-marble",
+      "file": "blue-marble.jpg",
+      "name": "蓝色地球",
+      "kind": "image",
+      "tags": [
+        "全球",
+        "环境",
+        "封面"
+      ],
+      "source": {
+        "author": "NASA",
+        "license": "Public domain (US federal government work)",
+        "url": "https://commons.wikimedia.org/wiki/File:Big_Blue_Marble.jpg",
+        "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/6/66/Big_Blue_Marble.jpg",
+        "licenseFile": "licenses/PHOTO-SOURCES.md",
+        "retrievedAt": "2026-09-09",
+        "downloadSha256": "aa980d5bdb92ccff342b44b257ff1b2daa29165a044fa1c5feb38e41ab787536",
+        "sha256": "d307ad7b6fc78cbb1e1ab630f2a0e745e375dad9da6103b0c6095c72cc297862",
+        "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
+      }
+    },
+    {
+      "id": "builtin-lucide-shirt",
+      "file": "lucide-shirt.svg",
+      "name": "服饰",
+      "kind": "icon",
+      "tags": [
+        "服饰",
+        "线性图标"
+      ],
+      "source": {
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/shirt.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/shirt.svg",
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-24",
+        "downloadSha256": "6e7df3e5ab01881bce6e00eebd449c950fd8535de656c7b720e6cba6b5a70602",
+        "sha256": "6e7df3e5ab01881bce6e00eebd449c950fd8535de656c7b720e6cba6b5a70602",
+        "modifications": "None; preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-shopping-bag",
+      "file": "lucide-shopping-bag.svg",
+      "name": "购物袋",
+      "kind": "icon",
+      "tags": [
+        "商品",
+        "线性图标"
+      ],
+      "source": {
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/shopping-bag.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/shopping-bag.svg",
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-09-24",
+        "downloadSha256": "24a161961b559234b7a31af904dab18b437507336ba2decff3fe6b7772495896",
+        "sha256": "24a161961b559234b7a31af904dab18b437507336ba2decff3fe6b7772495896",
+        "modifications": "None; preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-twemoji-tshirt",
+      "file": "twemoji-tshirt.svg",
+      "name": "彩色T恤",
+      "kind": "vector",
+      "tags": [
+        "彩色矢量",
+        "商品"
+      ],
+      "source": {
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f455.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f455.svg",
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-09-24",
+        "downloadSha256": "37722c23ce04fce70cd43f573983b385b15d5e55bc7d85f907c1003f55b925b5",
+        "sha256": "38e88dded5d71fbe73b58698d222c64cbdb3d9c71fd00a8d61925c9ba788284c",
+        "modifications": "Added attribution desc; shapes unchanged. Preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-twemoji-package",
+      "file": "twemoji-package.svg",
+      "name": "包裹",
+      "kind": "vector",
+      "tags": [
+        "彩色矢量",
+        "商品"
+      ],
+      "source": {
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4e6.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4e6.svg",
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-09-24",
+        "downloadSha256": "35a41947f54c96134d1c364c7eef3d692d3af0be37874a86a94c22bdc6d464bf",
+        "sha256": "b4ea3aefa8dace578e9cafd1d6b9d5a7d246006689546ff5a7c116dab9c0d933",
+        "modifications": "Added attribution desc; shapes unchanged. Preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-pexels-camera",
+      "file": "pexels-camera.jpg",
+      "name": "相机产品",
+      "kind": "image",
+      "tags": [
+        "商品",
+        "摄影"
+      ],
+      "source": {
+        "url": "https://www.pexels.com/photo/90946/",
+        "downloadUrl": "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "author": "Pexels contributor (see original photo page)",
+        "license": "Pexels License",
+        "licenseFile": "licenses/REVIEW11-SOURCES.md",
+        "retrievedAt": "2026-09-24",
+        "downloadSha256": "12d921a0d4743c35a26c565c1e0c0b0d788f46e082ecbd59c7f721ed39575c03",
+        "sha256": "12d921a0d4743c35a26c565c1e0c0b0d788f46e082ecbd59c7f721ed39575c03",
+        "modifications": "None; preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-pexels-clothing",
+      "file": "pexels-clothing.jpg",
+      "name": "服饰陈列",
+      "kind": "image",
+      "tags": [
+        "服饰",
+        "摄影"
+      ],
+      "source": {
+        "url": "https://www.pexels.com/photo/996329/",
+        "downloadUrl": "https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "author": "Pexels contributor (see original photo page)",
+        "license": "Pexels License",
+        "licenseFile": "licenses/REVIEW11-SOURCES.md",
+        "retrievedAt": "2026-09-24",
+        "downloadSha256": "de48528131d324da27a92eab113e9392a9e390f8e4fe856a1d767a400ce001e5",
+        "sha256": "de48528131d324da27a92eab113e9392a9e390f8e4fe856a1d767a400ce001e5",
+        "modifications": "None; preview rasterized locally."
+      }
+    }
+  ]
+}
