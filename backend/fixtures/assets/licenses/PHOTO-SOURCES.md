@@ -22,4 +22,4 @@ Retrieved and verified on 2026-09-09. These are collected photographs, not gener
 
 ## Lucide icons
 
-Ten official Lucide SVG files were downloaded without modification from pinned commit `3bcf71f7cf4b6c7eeb1ec086425cc2028b990432` of https://github.com/lucide-icons/lucide . Each manifest entry points to its exact file. The complete upstream license, including Feather-derived and Lucide ISC notices, is retained in `LUCIDE-LICENSE`. PNG previews are local rasterizations.
+Official Lucide SVG files were downloaded without modification from pinned commit `3bcf71f7cf4b6c7eeb1ec086425cc2028b990432` of https://github.com/lucide-icons/lucide . Each manifest entry points to its exact file. The complete upstream license, including Feather-derived and Lucide ISC notices, is retained in `LUCIDE-LICENSE`. PNG previews are local rasterizations.

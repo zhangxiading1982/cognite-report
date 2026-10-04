@@ -8,6 +8,7 @@
 - [领域概念](domain-model.md)：文稿、页面、模板、数据、资源与导出的定义。
 - [系统架构](architecture.md)：组件边界、关键数据流与设计约束。
 - [使用说明](user-guide.md)：从数据或模板到多页 PPTX 的基本流程。
+- [目录与内置资源](catalog-organization.md)：模板、资源的默认目录和第三方素材维护规则。
 
 ## 开发与运维
 

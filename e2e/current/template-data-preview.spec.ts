@@ -3,6 +3,7 @@ import {test,expect} from '@playwright/test';
 import {randomUUID} from 'node:crypto';
 test('模板真实缩略图、固定模板预览和顶部大图',async({page,request})=>{
  await page.goto('/library');
+ await page.getByRole('button',{name:'目录 图表分析',exact:true}).click();
  const name='区域收入圆环图';
  const thumbnail=page.getByRole('button',{name:`预览 ${name}`,exact:true});
  await thumbnail.scrollIntoViewIfNeeded();

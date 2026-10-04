@@ -7,6 +7,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { bytesHash, fail, HttpError, id, transaction } from './db.ts';
 import { validateStaticSvg } from './assets-svg.ts';
 import { processAssetImage } from './image-processing.ts';
+import { ASSET_FOLDERS } from './catalog-structure.ts';
+import { validateBuiltinAssetManifest, type BuiltinAssetManifest } from './asset-manifest.ts';
 
 export async function normalizeAssetImage(input: Buffer) {
   const pngMagic = input.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
@@ -47,7 +49,7 @@ async function materialize(storageDir: string, bytes: Buffer, ext: string) {
   try { await writeFile(path.join(storageDir, key), bytes, { flag: 'wx' }); } catch (error: any) { if (error.code !== 'EEXIST') throw error; }
   return key;
 }
-async function persist(pool: Pool, storageDir: string, input: Buffer, data: { id: string; owner: number | null; name: string; tags: string[]; kind: string; source?: unknown }) {
+async function persist(pool: Pool, storageDir: string, input: Buffer, data: { id: string; owner: number | null; name: string; tags: string[]; kind: string; folderId?: string | null; source?: unknown }) {
   const image = await normalizeAssetImage(input);
   const pngKey = await materialize(storageDir, image.png, 'png');
   const originalKey = await materialize(storageDir, image.original, image.originalMime === 'image/svg+xml' ? 'svg' : image.originalMime === 'image/jpeg' ? 'jpg' : 'png');
@@ -58,12 +60,14 @@ async function persist(pool: Pool, storageDir: string, input: Buffer, data: { id
     };
     const pngObject = await object(pngKey, image.png, 'image/png');
     const originalObject = await object(originalKey, image.original, image.originalMime);
-    await db.query('INSERT INTO app.assets(id,owner_id,visibility,name,kind,original_object_id,source_object_id,tags,provenance) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT(id) DO NOTHING', [data.id, data.owner ?? (await db.query("SELECT id FROM app.users WHERE username='marx'")).rows[0].id, data.owner === null ? 'public' : 'private', data.name, data.kind, pngObject, originalObject, data.tags, data.source || {}]);
+    await db.query('INSERT INTO app.assets(id,owner_id,visibility,name,kind,folder_id,original_object_id,source_object_id,tags,provenance) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) ON CONFLICT(id) DO NOTHING', [data.id, data.owner ?? (await db.query("SELECT id FROM app.users WHERE username='marx'")).rows[0].id, data.owner === null ? 'public' : 'private', data.name, data.kind, data.folderId ?? null, pngObject, originalObject, data.tags, data.source || {}]);
   });
 }
 export async function registerAssetRoutes(app: Express, pool: Pool, actor: number, storageDir: string) {
   await mkdir(path.join(storageDir, 'assets'), { recursive: true });
-  const manifest = JSON.parse(await readFile(new URL('../fixtures/assets/manifest.json', import.meta.url), 'utf8'));
+  const manifest: BuiltinAssetManifest = JSON.parse(await readFile(new URL('../fixtures/assets/manifest.json', import.meta.url), 'utf8'));
+  const manifestErrors = validateBuiltinAssetManifest(manifest, ASSET_FOLDERS);
+  if (manifestErrors.length) throw new Error(`Builtin asset manifest is invalid: ${manifestErrors.join('; ')}`);
   for (const item of manifest.items) {
     // Materialize into each app's storage root, even when the DB is already seeded.
     const bytes = await readFile(new URL(`../fixtures/assets/${item.file}`, import.meta.url));

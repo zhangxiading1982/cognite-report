@@ -19,7 +19,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "c86a4afe20ceccd7a28e829a2cd83dbc40a8af51ffa9547332a9bac9a50a90ae",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-business"
     },
     {
       "id": "builtin-lucide-chart-column",
@@ -40,7 +41,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "80664a4c5ca1bca10bcb88c1a99f62593c94d61d72d3a4bbf577eb3f3ea4da57",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-business"
     },
     {
       "id": "builtin-lucide-target",
@@ -61,7 +63,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "96a6b16628825a1a207a77e9a5818f74c3e74ea3664783ff5c2a44e6347b90df",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-business"
     },
     {
       "id": "builtin-lucide-users",
@@ -82,7 +85,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "eeed488a1ec95ba730dd69996536fb65061d6ea273afb2429ae47e65eebf401c",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-collaboration"
     },
     {
       "id": "builtin-lucide-briefcase",
@@ -103,7 +107,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "7c9e6bea85d15affdc5802bacbb7aae548c6031f246e4faef3747f36847365d0",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-business"
     },
     {
       "id": "builtin-lucide-building-2",
@@ -124,7 +129,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "e0d46029dac60bf48ecac4532d39e15772cf484e4d230a6b40aee98775ffae85",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-business"
     },
     {
       "id": "builtin-lucide-globe",
@@ -145,7 +151,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "82c6b8fa0b8e8d775ec9becd86f74a4e50bff7bee4c81f7362de45348504f14d",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-business"
     },
     {
       "id": "builtin-lucide-leaf",
@@ -166,7 +173,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "ac2b65d8d35b5038c9388cd1f161e74570fce6ef6a4c3d99a6b0c2bd68e0cb28",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-business"
     },
     {
       "id": "builtin-lucide-clock",
@@ -187,7 +195,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "e9d3e3acf4d1c280fcf8092293439dc0a4756a908ceb859de144b12451cd1cb9",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-collaboration"
     },
     {
       "id": "builtin-lucide-check",
@@ -208,7 +217,8 @@
         "retrievedAt": "2026-09-09",
         "sha256": "7f33acc9a77a61659531044525fc008edebe215bf4dcf1c789c8674ad3277db0",
         "modifications": "None; PNG preview is rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-collaboration"
     },
     {
       "id": "builtin-city-skyline",
@@ -230,7 +240,8 @@
         "downloadSha256": "bc0100c800992dd78dc2ff66c252cc34eb96ecabb17ebcb0c7ec2bb798c3a789",
         "sha256": "818b417cb2f7d2a6f63f4c1c49cc6c23303d41cff8cbd47f3077cc3ff4e1ad54",
         "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
-      }
+      },
+      "folderId": "asset-folder-images-covers"
     },
     {
       "id": "builtin-blue-marble",
@@ -252,7 +263,8 @@
         "downloadSha256": "aa980d5bdb92ccff342b44b257ff1b2daa29165a044fa1c5feb38e41ab787536",
         "sha256": "d307ad7b6fc78cbb1e1ab630f2a0e745e375dad9da6103b0c6095c72cc297862",
         "modifications": "Resized to maximum 1600 pixels, metadata removed, JPEG quality 88."
-      }
+      },
+      "folderId": "asset-folder-images-covers"
     },
     {
       "id": "builtin-lucide-shirt",
@@ -273,7 +285,8 @@
         "downloadSha256": "6e7df3e5ab01881bce6e00eebd449c950fd8535de656c7b720e6cba6b5a70602",
         "sha256": "6e7df3e5ab01881bce6e00eebd449c950fd8535de656c7b720e6cba6b5a70602",
         "modifications": "None; preview rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-commerce"
     },
     {
       "id": "builtin-lucide-shopping-bag",
@@ -294,7 +307,8 @@
         "downloadSha256": "24a161961b559234b7a31af904dab18b437507336ba2decff3fe6b7772495896",
         "sha256": "24a161961b559234b7a31af904dab18b437507336ba2decff3fe6b7772495896",
         "modifications": "None; preview rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-icons-commerce"
     },
     {
       "id": "builtin-twemoji-tshirt",
@@ -315,7 +329,8 @@
         "downloadSha256": "37722c23ce04fce70cd43f573983b385b15d5e55bc7d85f907c1003f55b925b5",
         "sha256": "38e88dded5d71fbe73b58698d222c64cbdb3d9c71fd00a8d61925c9ba788284c",
         "modifications": "Added attribution desc; shapes unchanged. Preview rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-vectors-commerce"
     },
     {
       "id": "builtin-twemoji-package",
@@ -336,7 +351,8 @@
         "downloadSha256": "35a41947f54c96134d1c364c7eef3d692d3af0be37874a86a94c22bdc6d464bf",
         "sha256": "b4ea3aefa8dace578e9cafd1d6b9d5a7d246006689546ff5a7c116dab9c0d933",
         "modifications": "Added attribution desc; shapes unchanged. Preview rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-vectors-commerce"
     },
     {
       "id": "builtin-pexels-camera",
@@ -357,7 +373,8 @@
         "downloadSha256": "12d921a0d4743c35a26c565c1e0c0b0d788f46e082ecbd59c7f721ed39575c03",
         "sha256": "12d921a0d4743c35a26c565c1e0c0b0d788f46e082ecbd59c7f721ed39575c03",
         "modifications": "None; preview rasterized locally."
-      }
+      },
+      "folderId": "asset-folder-images-products"
     },
     {
       "id": "builtin-pexels-clothing",
@@ -378,6 +395,314 @@
         "downloadSha256": "de48528131d324da27a92eab113e9392a9e390f8e4fe856a1d767a400ce001e5",
         "sha256": "de48528131d324da27a92eab113e9392a9e390f8e4fe856a1d767a400ce001e5",
         "modifications": "None; preview rasterized locally."
+      },
+      "folderId": "asset-folder-images-products"
+    },
+    {
+      "id": "builtin-lucide-dollar-sign",
+      "file": "lucide-dollar-sign.svg",
+      "name": "财务金额",
+      "kind": "icon",
+      "folderId": "asset-folder-icons-business",
+      "tags": [
+        "Lucide",
+        "财务",
+        "金额"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/dollar-sign.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/dollar-sign.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "3d17a134b3764e8f23625e0e770e131f180599d97be74b86261b05d8c7e833f5",
+        "sha256": "3d17a134b3764e8f23625e0e770e131f180599d97be74b86261b05d8c7e833f5",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-calendar-days",
+      "file": "lucide-calendar-days.svg",
+      "name": "日历计划",
+      "kind": "icon",
+      "folderId": "asset-folder-icons-collaboration",
+      "tags": [
+        "Lucide",
+        "日历",
+        "计划"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/calendar-days.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/calendar-days.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "9330eb8d7c4989e97b6361314abbf02953243c602874725c9e58ceca00da3bd7",
+        "sha256": "9330eb8d7c4989e97b6361314abbf02953243c602874725c9e58ceca00da3bd7",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-flag",
+      "file": "lucide-flag.svg",
+      "name": "里程碑",
+      "kind": "icon",
+      "folderId": "asset-folder-icons-collaboration",
+      "tags": [
+        "Lucide",
+        "里程碑",
+        "目标"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/flag.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/flag.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "e99f1de2fea87cd2e3decc28a1f021a2a8182f907b3b350f604909de2030d8b9",
+        "sha256": "e99f1de2fea87cd2e3decc28a1f021a2a8182f907b3b350f604909de2030d8b9",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-lightbulb",
+      "file": "lucide-lightbulb.svg",
+      "name": "创意",
+      "kind": "icon",
+      "folderId": "asset-folder-icons-business",
+      "tags": [
+        "Lucide",
+        "创意",
+        "洞察"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/lightbulb.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/lightbulb.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "e33bbec15b1e64cca958e086850f951c0dc2201cd5778bb3695fda3cb6ea457d",
+        "sha256": "e33bbec15b1e64cca958e086850f951c0dc2201cd5778bb3695fda3cb6ea457d",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-triangle-alert",
+      "file": "lucide-triangle-alert.svg",
+      "name": "风险预警",
+      "kind": "icon",
+      "folderId": "asset-folder-icons-collaboration",
+      "tags": [
+        "Lucide",
+        "风险",
+        "预警"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/triangle-alert.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/triangle-alert.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "4866f38b8560d410f21e3226413e0b77997b6dfbb6931fadfe0a0d5aef9ffeb4",
+        "sha256": "4866f38b8560d410f21e3226413e0b77997b6dfbb6931fadfe0a0d5aef9ffeb4",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-handshake",
+      "file": "lucide-handshake.svg",
+      "name": "合作",
+      "kind": "icon",
+      "folderId": "asset-folder-icons-collaboration",
+      "tags": [
+        "Lucide",
+        "合作",
+        "团队"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/handshake.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/handshake.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "f58638064a1884e256895720c9a665d9e98cfc6935c52e14782ce0e84ecdad02",
+        "sha256": "f58638064a1884e256895720c9a665d9e98cfc6935c52e14782ce0e84ecdad02",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-map-pin",
+      "file": "lucide-map-pin.svg",
+      "name": "地点",
+      "kind": "icon",
+      "folderId": "asset-folder-icons-business",
+      "tags": [
+        "Lucide",
+        "地点",
+        "区域"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/map-pin.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/map-pin.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "16f1042a62f1bda20ebab8bfc1cb79c0be285c980dea6c2c733a17902631405b",
+        "sha256": "16f1042a62f1bda20ebab8bfc1cb79c0be285c980dea6c2c733a17902631405b",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-lucide-rocket",
+      "file": "lucide-rocket.svg",
+      "name": "增长启动",
+      "kind": "icon",
+      "folderId": "asset-folder-icons-business",
+      "tags": [
+        "Lucide",
+        "增长",
+        "启动"
+      ],
+      "source": {
+        "author": "Lucide contributors",
+        "license": "ISC",
+        "url": "https://github.com/lucide-icons/lucide/blob/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/rocket.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/lucide-icons/lucide/3bcf71f7cf4b6c7eeb1ec086425cc2028b990432/icons/rocket.svg",
+        "revision": "3bcf71f7cf4b6c7eeb1ec086425cc2028b990432",
+        "licenseFile": "licenses/LUCIDE-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "2b7887d9a5623f2e5e4a5d32716f93829d61b458e03b6eae33a6df648b9eb855",
+        "sha256": "2b7887d9a5623f2e5e4a5d32716f93829d61b458e03b6eae33a6df648b9eb855",
+        "modifications": "None; PNG preview is rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-twemoji-chart-increasing",
+      "file": "twemoji-chart-increasing.svg",
+      "name": "增长图表",
+      "kind": "vector",
+      "folderId": "asset-folder-vectors-business",
+      "tags": [
+        "彩色矢量",
+        "增长",
+        "趋势"
+      ],
+      "source": {
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4c8.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4c8.svg",
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "a8825c811f91f376b19ffcc0ddf9aab79c0009ce4cc4a680fe6e81c8eaf469a5",
+        "sha256": "813798708afae4f71bc0a32819c29ef7cba2e23d5200fc32ea4b079481febaae",
+        "modifications": "Added attribution desc; shapes unchanged. Preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-twemoji-direct-hit",
+      "file": "twemoji-direct-hit.svg",
+      "name": "目标命中",
+      "kind": "vector",
+      "folderId": "asset-folder-vectors-business",
+      "tags": [
+        "彩色矢量",
+        "目标",
+        "结果"
+      ],
+      "source": {
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f3af.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f3af.svg",
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "e6c11ef16f86c3c06a36ce4e3af7bd3ec27b7a8f1791f510b0e7a1638edbfca2",
+        "sha256": "9bead795d8f787a6b200ea52544e5312876558373c92a56c0f0989d26d93c830",
+        "modifications": "Added attribution desc; shapes unchanged. Preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-twemoji-light-bulb",
+      "file": "twemoji-light-bulb.svg",
+      "name": "创意灯泡",
+      "kind": "vector",
+      "folderId": "asset-folder-vectors-business",
+      "tags": [
+        "彩色矢量",
+        "创意",
+        "洞察"
+      ],
+      "source": {
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4a1.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4a1.svg",
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "2cd037cce2c3c16c3d33b1fbe4d9d46206633af2f8b4e082cea209c56a3e8b56",
+        "sha256": "d60144cbde09f56c4c860f434e7db4039a002f2e8661db1554ad9ee2f9a2de8a",
+        "modifications": "Added attribution desc; shapes unchanged. Preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-twemoji-calendar",
+      "file": "twemoji-calendar.svg",
+      "name": "彩色日历",
+      "kind": "vector",
+      "folderId": "asset-folder-vectors-business",
+      "tags": [
+        "彩色矢量",
+        "日历",
+        "计划"
+      ],
+      "source": {
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f4c5.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f4c5.svg",
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "4e4fa511bde5a54622dd99247d66babce99acad2810ce3c1755981eaed0d88ed",
+        "sha256": "47003220030e568a40ff44a309c7e7821d6222dc6e5aa0079970b5432c686000",
+        "modifications": "Added attribution desc; shapes unchanged. Preview rasterized locally."
+      }
+    },
+    {
+      "id": "builtin-twemoji-handshake",
+      "file": "twemoji-handshake.svg",
+      "name": "彩色握手",
+      "kind": "vector",
+      "folderId": "asset-folder-vectors-business",
+      "tags": [
+        "彩色矢量",
+        "合作",
+        "团队"
+      ],
+      "source": {
+        "url": "https://github.com/twitter/twemoji/blob/v14.0.2/assets/svg/1f91d.svg",
+        "downloadUrl": "https://raw.githubusercontent.com/twitter/twemoji/v14.0.2/assets/svg/1f91d.svg",
+        "author": "Twitter, Inc. and other contributors",
+        "license": "CC BY 4.0",
+        "licenseFile": "licenses/TWEMOJI-LICENSE",
+        "retrievedAt": "2026-10-04",
+        "downloadSha256": "41fabf139814bb8c223b4b2c45187ad55c92515cc4c63659deaaf7f8775e4a0c",
+        "sha256": "9ada8eb8570cf189e3ea81be429a1ae75abb68560cdc949eb9cad60402a7317a",
+        "modifications": "Removed xml:space metadata and added attribution desc; shapes unchanged. Preview rasterized locally."
       }
     }
   ]

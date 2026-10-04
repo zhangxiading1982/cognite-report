@@ -16,6 +16,8 @@
 │   │   ├── contents.ts           # 原生多页文稿
 │   │   ├── decks.ts              # 预览、导航和多页导出
 │   │   ├── assets.ts             # 资源上传、处理和读取
+│   │   ├── asset-manifest.ts     # 内置资源清单校验
+│   │   ├── catalog-structure.ts  # 模板与资源默认目录规划
 │   │   ├── template-management.ts# 模板维护
 │   │   ├── worker.ts             # 持久导出任务
 │   │   └── setup-db.ts           # 角色、数据库和迁移初始化

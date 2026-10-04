@@ -11,7 +11,7 @@ test('模板样例包含业务解释，独立于数据管理的修改和删除',
  const edit=await request.put(`/api/datasets/${dataset.id}`,{headers:{'If-Match':'1'},data:{name:name+'修订',dataSpec:data}});expect(edit.ok()).toBe(true);
  const remove=await request.delete(`/api/datasets/${dataset.id}`,{headers:{'If-Match':'2'}});expect(remove.ok()).toBe(true);
  const again=await(await request.post('/api/templates/budget-comparison/preview',{data:{}})).json();expect(again.example).toEqual(original.example);
- await page.goto('/library');await page.getByRole('button',{name:'预览 预算对比',exact:true}).click();const dialog=page.getByRole('dialog',{name:'预算对比',exact:true});
+ await page.goto('/library');await page.getByRole('button',{name:'目录 图表分析',exact:true}).click();await page.getByRole('button',{name:'预览 预算对比',exact:true}).click();const dialog=page.getByRole('dialog',{name:'预算对比',exact:true});
  await expect(dialog.locator('.actual-preview svg')).toBeVisible();await expect(dialog).toContainText('业务背景与适用场景');await expect(dialog.getByRole('textbox',{name:'业务背景',exact:true})).toHaveValue(original.example.businessContext.background);
  await expect(dialog.getByRole('combobox')).toHaveCount(0);await expect(dialog.locator('.model-summary')).toHaveCount(0);
  await expect(dialog.locator('.schema-summary')).toHaveCount(0);await expect(dialog.getByRole('table')).toHaveCount(original.dataSpec.resultSets.length);await dialog.getByRole('button',{name:/编辑字段/}).first().click();await expect(page.getByText(/^字段标识：/)).toBeVisible();await page.getByRole('button',{name:'关闭字段设置',exact:true}).click();

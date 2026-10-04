@@ -26,6 +26,15 @@ function view(t:any,actor:number){return {...t.payload,folderId:t.folder_id??nul
 async function validateFolder(db:DB,actor:number,folderId:unknown){
  if(folderId!==null&&(typeof folderId!=='string'||!(await db.query("SELECT id FROM app.folders WHERE id=$1 AND owner_id=$2 AND kind='templates'",[folderId,actor])).rows.length))fail(404,'NOT_FOUND','模板目录不存在');
 }
+async function importFolder(db:DB,actor:number,folderId:unknown){
+ if(folderId===null||folderId===undefined)return null;
+ if(typeof folderId!=='string')fail(404,'NOT_FOUND','模板目录不存在');
+ const folder=(await db.query("SELECT owner_id FROM app.folders WHERE id=$1 AND kind='templates'",[folderId])).rows[0];
+ if(!folder)fail(404,'NOT_FOUND','模板目录不存在');
+ // Exported public templates carry their owner's folder metadata. A new copy
+ // starts at the importing user's root unless that directory belongs to them.
+ return Number(folder.owner_id)===Number(actor)?folderId:null;
+}
 export function registerTemplateManagement(app:Express,pool:Pool,actor:number){
  app.post('/api/templates/import',async(req,res)=>{
   const owner=Number(actor),input=req.body;
@@ -34,9 +43,9 @@ export function registerTemplateManagement(app:Express,pool:Pool,actor:number){
   const draft=prepareTemplateDraft({name:input.name??'导入模板',version:0,visibility:'private',payload:{example:source}},{expectedVersion:0,name:input.name??'导入模板',example:source});
   const example=draft.payload.example,theme=example.slide.themeRef;
   if(typeof scene!=='string'||!scene||scene.length>100)fail(422,'INVALID_TEMPLATE','模板缺少业务场景');
-  const folderId=input.folderId??null,tid=id('template');
+  const tid=id('template');
   const result=await transaction(pool,async db=>{
-   await validateFolder(db,owner,folderId);const refs=await authorizeAssets(db,owner,draft.payload);
+   const folderId=await importFolder(db,owner,input.folderId);const refs=await authorizeAssets(db,owner,draft.payload);
    const payload={...draft.payload,requiredBindings:input.requiredBindings??{},slots:input.slots??[],allowedControls:input.allowedControls??[],exportCapabilities:input.exportCapabilities??[]};
    await db.query("INSERT INTO app.templates(id,owner_id,visibility,folder_id) VALUES($1,$2,'private',$3)",[tid,owner,folderId]);
    await db.query('INSERT INTO app.template_versions(template_id,version,name,scene,theme_id,theme_version,payload) VALUES($1,1,$2,$3,$4,$5,$6)',[tid,draft.name,scene,theme.id,theme.version,payload]);

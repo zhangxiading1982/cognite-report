@@ -1,8 +1,9 @@
-import {BUSINESS_TEMPLATE_FOLDERS,BUSINESS_TEMPLATES,PHASE2_TEMPLATES,createSlide} from "@slidebi/presentation";
+import {BUSINESS_TEMPLATES,PHASE2_TEMPLATES,createSlide} from "@slidebi/presentation";
 import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import type { Pool, PoolClient } from "pg";
 import { HttpError, fail } from "./errors.ts";
+import {ASSET_FOLDERS,TEMPLATE_FOLDERS,templateFolderId} from './catalog-structure.ts';
 export { HttpError, fail } from "./errors.ts";
 export type DB = Pool | PoolClient;
 export const id = (prefix: string) => `${prefix}-${randomUUID()}`;
@@ -52,6 +53,14 @@ export async function fixture(name = "monthly-operations.data") {
   );
 }
 export async function seed(pool: Pool) {
+  for(const folder of [...TEMPLATE_FOLDERS,...ASSET_FOLDERS]){
+    await pool.query(
+      `INSERT INTO app.folders(id,kind,owner_id,name,parent_id)
+       VALUES($1,$2,(SELECT id FROM app.users WHERE username='marx'),$3,$4)
+       ON CONFLICT(id) DO NOTHING`,
+      [folder.id,folder.kind,folder.name,folder.parentId??null],
+    );
+  }
   for (const [theme, name] of [
     ["corporate-blue", "商务蓝"],
     ["neutral", "中性灰"],
@@ -79,8 +88,8 @@ export async function seed(pool: Pool) {
     const s = await fixture(file);
     await transaction(pool, async (db) => {
       await db.query(
-        `INSERT INTO app.templates(id,visibility,owner_id) VALUES($1,'public',(SELECT id FROM app.users WHERE username='marx')) ON CONFLICT DO NOTHING`,
-        [slug],
+        `INSERT INTO app.templates(id,visibility,owner_id,folder_id) VALUES($1,'public',(SELECT id FROM app.users WHERE username='marx'),$2) ON CONFLICT DO NOTHING`,
+        [slug,templateFolderId(slug)],
       );
       await db.query(
         `INSERT INTO app.template_versions(template_id,version,name,scene,theme_id,theme_version,payload) VALUES($1,1,$2,$3,'corporate-blue',1,$4) ON CONFLICT DO NOTHING`,
@@ -104,20 +113,9 @@ export async function seed(pool: Pool) {
   for(const t of PHASE2_TEMPLATES){
     const slide=createSlide(phase2Data,t.id);
     await transaction(pool,async db=>{
-      await db.query("INSERT INTO app.templates(id,visibility,owner_id) VALUES($1,'public',(SELECT id FROM app.users WHERE username='marx')) ON CONFLICT DO NOTHING",[t.id]);
+      await db.query("INSERT INTO app.templates(id,visibility,owner_id,folder_id) VALUES($1,'public',(SELECT id FROM app.users WHERE username='marx'),$2) ON CONFLICT DO NOTHING",[t.id,templateFolderId(t.id)]);
       await db.query("INSERT INTO app.template_versions(template_id,version,name,scene,theme_id,theme_version,payload) VALUES($1,1,$2,$3,'corporate-blue',1,$4) ON CONFLICT DO NOTHING",[t.id,t.name,t.scene,{requiredBindings:{main:{roles:Object.keys(t.roles),roleConstraints:t.roles}},bindingSchema:{main:{roles:t.roles}},chartType:t.chartType,canvas:slide.canvas,slots:[],defaultElements:slide.elements,allowedControls:['text','layout','theme','chartOptions'],exportCapabilities:['nativeChart']}]);
     });
-  }
-  const businessFolderIds=BUSINESS_TEMPLATE_FOLDERS.map(folder=>folder.id);
-  const existingBusinessFolders=new Set((await pool.query(
-    "SELECT id FROM app.folders WHERE id=ANY($1::text[])",
-    [businessFolderIds],
-  )).rows.map(row=>row.id));
-  for(const folder of BUSINESS_TEMPLATE_FOLDERS)if(!existingBusinessFolders.has(folder.id)){
-    await pool.query(
-      "INSERT INTO app.folders(id,kind,owner_id,name) VALUES($1,'templates',(SELECT id FROM app.users WHERE username='marx'),$2) ON CONFLICT DO NOTHING",
-      [folder.id,folder.name],
-    );
   }
   const businessTemplateIds=BUSINESS_TEMPLATES.map(template=>template.id);
   const existingBusinessTemplates=new Set((await pool.query(

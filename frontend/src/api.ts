@@ -47,6 +47,7 @@ export type Template = {
   name: string;
   scene: string;
   favorite?: boolean;
+  folderId?: string | null;
   chartType?: string;
   bindingSchema?: Record<string,{roles:Record<string,BindingRoleConstraint>}>;
   requiredBindings?: Record<string,{roles?:string[];roleConstraints?:Record<string,BindingRoleConstraint>}>;
