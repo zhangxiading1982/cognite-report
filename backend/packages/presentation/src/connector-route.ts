@@ -15,6 +15,9 @@ export type OrthogonalRouteInput = {
   beginSide?: RouteSide;
   endSide?: RouteSide;
   obstacles?: RouteRect[];
+  /** Connected shapes are excluded from collision checks, but their bounds still
+   * define how far an outside corridor must travel before turning. */
+  endpointRects?: RouteRect[];
   canvas?: { width: number; height: number };
   elbowOffset?: number;
   elbowStartOffset?: number;
@@ -39,13 +42,17 @@ function segmentHitsRect(a: RoutePoint, b: RoutePoint, rect: RouteRect) {
   return false;
 }
 
-function routeHits(points: RoutePoint[], obstacles: RouteRect[]) {
-  return points.slice(1).some((point, index) => obstacles.some(rect => segmentHitsRect(points[index], point, rect)));
+function routeHits(points: RoutePoint[], obstacles: RouteRect[], allowEndpointEgress = false) {
+  return points.slice(1).some((point, index) => {
+    if (allowEndpointEgress && (index === 0 || index === points.length - 2)) return false;
+    return obstacles.some(rect => segmentHitsRect(points[index], point, rect));
+  });
 }
 
 function chooseOuterCoordinate(input: OrthogonalRouteInput, axis: "x" | "y", clearance: number) {
   const canvas = input.canvas ?? { width: 960, height: 540 };
-  const obstacles = input.obstacles?.length ? input.obstacles : [{ x: Math.min(input.begin.x, input.end.x), y: Math.min(input.begin.y, input.end.y), w: Math.abs(input.end.x - input.begin.x), h: Math.abs(input.end.y - input.begin.y) }];
+  const obstacles = [...(input.endpointRects ?? []), ...(input.obstacles ?? [])];
+  if (!obstacles.length) obstacles.push({ x: Math.min(input.begin.x, input.end.x), y: Math.min(input.begin.y, input.end.y), w: Math.abs(input.end.x - input.begin.x), h: Math.abs(input.end.y - input.begin.y) });
   if (axis === "x") {
     const left = Math.max(12, Math.min(...obstacles.map(rect => rect.x)) - clearance * 2);
     const right = Math.min(canvas.width - 12, Math.max(...obstacles.map(rect => rect.x + rect.w)) + clearance * 2);
@@ -87,6 +94,7 @@ export function buildOrthogonalRoute(input: OrthogonalRouteInput) {
   const endDirection = input.endSide ? direction[input.endSide] : undefined;
   const offset = Number(input.elbowOffset ?? 0);
   const middleX = (input.begin.x + input.end.x) / 2 + offset;
+  const collisionRects = [...(input.obstacles ?? []), ...(input.endpointRects ?? [])];
 
   if (!beginDirection || !endDirection) {
     const points = [input.begin, { x: middleX, y: input.begin.y }, { x: middleX, y: input.end.y }, input.end];
@@ -100,7 +108,7 @@ export function buildOrthogonalRoute(input: OrthogonalRouteInput) {
     const endExit = { x: input.end.x + endDirection.x * clearance, y: input.end.y + endDirection.y * clearance };
     const corner = beginVertical ? { x: startExit.x, y: endExit.y } : { x: endExit.x, y: startExit.y };
     const points = [input.begin, startExit, corner, endExit, input.end];
-    if (!routeHits(points, input.obstacles ?? [])) return { begin: input.begin, end: input.end, middleX, points, controls: [] as ElbowControl[] };
+    if (!routeHits(points, collisionRects, true)) return { begin: input.begin, end: input.end, middleX, points, controls: [] as ElbowControl[] };
     const routed = detour(input, beginDirection, endDirection, beginVertical ? "vertical" : "horizontal", clearance);
     return { begin: input.begin, end: input.end, middleX, ...routed };
   }
@@ -110,12 +118,12 @@ export function buildOrthogonalRoute(input: OrthogonalRouteInput) {
       const base = beginDirection.y < 0 ? Math.min(input.begin.y, input.end.y) - clearance : Math.max(input.begin.y, input.end.y) + clearance;
       const y = base + offset;
       const points = [input.begin, { x: input.begin.x, y }, { x: input.end.x, y }, input.end];
-      if (!routeHits(points, input.obstacles ?? [])) return { begin: input.begin, end: input.end, middleX, points, controls: [{ key: "middle", axis: "y", point: midpoint(points[1], points[2]) }] as ElbowControl[] };
+      if (!routeHits(points, collisionRects, true)) return { begin: input.begin, end: input.end, middleX, points, controls: [{ key: "middle", axis: "y", point: midpoint(points[1], points[2]) }] as ElbowControl[] };
     } else {
       const faces = beginDirection.y * (input.end.y - input.begin.y) > 0;
       const y = (input.begin.y + input.end.y) / 2 + offset;
       const points = [input.begin, { x: input.begin.x, y }, { x: input.end.x, y }, input.end];
-      if (faces && !routeHits(points, input.obstacles ?? [])) return { begin: input.begin, end: input.end, middleX, points, controls: [{ key: "middle", axis: "y", point: midpoint(points[1], points[2]) }] as ElbowControl[] };
+      if (faces && !routeHits(points, collisionRects, true)) return { begin: input.begin, end: input.end, middleX, points, controls: [{ key: "middle", axis: "y", point: midpoint(points[1], points[2]) }] as ElbowControl[] };
     }
     const routed = detour(input, beginDirection, endDirection, "vertical", clearance);
     return { begin: input.begin, end: input.end, middleX, ...routed };
@@ -125,12 +133,12 @@ export function buildOrthogonalRoute(input: OrthogonalRouteInput) {
     const base = beginDirection.x < 0 ? Math.min(input.begin.x, input.end.x) - clearance : Math.max(input.begin.x, input.end.x) + clearance;
     const x = base + offset;
     const points = [input.begin, { x, y: input.begin.y }, { x, y: input.end.y }, input.end];
-    if (!routeHits(points, input.obstacles ?? [])) return { begin: input.begin, end: input.end, middleX: x, points, controls: [{ key: "middle", axis: "x", point: midpoint(points[1], points[2]) }] as ElbowControl[] };
+    if (!routeHits(points, collisionRects, true)) return { begin: input.begin, end: input.end, middleX: x, points, controls: [{ key: "middle", axis: "x", point: midpoint(points[1], points[2]) }] as ElbowControl[] };
   } else {
     const faces = beginDirection.x * (input.end.x - input.begin.x) > 0;
     const x = (input.begin.x + input.end.x) / 2 + offset;
     const points = [input.begin, { x, y: input.begin.y }, { x, y: input.end.y }, input.end];
-    if (faces && !routeHits(points, input.obstacles ?? [])) return { begin: input.begin, end: input.end, middleX: x, points, controls: [{ key: "middle", axis: "x", point: midpoint(points[1], points[2]) }] as ElbowControl[] };
+    if (faces && !routeHits(points, collisionRects, true)) return { begin: input.begin, end: input.end, middleX: x, points, controls: [{ key: "middle", axis: "x", point: midpoint(points[1], points[2]) }] as ElbowControl[] };
   }
   const routed = detour(input, beginDirection, endDirection, "horizontal", clearance);
   return { begin: input.begin, end: input.end, middleX, ...routed };

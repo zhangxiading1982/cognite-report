@@ -124,11 +124,15 @@ export function renderSlideSvg(c: CompiledSlide): string {
       }
       if (n.type === "table") {
         const rows = n.rows as string[][], rh = r.h / rows.length, cw = r.w / rows[0].length;
-        return rows.map((row, i) => row.map((cell, j) => {
+        const cells=rows.map((row, i) => row.map((cell, j) => {
           const x = r.x + cw * j, y = r.y + rh * i;
           const lines = wrapText(cell, cw - 12, n.fontSize ?? 16);
-          return `<rect x="${x}" y="${y}" width="${cw}" height="${rh}" fill="${i === 0 ? color(n.fill) : color(n.bodyFill,'FFFFFF')}" stroke="${color(n.line?.color,'CBD5E1')}" stroke-width="${num(n.line?.width??0.5)}"/><text x="${x+6}" y="${y+4}" font-family="${esc(fontCss(n.fontFace ?? c.theme.fontFace))}" font-size="${n.fontSize ?? 16}" font-weight="${n.bold?'bold':'normal'}" fill="${color(n.color)}">${lines.map((line,k)=>`<tspan x="${x+6}" dy="${k === 0 ? n.fontSize ?? 16 : (n.fontSize ?? 16)*1.25}">${esc(line)}</tspan>`).join('')}</text>`;
+          const fill=i===0?color(n.fill):(i%2===0&&n.bodyStripeFill?color(n.bodyStripeFill):color(n.bodyFill,'FFFFFF'));
+          const stroke=n.borderMode==='horizontal'?'none':color(n.line?.color,'CBD5E1');
+          return `<rect x="${x}" y="${y}" width="${cw}" height="${rh}" fill="${fill}" stroke="${stroke}" stroke-width="${num(n.line?.width??0.5)}"/><text x="${x+6}" y="${y+4}" font-family="${esc(fontCss(n.fontFace ?? c.theme.fontFace))}" font-size="${n.fontSize ?? 16}" font-weight="${i===0?n.headerBold!==false:n.bold?'bold':'normal'}" fill="${color(i===0?n.headerColor:n.color)}">${lines.map((line,k)=>`<tspan x="${x+6}" dy="${k === 0 ? n.fontSize ?? 16 : (n.fontSize ?? 16)*1.25}">${esc(line)}</tspan>`).join('')}</text>`;
         }).join('')).join('');
+        const rules=n.borderMode==='horizontal'?rows.slice(1).map((_,i)=>`<line x1="${r.x}" x2="${r.x+r.w}" y1="${r.y+rh*(i+1)}" y2="${r.y+rh*(i+1)}" stroke="${color(n.line?.color,'E2E8F0')}" stroke-width="${num(n.line?.width??0.5)}"/>`).join(''):'';
+        return `<g>${cells}${rules}</g>`;
       }
       if (n.type === "shape") {
         if (n.shape === "line" || n.shape === "elbow") return lineGeometry(n);
@@ -157,31 +161,47 @@ function chart(n: CompiledElement): string {
     ax = n.valueAxis!,
     cats = n.categories!,
     series = n.series!;
-  const plot = { x: r.x + 48, y: r.y + 28, w: r.w - 64, h: r.h - 88 };
+  const plotHeight = Math.max(0.55, Math.min(1, Number(n.options?.plotHeight ?? 1)));
+  const plotBottom = r.y + r.h - 60;
+  const plot = { x: r.x + 48, y: plotBottom - (r.h - 88) * plotHeight, w: r.w - 64, h: (r.h - 88) * plotHeight };
   const horizontal = n.options?.direction === "bar" && n.chartType === "bar";
+  const fontSize = Number(n.options?.fontSize ?? 11);
+  const labelFontSize = Number(n.options?.labelFontSize ?? 10);
+  const labelColor = color(n.options?.labelColor, "475569");
+  const gridColor = color(n.options?.gridColor, "E2E8F0");
+  const axisColor = color(n.options?.axisColor, "94A3B8");
+  const barThickness = Math.max(0.25, Math.min(0.95, Number(n.options?.barThickness ?? 0.7)));
+  const lineWidth = Math.max(1, Math.min(8, Number(n.options?.lineWidth ?? 2)));
+  const markerSize = Math.max(0, Math.min(12, Number(n.options?.markerSize ?? 3)));
   const y = (v: number) =>
     plot.y + plot.h - ((v - ax.min) / (ax.max - ax.min)) * plot.h;
   const x = (v: number) => plot.x + ((v - ax.min) / (ax.max - ax.min)) * plot.w;
-  const text = (tx: number, ty: number, s: string, size = 10) =>
-    `<text x="${num(tx)}" y="${num(ty)}" font-size="${size}" fill="#475569">${esc(s)}</text>`;
-  let out = `<g font-family="${esc(n.options?.fontFace ?? "sans-serif")}">${text(plot.x, r.y + 13, n.numericUnit?.label ?? "")}`;
+  const text = (tx: number, ty: number, s: string, size = fontSize, fill = labelColor, anchor = "start") =>
+    `<text x="${num(tx)}" y="${num(ty)}" font-size="${num(size)}" fill="${fill}" text-anchor="${anchor}">${esc(s)}</text>`;
+  let out = `<g font-family="${esc(n.options?.fontFace ?? "sans-serif")}">${text(plot.x, r.y + 13, n.numericUnit?.label ?? "", fontSize, axisColor)}`;
   let ticks = 0;
   for (
     let t = ax.min;
     t <= ax.max + ax.step * 0.001 && ticks < 100;
     t += ax.step, ticks++
   ) {
+    const grid = n.options?.showGridlines === false ? "" : horizontal
+      ? `<line x1="${x(t)}" x2="${x(t)}" y1="${plot.y}" y2="${plot.y + plot.h}" stroke="${gridColor}"/>`
+      : `<line x1="${plot.x}" x2="${plot.x + plot.w}" y1="${y(t)}" y2="${y(t)}" stroke="${gridColor}"/>`;
     out += horizontal
-      ? `<line x1="${x(t)}" x2="${x(t)}" y1="${plot.y}" y2="${plot.y + plot.h}" stroke="#E2E8F0"/>${text(x(t) - 6, plot.y + plot.h + 16, String(Number(t.toPrecision(8))))}`
-      : `<line x1="${plot.x}" x2="${plot.x + plot.w}" y1="${y(t)}" y2="${y(t)}" stroke="#E2E8F0"/>${text(r.x, y(t) + 4, String(Number(t.toPrecision(8))))}`;
+      ? `${grid}${text(x(t), plot.y + plot.h + 16, String(Number(t.toPrecision(8))), fontSize, axisColor, "middle")}`
+      : `${grid}${text(plot.x - 7, y(t) + 4, String(Number(t.toPrecision(8))), fontSize, axisColor, "end")}`;
   }
   cats.forEach((cat, i) => {
     out += horizontal
-      ? text(r.x, plot.y + ((i + 0.5) * plot.h) / cats.length, cat.label)
+      ? text(plot.x - 7, plot.y + ((i + 0.5) * plot.h) / cats.length + 4, cat.label, fontSize, axisColor, "end")
       : text(
-          plot.x + ((i + 0.2) * plot.w) / cats.length,
+          plot.x + ((i + 0.5) * plot.w) / cats.length,
           plot.y + plot.h + 18,
           cat.label,
+          fontSize,
+          axisColor,
+          "middle",
         );
   });
   series.forEach((s, j) => {
@@ -196,21 +216,21 @@ function chart(n: CompiledElement): string {
       if (n.chartType === "line") {
         path += `${connected ? "L" : "M"}${p.x},${p.y} `;
         connected = true;
-        out += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="${color(s.color)}"/>`;
+        if (markerSize > 0) out += `<circle cx="${p.x}" cy="${p.y}" r="${num(markerSize)}" fill="${color(s.color)}"/>`;
       } else {
         const thickness =
-          ((horizontal ? plot.h : plot.w) / cats.length / series.length) * 0.7;
+          ((horizontal ? plot.h : plot.w) / cats.length / series.length) * barThickness;
         out += horizontal
           ? `<rect x="${Math.min(x(0), p.x)}" y="${p.y - thickness / 2}" width="${Math.abs(p.x - x(0))}" height="${thickness}" fill="${color(s.color)}"/>`
           : `<rect x="${p.x - thickness / 2}" y="${Math.min(y(0), p.y)}" width="${thickness}" height="${Math.abs(y(0) - p.y)}" fill="${color(s.color)}"/>`;
       }
       if (n.options?.showLabels !== false)
-        out += text(p.x + 3, p.y - 7, v.toFixed(n.options?.decimals ?? 0));
+        out += text(p.x + 3, p.y - 7, v.toFixed(n.options?.decimals ?? 0), labelFontSize, labelColor);
     });
     if (path)
-      out += `<path d="${path}" fill="none" stroke="${color(s.color)}" stroke-width="2"/>`;
+      out += `<path d="${path}" fill="none" stroke="${color(s.color)}" stroke-width="${num(lineWidth)}"/>`;
     if (n.options?.showLegend !== false)
-      out += `<rect x="${plot.x + j * 150}" y="${r.y + r.h - 14}" width="10" height="10" fill="${color(s.color)}"/>${text(plot.x + j * 150 + 15, r.y + r.h - 5, s.name)}`;
+      out += `<rect x="${plot.x + j * 150}" y="${r.y + r.h - 14}" width="10" height="10" fill="${color(s.color)}"/>${text(plot.x + j * 150 + 15, r.y + r.h - 5, s.name, fontSize, labelColor)}`;
   });
   return out + "</g>";
 }

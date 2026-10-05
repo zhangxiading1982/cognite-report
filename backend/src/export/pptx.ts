@@ -85,16 +85,24 @@ export async function writeDeckPptx(
       } else if (e.type === "table") {
         const rows = e.rows as string[][];
         if (!rows?.length || !rows[0]?.length) throw new Error("EMPTY_TABLE");
-        slide.addTable(rows.map((row, i) => row.map(text => ({text, options: {fill: { color: i === 0 ? color(e.fill, "EFF6FF") : color(e.bodyFill,"FFFFFF") }}}))), {
+        slide.addTable(rows.map((row, i) => row.map(text => ({text, options: {fill: { color: i === 0 ? color(e.fill, "EFF6FF") : i%2===0&&e.bodyStripeFill?color(e.bodyStripeFill):color(e.bodyFill,"FFFFFF") },color:color(i===0?e.headerColor:e.color),bold:i===0?e.headerBold!==false:e.bold===true}}))), {
           ...bounds, autoPage: false, rowH: bounds.h / rows.length,
           colW: Array(rows[0].length).fill(bounds.w / rows[0].length),
           fontFace: e.fontFace ?? compiled.theme.fontFace, fontSize: e.fontSize ?? 16,
           color: color(e.color), bold:e.bold===true, margin: [4, 6, 4, 6], valign: "top",
-          border: {type: "solid", color: color(e.line?.color,"CBD5E1"), pt: e.line?.width??0.5},
+          border: {type: "solid", color: color(e.borderMode==='horizontal'?'FFFFFF':e.line?.color,"CBD5E1"), pt: e.borderMode==='horizontal'?0:e.line?.width??0.5},
 
         });
+        if(e.borderMode==='horizontal')for(let row=1;row<rows.length;row++)slide.addShape(deck.ShapeType.line,{x:bounds.x,y:bounds.y+bounds.h*row/rows.length,w:bounds.w,h:0,line:{color:color(e.line?.color,'E2E8F0'),width:e.line?.width??0.5}});
       } else if (e.type === "nativeChart") {
-        chartFonts.push(compiled.theme.fontFace);
+        const chartFont = e.options?.fontFace ?? compiled.theme.fontFace;
+        const chartFontSize = Number(e.options?.fontSize ?? 11);
+        const labelFontSize = Number(e.options?.labelFontSize ?? 10);
+        const labelColor = color(e.options?.labelColor, "475569");
+        const axisColor = color(e.options?.axisColor, "94A3B8");
+        const gridColor = color(e.options?.gridColor, "E2E8F0");
+        const barThickness = Math.max(.25, Math.min(.95, Number(e.options?.barThickness ?? .7)));
+        chartFonts.push(chartFont);
         if((PHASE2_CHARTS as readonly string[]).includes(e.chartType??"")){addPhase2Chart(deck,slide,e,compiled.theme);continue;}
         if (e.chartType !== "bar" && e.chartType !== "line")
           throw new Error("UNSUPPORTED_CHART");
@@ -119,8 +127,9 @@ export async function writeDeckPptx(
           ),
           showLegend: e.options?.showLegend ?? true,
           legendPos: "b",
-          legendFontFace: compiled.theme.fontFace,
-          legendFontSize: 12,
+          legendFontFace: chartFont,
+          legendFontSize: chartFontSize,
+          legendColor: labelColor,
           showValue: e.options?.showLabels ?? true,
           showTitle: false,
           // OOXML supports maxMin; PptxGenJS 4's declaration incorrectly only lists minMax.
@@ -129,33 +138,36 @@ export async function writeDeckPptx(
             : "minMax") as pptxgen.IChartOpts["catAxisOrientation"],
           catAxisCrossesAt:
             e.options?.direction === "bar" ? labels.length + 0.5 : undefined,
-          catAxisLabelFontFace: compiled.theme.fontFace,
-          catAxisLabelFontSize: 12,
-          valAxisLabelFontFace: compiled.theme.fontFace,
-          valAxisLabelFontSize: 11,
+          catAxisLabelFontFace: chartFont,
+          catAxisLabelFontSize: chartFontSize,
+          catAxisLabelColor: axisColor,
+          valAxisLabelFontFace: chartFont,
+          valAxisLabelFontSize: chartFontSize,
+          valAxisLabelColor: axisColor,
           dataLabelFormatCode: e.options?.labelNumberFormat ?? "0",
-          dataLabelFontFace: compiled.theme.fontFace,
-          dataLabelFontSize: 11,
+          dataLabelFontFace: chartFont,
+          dataLabelFontSize: labelFontSize,
+          dataLabelColor: labelColor,
           valAxisLabelFormatCode: e.options?.labelNumberFormat ?? "0",
           showValAxisTitle: true,
           valAxisTitle: e.valueAxis?.title ?? e.numericUnit?.label ?? "",
-          valAxisTitleFontFace: compiled.theme.fontFace,
-          valAxisTitleFontSize: 11,
+          valAxisTitleFontFace: chartFont,
+          valAxisTitleFontSize: chartFontSize,
           valAxisMinVal: e.valueAxis?.min,
           valAxisMaxVal: e.valueAxis?.max,
           valAxisMajorUnit: e.valueAxis?.step,
           displayBlanksAs: "gap",
           lineDataSymbol: "circle",
-          lineDataSymbolSize: 5,
-          lineSize: 2,
-          catAxisLineColor: "CBD5E1",
-          valAxisLineColor: "CBD5E1",
-          valGridLine: { color: "E2E8F0", size: 0.5 },
+          lineDataSymbolSize: Number(e.options?.markerSize ?? 3),
+          lineSize: Number(e.options?.lineWidth ?? 2),
+          catAxisLineColor: axisColor,
+          valAxisLineColor: axisColor,
+          valGridLine: { color: gridColor, size: e.options?.showGridlines === false ? 0 : 0.5 },
           ...(e.chartType === "bar"
             ? {
                 barDir: e.options?.direction === "bar" ? "bar" : "col",
                 barGrouping: "clustered",
-                gapSizePct: 80,
+                gapSizePct: Math.max(50, Math.round((1 - barThickness) * 400)),
                 dataLabelPosition: "outEnd",
               }
             : { dataLabelPosition: "t" }),

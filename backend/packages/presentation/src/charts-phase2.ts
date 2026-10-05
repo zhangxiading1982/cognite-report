@@ -2,6 +2,7 @@ import type {DataSpec,ResultSet,Diagnostic} from './schema';
 import {formatSchema} from './schema';
 import type {Binding,SlideElement,CompiledElement,Rect,CompiledSlide} from './types';
 import {axis,chartNumber,D} from './math';
+import {chartVisualOptions} from './chart-style';
 export const PHASE2_CHARTS=['stackedColumn','percentStackedColumn','pie','donut','combo','area','scatter'] as const;
 export function compilePhase2Chart(e:SlideElement,rect:Rect,b:Binding|undefined,r:ResultSet|undefined,data:DataSpec,theme:CompiledSlide['theme'],mode:string){
  const diagnostics:Diagnostic[]=[];const error=(code:string,message:string)=>diagnostics.push({code,message,severity:'error',elementId:e.id});
@@ -33,7 +34,9 @@ export function compilePhase2Chart(e:SlideElement,rect:Rect,b:Binding|undefined,
  if(kind==='stackedColumn')vals=rows.flatMap((_,i)=>[series.reduce((v,s)=>v+Math.max(0,s.values[i]),0),series.reduce((v,s)=>v+Math.min(0,s.values[i]),0)]);
  if(dual||scatter)vals=series[scatter?1:0].values;
  const valueAxis=kind==='percentStackedColumn'?{min:0,max:1,step:.2,title:'占比'}:{...axis(vals,true),title:formats[scatter?1:0].suffix||measures[scatter?1:0]!.unit.baseUnit};
- const node:CompiledElement={id:e.id,type:'nativeChart',rect,chartType:kind as any,categories:rows.map(row=>({id:String(row[cat]),label:String(row[label])})),series,valueAxis,numericUnit:{baseUnit:measures[0]!.unit.baseUnit,displayDivisor:formats[0].displayDivisor,label:valueAxis.title},options:{...e.options,fontFace:theme.fontFace,showLegend:e.options?.showLegend!==false,showLabels:e.options?.showLabels!==false,labelNumberFormat:kind==='percentStackedColumn'?'0.0%':formats[0].decimals?'0.'+'0'.repeat(formats[0].decimals):'0'}};
+ const visual=chartVisualOptions(e.style,e.options),plotAvailable=rect.h-90;
+ const plotAreaLayout=e.options?.plotAreaLayout??{x:52/rect.w,y:(27+plotAvailable*(1-visual.plotHeight))/rect.h,w:(rect.w-(dual?110:74))/rect.w,h:plotAvailable*visual.plotHeight/rect.h};
+ const node:CompiledElement={id:e.id,type:'nativeChart',rect,chartType:kind as any,categories:rows.map(row=>({id:String(row[cat]),label:String(row[label])})),series,valueAxis,numericUnit:{baseUnit:measures[0]!.unit.baseUnit,displayDivisor:formats[0].displayDivisor,label:valueAxis.title},options:{...visual,plotAreaLayout,fontFace:e.style?.fontFace??theme.fontFace,sliceColors:theme.seriesColors,showLegend:e.options?.showLegend!==false,showLabels:e.options?.showLabels!==false,labelNumberFormat:kind==='percentStackedColumn'?'0.0%':formats[0].decimals?'0.'+'0'.repeat(formats[0].decimals):'0'}};
  if(dual)node.secondaryValueAxis={...axis(series[1].values,true),title:formats[1].suffix||measures[1]!.unit.baseUnit};
  if(scatter){node.xAxis={...axis(series[0].values,false),title:formats[0].suffix||measures[0]!.unit.baseUnit};node.xValues=series[0].values;node.series=[series[1]];node.options!.showLegend=false;}
  return done(node);

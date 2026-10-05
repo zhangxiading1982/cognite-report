@@ -10,6 +10,7 @@ import { compileComponent } from "./components-phase2";
 import { compileBusinessComponent } from "./business-components";
 import { FONT_OPTIONS } from "./fonts";
 import { buildOrthogonalRoute } from "./connector-route";
+import { CHART_PALETTES, chartTheme, chartVisualOptions } from "./chart-style";
 export { FONT_OPTIONS } from "./fonts";
 import { z } from "zod";
 export * from "./schema";
@@ -18,6 +19,7 @@ export * from "./math";
 export * from "./render";
 export * from "./layout";
 export * from "./connector-route";
+export * from "./chart-style";
 import {
   validateDataSpec,
   formatSchema,
@@ -555,6 +557,9 @@ export function compileSlide(
       resolvedLine = { ...line, flipH: begin.x > end.x, flipV: begin.y > end.y };
       if (e.shape === "elbow") {
         const excluded = new Set([line.beginConnection?.elementId, line.endConnection?.elementId]);
+        const endpointRects = slide.elements
+          .filter(item => excluded.has(item.id) && item.type === "shape" && item.shape !== "line" && item.shape !== "elbow")
+          .map(sourceRect);
         const obstacles = slide.elements
           .filter(item => item.id !== e.id && item.type === "shape" && item.shape !== "line" && item.shape !== "elbow" && !excluded.has(item.id))
           .map(sourceRect);
@@ -564,6 +569,7 @@ export function compileSlide(
           beginSide: line.beginConnection?.side,
           endSide: line.endConnection?.side,
           obstacles,
+          endpointRects,
           canvas: { width: slide.canvas.width, height: slide.canvas.height },
           elbowOffset: line.elbowOffset,
           elbowStartOffset: line.elbowStartOffset,
@@ -574,10 +580,10 @@ export function compileSlide(
     const style = { ...e.style, ...ov?.style };
     // Legacy default is resolved at render time; immutable saved revisions stay unchanged.
     if (style.fontFace === "Noto Sans CJK SC") style.fontFace = "SimHei";
-    if (style.themeId !== undefined && !["corporate-blue", "neutral"].includes(style.themeId)) {
+    if (style.themeId !== undefined && !(style.themeId in CHART_PALETTES)) {
       diag("INVALID_STYLE", "不支持的片段主题", e.id); continue;
     }
-    const theme = {...result.theme, ...(style.themeId ? {seriesColors: style.themeId === "neutral" ? ["475569", "94A3B8", "64748B", "CBD5E1"] : ["2563EB", "94A3B8", "0891B2", "7C3AED"]} : {}), ...(style.fontFace ? {fontFace:style.fontFace} : {})};
+    const theme = chartTheme(result.theme, style);
 
     if (
       style.fontSize !== undefined &&
@@ -1042,22 +1048,21 @@ export function compileSlide(
         },
         valueAxis: { ...ax, title: fmt.suffix },
         options: {
-          ...e.options,
+          ...chartVisualOptions(style, e.options),
           direction: e.options?.direction ?? "column",
           grouping: "clustered",
           showLegend: e.options?.showLegend !== false,
           showLabels: e.options?.showLabels !== false,
-          fontFace: theme.fontFace,
-          fontSize: 12,
+          fontFace: style.fontFace ?? theme.fontFace,
           labelNumberFormat: fmt.decimals
             ? "0." + "0".repeat(fmt.decimals)
             : "0",
           decimals: fmt.decimals,
           plotAreaLayout: {
             x: 48 / rect.w,
-            y: 28 / rect.h,
+            y: (rect.h - 60 - (rect.h - 88) * chartVisualOptions(style, e.options).plotHeight) / rect.h,
             w: (rect.w - 64) / rect.w,
-            h: (rect.h - 88) / rect.h,
+            h: ((rect.h - 88) * chartVisualOptions(style, e.options).plotHeight) / rect.h,
           },
           nullPolicy: "gap",
         },

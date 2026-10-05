@@ -15,7 +15,7 @@ export function compileComponent(e:SlideElement,rect:Rect,style:Record<string,an
   const rows=[fields.map(fieldName),...rs.rows.map(row=>fields.map(f=>row[f.id]===null?'—':String(row[f.id]??'')))];
   const rowHeight=rect.h/rows.length,colWidth=rect.w/fields.length;
   if(rows.some(row=>row.some(cell=>wrapText(cell,colWidth-12,fs).length*fs*1.25>rowHeight-8)))return fail('表格内容超出单元格，请扩大表格、减小字号或减少字段');
-  return {elements:[{id:e.id,type:'table',rect,rows,fontFace,fontSize:fs,color:style.color??'1F2937',bold:style.bold===true,fill:style.fill??'EFF6FF',bodyFill:style.bodyFill??'FFFFFF',line:{color:style.line?.color??'CBD5E1',width:style.line?.width??0.5}}]};
+  return {elements:[{id:e.id,type:'table',rect,rows,fontFace,fontSize:fs,color:style.color??'1F2937',bold:style.bold===true,fill:style.fill??'EFF6FF',headerColor:style.headerColor??style.color??'1F2937',headerBold:style.headerBold!==false,bodyFill:style.bodyFill??'FFFFFF',bodyStripeFill:style.bodyStripeFill,borderMode:style.borderMode??'grid',line:{color:style.line?.color??'CBD5E1',width:style.line?.width??0.5}}]};
  }
  if(e.type==='process'){
   if(!Array.isArray(e.steps)||e.steps.length<2||e.steps.length>8||e.steps.some((x:any)=>typeof x!=='string'||!x.trim()||x.length>100))return fail('流程条需要2–8个非空步骤，每步最多100字');

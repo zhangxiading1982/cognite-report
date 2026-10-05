@@ -42,6 +42,14 @@ const expected = [
   "org-chart",
   "raci-matrix",
   "status-table",
+  "quarterly-business-review",
+  "customer-journey",
+  "portfolio-prioritization",
+  "operating-model",
+  "meeting-agenda",
+  "root-cause-analysis",
+  "market-sizing",
+  "resource-capacity",
 ];
 
 describe("commercial business templates", () => {

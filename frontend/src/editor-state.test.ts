@@ -127,6 +127,38 @@ describe("PowerPoint-like connector geometry", () => {
     const moved = setElbowControl(routed, "elbow", "departure", { ...route.controls[0].point, y: route.controls[0].point.y + 24 });
     expect(connectorRoute(moved, moved.elements[2]).points[1].y).toBe(route.points[1].y + 24);
   });
+  it("routes the outer corridor beyond both connected shapes and follows a moved target", () => {
+    const routed: any = {
+      ...doc,
+      elements: [
+        { id: "source", type: "shape", shape: "rect", rect: { x: 100, y: 250, w: 138, h: 80 } },
+        { id: "target", type: "shape", shape: "rect", rect: { x: 310, y: 250, w: 138, h: 80 } },
+        { id: "elbow", type: "shape", shape: "elbow", rect: { x: 169, y: 250, w: 210, h: 80 }, line: { color: "#4472C4", width: 2, beginConnection: { elementId: "source", side: "bottom" }, endConnection: { elementId: "target", side: "top" } } },
+      ],
+    };
+    const initial = connectorRoute(routed, routed.elements[2]);
+    expect(initial.points).toHaveLength(6);
+    expect(initial.points[2].x).toBeGreaterThan(448);
+    expect(initial.points[3].x).toBe(initial.points[2].x);
+
+    routed.layoutOverrides = { target: { rect: { x: 520, y: 210, w: 138, h: 80 } } };
+    const moved = connectorRoute(routed, routed.elements[2]);
+    expect(moved.end).toEqual({ x: 589, y: 210 });
+    expect(moved.points[2].x).toBeGreaterThan(658);
+  });
+  it("does not let a perpendicular route cut through its target shape", () => {
+    const routed: any = {
+      ...doc,
+      elements: [
+        { id: "source", type: "shape", shape: "rect", rect: { x: 150, y: 100, w: 160, h: 80 } },
+        { id: "target", type: "shape", shape: "rect", rect: { x: 650, y: 100, w: 160, h: 80 } },
+        { id: "elbow", type: "shape", shape: "elbow", rect: { x: 230, y: 100, w: 580, h: 40 }, line: { beginConnection: { elementId: "source", side: "top" }, endConnection: { elementId: "target", side: "right" } } },
+      ],
+    };
+    const route = connectorRoute(routed, routed.elements[2]);
+    expect(route.points).toHaveLength(6);
+    expect(route.points[2].x).toBeGreaterThan(810);
+  });
 });
 describe("serial immutable revision saves", () => {
   it("keeps edits made during saving and uses returned revision for the next write", async () => {

@@ -32,6 +32,42 @@ describe("DataSpec validation", () => {
   });
 });
 describe("calculations and compilation", () => {
+  it("carries editable presentation chart styling into preview rendering", () => {
+    const s = structuredClone(budget) as any;
+    const chart = s.elements.find((element: any) => element.type === "chart");
+    chart.style = {
+      themeId: "executive",
+      seriesColors: ["0F766E", "F59E0B"],
+      fontSize: 13,
+      labelFontSize: 11,
+      labelColor: "334155",
+      axisColor: "64748B",
+      gridColor: "CBD5E1",
+      barThickness: 0.86,
+      plotHeight: 0.84,
+      lineWidth: 3,
+      markerSize: 5,
+    };
+    const compiled = p.compileSlide(s, data());
+    const node = compiled.elements.find((element: any) => element.type === "nativeChart")!;
+    expect(node.series?.map((series: any) => series.color)).toEqual(["0F766E", "F59E0B"]);
+    expect(node.options).toMatchObject({
+      fontSize: 13,
+      labelFontSize: 11,
+      labelColor: "334155",
+      axisColor: "64748B",
+      gridColor: "CBD5E1",
+      barThickness: 0.86,
+      plotHeight: 0.84,
+      lineWidth: 3,
+      markerSize: 5,
+    });
+    const svg = p.renderSlideSvg(compiled);
+    expect(svg).toContain('font-size="13"');
+    expect(svg).toContain('fill="#334155"');
+    expect(svg).toContain('stroke="#CBD5E1"');
+    expect(svg).toContain('fill="#0F766E"');
+  });
   it("calculates fixture budget and applies divisor exactly once", () => {
     const c = p.compileSlide(budget as any, data());
     expect(c.elements.find((x: any) => x.id.endsWith("-kpi"))?.text).toBe(

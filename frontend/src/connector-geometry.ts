@@ -45,6 +45,9 @@ export function connectorRoute(document: any, element: any) {
   const { begin, end } = connectorEndpoints(document, element);
   if (element?.shape !== "elbow") return { begin, end, middleX: (begin.x + end.x) / 2, points: [begin, end], controls: [] };
   const excluded = new Set([element.line?.beginConnection?.elementId, element.line?.endConnection?.elementId]);
+  const endpointRects = document.elements
+    .filter((item: any) => excluded.has(item.id) && item.type === "shape" && !isConnector(item))
+    .map((item: any) => rectOf(document, item));
   const obstacles = document.elements
     .filter((item: any) => item.id !== element.id && item.type === "shape" && !isConnector(item) && !excluded.has(item.id))
     .map((item: any) => rectOf(document, item));
@@ -54,6 +57,7 @@ export function connectorRoute(document: any, element: any) {
     beginSide: element.line?.beginConnection?.side,
     endSide: element.line?.endConnection?.side,
     obstacles,
+    endpointRects,
     canvas: { width: document.canvas?.width ?? 960, height: document.canvas?.height ?? 540 },
     elbowOffset: element.line?.elbowOffset,
     elbowStartOffset: element.line?.elbowStartOffset,

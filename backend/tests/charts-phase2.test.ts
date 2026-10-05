@@ -25,3 +25,9 @@ test('combo labels separate bar tops from line bottoms in SVG and PPT',async()=>
  const dir=await mkdtemp(path.join(tmpdir(),'combo-labels-'));
  try{await writePptx(c,path.join(dir,'out.pptx'),async()=>{throw Error('no asset')});const zip=await JSZip.loadAsync(await readFile(path.join(dir,'out.pptx')));const xml=await zip.file(/^ppt\/charts\/chart\d+\.xml$/)[0].async('string');expect(xml).toContain('<c:dLblPos val="b"/>');expect(xml).toContain('<c:dLblPos val="outEnd"/>');}finally{await rm(dir,{recursive:true,force:true})}
 });
+test('advanced chart styling stays aligned between SVG and editable PPT geometry',async()=>{
+ const {data,slide}=await model('stackedColumn');const element=slide.elements[0] as any;element.style={themeId:'teal',seriesColors:['0F766E','F59E0B'],fontSize:14,labelFontSize:12,labelColor:'334155',gridColor:'CBD5E1',barThickness:.9,plotHeight:.7};
+ const compiled=compileSlide(slide,data,'draft'),node=compiled.elements[0];expect(node.series?.map(series=>series.color)).toEqual(['0F766E','F59E0B']);expect(node.options).toMatchObject({fontSize:14,labelFontSize:12,barThickness:.9,plotHeight:.7});expect(node.options?.plotAreaLayout.h).toBeLessThan(.7);
+ const svg=renderSlideSvg(compiled);expect(svg).toContain('font-size="14"');expect(svg).toContain('stroke="#CBD5E1"');
+ const dir=await mkdtemp(path.join(tmpdir(),'phase2-style-'));try{const output=path.join(dir,'styled.pptx');await writePptx(compiled,output,async()=>{throw Error('no asset')});const zip=await JSZip.loadAsync(await readFile(output));const xml=await zip.file(/^ppt\/charts\/chart\d+\.xml$/)[0].async('string');expect(xml).toContain('<c:gapWidth val="50"');expect(xml).toContain('<c:manualLayout>');}finally{await rm(dir,{recursive:true,force:true})}
+});

@@ -24,7 +24,7 @@ export interface BusinessTemplateDefinition {
   folderId: string;
   previewText: string;
   payload: {
-    seedRevision: 3;
+    seedRevision: 4;
     chartType?: string;
     requiredBindings: Record<string, unknown>;
     bindingSchema: Record<string, unknown>;
@@ -36,7 +36,7 @@ export interface BusinessTemplateDefinition {
     exportCapabilities: string[];
     example: {
       identityVersion: 1;
-      designVersion: 4;
+      designVersion: 5;
       slide: SlideSpec;
       dataSpec: DataSpec;
       businessContext: { background: string; scenarios: string[] };
@@ -87,7 +87,7 @@ const shape = (
   value: string,
   fill = lightBlue,
   style: Record<string, unknown> = {},
-  kind = "roundRect",
+  kind = "rect",
 ): SlideElement => ({
   id,
   type: "shape",
@@ -111,7 +111,7 @@ const table = (
   z: 4,
   bindingRef: "main",
   fields,
-  style: { fontSize, fill: "E8F0FE", bodyFill: white, color: navy, line: { color: "CBD5E1", width: 0.7 } },
+  style: { fontSize, fill: navy, headerColor: white, headerBold: true, bodyFill: white, bodyStripeFill: "F8FAFC", borderMode: "horizontal", color: navy, line: { color: "E2E8F0", width: 0.6 } },
 });
 const chart = (
   id: string,
@@ -126,6 +126,7 @@ const chart = (
   bindingRef: "main",
   chartType,
   options: { showLegend: true, showLabels: true, ...options },
+  style: { themeId: "executive", fontFace: "SimHei", fontSize: 11, labelFontSize: 9, labelColor: "334155", axisColor: "64748B", gridColor: "E2E8F0", barThickness: 0.74, plotHeight: 0.92, lineWidth: 2.5, markerSize: 3 },
   exportPolicy: chartType === "waterfall" ? "nativeShapes" : "nativeChart",
 });
 const status = (
@@ -145,8 +146,9 @@ const status = (
   style: { fontSize: 13, fill },
 });
 const title = (id: string, value: string, subtitle: string): SlideElement[] => [
-  text(`${id}-title`, rect(36, 26, 888, 40), value, 27, { bold: true }),
-  text(`${id}-subtitle`, rect(36, 68, 888, 26), subtitle, 12, { color: muted }),
+  text(`${id}-title`, rect(36, 24, 888, 42), value, 29, { bold: true }),
+  text(`${id}-subtitle`, rect(36, 67, 888, 24), subtitle, 11, { color: muted }),
+  shape(`${id}-accent`, rect(36, 96, 72, 3), "", blue, {}, "rect"),
 ];
 
 function makeData(
@@ -277,7 +279,7 @@ function makeTemplate(input: {
     folderId: input.folderId,
     previewText: input.previewText,
     payload: {
-      seedRevision: 3,
+      seedRevision: 4,
       ...(firstChart?.chartType ? { chartType: firstChart.chartType } : {}),
       requiredBindings: { main: { roles: Object.keys(input.binding.roles), roleConstraints: roleSchema(input.binding, input.dataSpec) } },
       bindingSchema: { main: { roles: roleSchema(input.binding, input.dataSpec) } },
@@ -289,7 +291,7 @@ function makeTemplate(input: {
       exportCapabilities: ["nativeChart", "editableShapes", "nativeTable"],
       example: {
         identityVersion: 1,
-        designVersion: 4,
+        designVersion: 5,
         slide,
         dataSpec: input.dataSpec,
         businessContext: { background: input.background, scenarios: input.scenarios },
@@ -1195,7 +1197,48 @@ const EXTENDED_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
   }),
 ] as const;
 
+const HIGH_FREQUENCY_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = (() => {
+  const quarterly = makeData("quarterly-business-review", "季度经营趋势", [
+    { id: "quarter", name: "季度", type: "string", description: "经营季度" },
+    { id: "revenue", name: "营业收入", type: "decimal", description: "季度营业收入", unit: "万元", measure: { baseUnit: "CNY", currency: "CNY", format: money } },
+    { id: "margin", name: "利润率", type: "decimal", description: "季度营业利润率", unit: "%", measure: { baseUnit: "ratio", format: { displayDivisor: "1", decimals: 1, suffix: "%", percent: true }, aggregationBehavior: "nonAdditive" } },
+  ], [{ quarter: "Q1", revenue: "10800", margin: "16.8" }, { quarter: "Q2", revenue: "11600", margin: "17.5" }, { quarter: "Q3", revenue: "12800", margin: "18.2" }, { quarter: "Q4E", revenue: "13900", margin: "19.0" }]);
+  const journey = makeData("customer-journey", "客户旅程", [
+    { id: "stage", name: "阶段", type: "string", description: "客户旅程阶段" }, { id: "goal", name: "客户目标", type: "string", description: "阶段核心目标" }, { id: "pain", name: "关键痛点", type: "string", description: "阶段主要阻碍" }, { id: "opportunity", name: "改进机会", type: "string", description: "建议行动" },
+  ], [{ stage: "认知", goal: "快速理解价值", pain: "信息分散", opportunity: "行业化案例" }, { stage: "评估", goal: "确认适配性", pain: "试用成本高", opportunity: "场景化演示" }, { stage: "采购", goal: "降低决策风险", pain: "收益不清晰", opportunity: "量化ROI" }, { stage: "使用", goal: "快速产生价值", pain: "上手周期长", opportunity: "模板与培训" }]);
+  const portfolio = makeData("portfolio-prioritization", "项目组合", [
+    { id: "initiative", name: "项目", type: "string", description: "项目名称" }, { id: "impact", name: "业务影响", type: "integer", description: "业务影响评分", measure: { baseUnit: "score", format: { displayDivisor: "1", decimals: 0, suffix: "分", percent: false }, aggregationBehavior: "nonAdditive" } }, { id: "effort", name: "实施成本", type: "integer", description: "实施成本评分", measure: { baseUnit: "score", format: { displayDivisor: "1", decimals: 0, suffix: "分", percent: false }, aggregationBehavior: "nonAdditive", favorableDirection: "lower" } }, { id: "decision", name: "决策", type: "string", description: "组合决策" },
+  ], [{ initiative: "客户洞察", impact: 9, effort: 4, decision: "优先投入" }, { initiative: "自动化报表", impact: 8, effort: 3, decision: "快速推进" }, { initiative: "主数据治理", impact: 7, effort: 8, decision: "分期实施" }, { initiative: "渠道改版", impact: 4, effort: 7, decision: "暂缓" }]);
+  const operating = makeData("operating-model", "目标运营模式", [
+    { id: "pillar", name: "支柱", type: "string", description: "运营模式支柱" }, { id: "design", name: "目标设计", type: "string", description: "目标状态" }, { id: "owner", name: "责任团队", type: "string", description: "牵头团队" },
+  ], [{ pillar: "治理", design: "统一指标与决策节奏", owner: "经营管理" }, { pillar: "流程", design: "端到端闭环", owner: "业务运营" }, { pillar: "组织", design: "跨职能小队", owner: "人力资源" }, { pillar: "技术", design: "数据与自动化平台", owner: "数字化团队" }]);
+  const agenda = makeData("meeting-agenda", "会议议程", [
+    { id: "order", name: "序号", type: "integer", description: "议程顺序" }, { id: "topic", name: "议题", type: "string", description: "会议议题" }, { id: "purpose", name: "目标", type: "string", description: "讨论目标" }, { id: "owner", name: "主讲人", type: "string", description: "议题负责人" }, { id: "minutes", name: "时长", type: "integer", description: "计划时长", unit: "分钟", measure: { baseUnit: "minute", format: { displayDivisor: "1", decimals: 0, suffix: "分钟", percent: false } } },
+  ], [{ order: 1, topic: "目标与进展", purpose: "对齐经营结果", owner: "Marx", minutes: 15 }, { order: 2, topic: "关键问题", purpose: "确认根因与影响", owner: "Summer", minutes: 20 }, { order: 3, topic: "决策事项", purpose: "形成资源决策", owner: "Mary", minutes: 15 }, { order: 4, topic: "行动计划", purpose: "锁定责任与时间", owner: "Marx", minutes: 10 }]);
+  const rootCause = makeData("root-cause-analysis", "根因分析", [
+    { id: "branch", name: "原因分支", type: "string", description: "一级原因" }, { id: "evidence", name: "证据", type: "string", description: "事实证据" }, { id: "action", name: "改进动作", type: "string", description: "针对性行动" },
+  ], [{ branch: "流程", evidence: "审批平均增加3天", action: "压缩审批层级" }, { branch: "系统", evidence: "关键字段重复录入", action: "打通主数据" }, { branch: "能力", evidence: "新员工熟练度不足", action: "场景化培训" }, { branch: "协同", evidence: "需求口径反复变更", action: "统一需求入口" }]);
+  const market = makeData("market-sizing", "市场规模", [
+    { id: "segment", name: "市场层级", type: "string", description: "TAM/SAM/SOM稳定标识" }, { id: "label", name: "层级简称", type: "string", description: "图表显示标签" }, { id: "amount", name: "市场规模", type: "decimal", description: "可服务市场规模", unit: "亿元", measure: { baseUnit: "CNY", currency: "CNY", format: { displayDivisor: "1", decimals: 0, suffix: "亿元", percent: false } } },
+  ], [{ segment: "total", label: "TAM", amount: "420" }, { segment: "serviceable", label: "SAM", amount: "168" }, { segment: "obtainable", label: "SOM", amount: "42" }], { chartType: "comparison", roles: { categoryKey: "segment", categoryLabel: "label", series: ["amount"] } });
+  const capacity = makeData("resource-capacity", "资源与产能", [
+    { id: "team", name: "团队", type: "string", description: "交付团队" }, { id: "committed", name: "已承诺", type: "decimal", description: "已承诺投入", unit: "FTE", measure: { baseUnit: "FTE", format: { displayDivisor: "1", decimals: 0, suffix: "人", percent: false } } }, { id: "available", name: "可用产能", type: "decimal", description: "仍可用投入", unit: "FTE", measure: { baseUnit: "FTE", format: { displayDivisor: "1", decimals: 0, suffix: "人", percent: false } } },
+  ], [{ team: "产品", committed: "8", available: "2" }, { team: "研发", committed: "18", available: "4" }, { team: "数据", committed: "10", available: "1" }, { team: "交付", committed: "12", available: "5" }], { chartType: "stackedColumn", roles: { categoryKey: "team", categoryLabel: "team", series: ["committed", "available"] } });
+
+  return [
+    makeTemplate({ id: "quarterly-business-review", name: "季度经营复盘", scene: "budgetComparison", folderId: "template-folder-finance", previewText: "季度经营复盘", dataSpec: quarterly, binding: { resultSetId: "result-quarterly-business-review", roles: { categoryKey: "quarter", categoryLabel: "quarter", barSeries: ["revenue"], lineSeries: ["margin"] }, computations: [] }, elements: [...title("quarterly-business-review", "季度经营复盘", "收入保持增长，盈利质量逐季改善"), chart("quarterly-business-review-chart", rect(36, 124, 640, 330), "combo", { secondaryAxis: true, showLabels: false }), text("quarterly-business-review-insight", rect(716, 132, 208, 178), "核心判断\n\n收入连续四季增长\n利润率提升 2.2pt\nQ4 需守住交付质量", 16, { bold: true, color: navy }), shape("quarterly-business-review-action", rect(716, 334, 208, 94), "下一步\n聚焦高毛利客户与回款", paleGreen, { fontSize: 14, bold: true })], background: "用于季度经营会，将核心趋势、判断和下一步放在同一页。", scenarios: ["季度经营复盘", "董事会汇报", "年度滚动预测"] }),
+    makeTemplate({ id: "customer-journey", name: "客户旅程地图", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "客户旅程地图", dataSpec: journey, binding: { resultSetId: "result-customer-journey", roles: { columns: ["stage", "goal", "pain", "opportunity"] }, computations: [] }, elements: [...title("customer-journey", "客户旅程地图", "从认知到使用，识别关键痛点与改进机会"), ...["01 认知", "02 评估", "03 采购", "04 使用"].map((label,index)=>shape(`customer-journey-stage-${index}`,rect(36+index*222,120,204,50),label,index===3?"0F766E":"EAF1FF",{fontSize:14,bold:true,color:index===3?white:navy})), table("customer-journey-table", rect(36, 190, 888, 252), ["stage", "goal", "pain", "opportunity"], 11), text("customer-journey-note", rect(36, 466, 888, 28), "优先改进评估与采购环节：用场景化演示和量化 ROI 降低决策成本。", 13, { color: "0F766E", bold: true })], background: "按客户阶段展示目标、触点、痛点和机会，支持体验改进与增长讨论。", scenarios: ["客户体验", "销售转化", "服务流程优化"] }),
+    makeTemplate({ id: "portfolio-prioritization", name: "项目组合优先级", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "项目组合优先级", dataSpec: portfolio, binding: { resultSetId: "result-portfolio-prioritization", roles: { columns: ["initiative", "impact", "effort", "decision"] }, computations: [] }, elements: [...title("portfolio-prioritization", "项目组合优先级", "以业务影响和实施成本形成资源取舍"), shape("portfolio-axis",rect(36,120,516,320),"高影响 / 低成本\n\n客户洞察   自动化报表\n\n\n分期实施\n主数据治理", "F8FAFC", {fontSize:18,bold:true,line:{color:"CBD5E1",width:1}}), table("portfolio-table",rect(582,120,342,258),["initiative","impact","effort","decision"],10), text("portfolio-note",rect(582,402,342,54),"决策原则：优先投入高影响、低成本项目；高影响、高成本项目分期实施。",12,{color:muted})], background: "用于项目或投资组合讨论，把影响、成本和决策放到统一框架中。", scenarios: ["项目组合", "年度投资规划", "产品路线图取舍"] }),
+    makeTemplate({ id: "operating-model", name: "目标运营模式", scene: "budgetComparison", folderId: "template-folder-organization", previewText: "目标运营模式", dataSpec: operating, binding: { resultSetId: "result-operating-model", roles: { columns: ["pillar", "design", "owner"] }, computations: [] }, elements: [...title("operating-model", "目标运营模式", "治理、流程、组织与技术共同支撑业务目标"), ...["治理\n统一指标与决策节奏","流程\n端到端闭环","组织\n跨职能小队","技术\n数据与自动化平台"].map((label,index)=>shape(`operating-pillar-${index}`,rect(36+index*222,122,204,104),label,["EAF1FF","E7F6F2","FFF4E5","F3EEFF"][index],{fontSize:15,bold:true})), table("operating-model-table",rect(36,258,888,190),["pillar","design","owner"],12), text("operating-model-note",rect(36,470,888,26),"落地顺序：先统一治理与流程，再通过组织机制和技术平台规模化。",12,{color:muted})], background: "把目标运营模式拆解为治理、流程、组织与技术四个支柱。", scenarios: ["组织转型", "运营模式设计", "数字化规划"] }),
+    makeTemplate({ id: "meeting-agenda", name: "会议议程与决策导航", scene: "budgetComparison", folderId: "template-folder-general", previewText: "会议议程", dataSpec: agenda, binding: { resultSetId: "result-meeting-agenda", roles: { columns: ["order", "topic", "purpose", "owner", "minutes"] }, computations: [] }, elements: [...title("meeting-agenda", "会议议程", "60 分钟形成问题共识、关键决策与行动计划"), shape("meeting-focus",rect(36,122,888,68),"本次会议输出：3 项关键决策 · 4 项责任到人的行动",navy,{fontSize:18,bold:true,color:white}), table("meeting-agenda-table",rect(36,218,888,236),["order","topic","purpose","owner","minutes"],12), text("meeting-agenda-note",rect(36,474,888,24),"会前材料请提前 24 小时提交；需要决策的事项必须给出明确选项和建议。",11,{color:muted})], background: "用于会议首页或章节导航，明确议题、目标、负责人、时长和预期输出。", scenarios: ["经营会", "项目委员会", "客户工作坊"] }),
+    makeTemplate({ id: "root-cause-analysis", name: "根因分析 · 问题树", scene: "budgetComparison", folderId: "template-folder-analysis", previewText: "根因分析", dataSpec: rootCause, binding: { resultSetId: "result-root-cause-analysis", roles: { columns: ["branch", "evidence", "action"] }, computations: [] }, elements: [...title("root-cause-analysis", "根因分析", "从事实证据定位流程、系统、能力与协同问题"), shape("root-problem",rect(36,124,228,88),"核心问题\n交付周期偏长",navy,{fontSize:18,bold:true,color:white}), ...["流程","系统","能力","协同"].map((label,index)=>shape(`root-branch-${index}`,rect(300+index%2*168,118+Math.floor(index/2)*78,150,58),label,["EAF1FF","E7F6F2","FFF4E5","F3EEFF"][index],{fontSize:15,bold:true})), table("root-cause-table",rect(36,252,888,196),["branch","evidence","action"],11), text("root-cause-note",rect(36,470,888,28),"优先动作：压缩审批层级并打通主数据，预计缩短 4–5 个工作日。",13,{color:"0F766E",bold:true})], background: "以问题树和证据表区分表象与根因，并关联针对性改进动作。", scenarios: ["问题诊断", "质量复盘", "运营改善"] }),
+    makeTemplate({ id: "market-sizing", name: "市场规模 · TAM SAM SOM", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "市场规模", dataSpec: market, binding: { resultSetId: "result-market-sizing", roles: { categoryKey: "segment", categoryLabel: "label", series: ["amount"] }, computations: [] }, elements: [...title("market-sizing", "市场规模", "从总市场到三年可获取市场的收敛路径"), chart("market-sizing-chart",rect(36,122,610,330),"comparison",{direction:"bar",showLegend:false,showLabels:true}), text("market-sizing-insight",rect(688,126,236,134),"规模判断\n\nTAM 420 亿元\nSAM 168 亿元\n三年 SOM 42 亿元",17,{bold:true}), shape("market-sizing-action",rect(688,286,236,116),"进入策略\n聚焦大型企业的数据分析与管理汇报场景",paleGreen,{fontSize:14,bold:true})], background: "用TAM、SAM、SOM说明市场规模、可服务边界与阶段目标。", scenarios: ["商业计划", "市场进入", "投资人汇报"] }),
+    makeTemplate({ id: "resource-capacity", name: "资源与产能规划", scene: "budgetComparison", folderId: "template-folder-project", previewText: "资源与产能规划", dataSpec: capacity, binding: { resultSetId: "result-resource-capacity", roles: { categoryKey: "team", categoryLabel: "team", series: ["committed", "available"] }, computations: [] }, elements: [...title("resource-capacity", "资源与产能规划", "识别团队承诺投入、可用产能与交付风险"), chart("resource-capacity-chart",rect(36,122,640,326),"stackedColumn",{showLabels:true,showLegend:true}), text("resource-capacity-insight",rect(714,128,210,128),"产能判断\n\n数据团队余量最低\n交付团队仍有 5 FTE\n研发需预留缺陷修复",15,{bold:true}), shape("resource-capacity-action",rect(714,284,210,112),"调配建议\n将 2 FTE 交付资源前置支持数据验收",paleAmber,{fontSize:14,bold:true})], background: "按团队展示已承诺和可用产能，为排期与资源调配提供依据。", scenarios: ["资源规划", "项目排期", "交付风险评审"] }),
+  ];
+})();
+
 export const BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
   ...CORE_BUSINESS_TEMPLATES,
   ...EXTENDED_BUSINESS_TEMPLATES,
+  ...HIGH_FREQUENCY_BUSINESS_TEMPLATES,
 ];
