@@ -78,8 +78,8 @@ export async function writeDeckPptx(
           margin: 0,
           breakLine: false,
           paraSpaceAfter: 0,
-          ...(e.fill ? {fill:{color:color(e.fill)}} : {}),
-          ...(Number(e.line?.width)>0 ? {line:{color:color(e.line?.color,'94A3B8'),width:e.line!.width,...(e.line?.dash==='dash'?{dashType:'dash' as const}:{})}} : {}),
+          ...(e.fill ? {fill:{color:color(e.fill),transparency:e.fillTransparency??0}} : {}),
+          ...(Number(e.line?.width)>0 ? {line:{color:color(e.line?.color,'94A3B8'),width:e.line!.width,transparency:e.line?.transparency??0,...(e.line?.dash==='dash'?{dashType:'dash' as const}:e.line?.dash==='dot'?{dashType:'sysDot' as const}:e.line?.dash==='dashDot'?{dashType:'dashDot' as const}:{})}} : {}),
           ...(e.hyperlinkSlide ? { hyperlink: { slide: e.hyperlinkSlide }, underline: { style: "none" as const } } : {}),
         });
       } else if (e.type === "table") {
@@ -172,15 +172,17 @@ export async function writeDeckPptx(
         const exportedLine:any={
           color: color(e.line?.color, e.fill ?? "94A3B8"),
           width: e.line?.width ?? ((e.shape === "line"||e.shape === "elbow") ? 1 : 0),
-          ...(e.line?.dash === "dash" ? { dashType: "dash" as const } : e.line?.dash === "dot" ? { dashType: "sysDot" as const } : {}),
+          transparency:e.line?.transparency??0,
+          ...(e.line?.dash === "dash" ? { dashType: "dash" as const } : e.line?.dash === "dot" ? { dashType: "sysDot" as const } : e.line?.dash === "dashDot" ? {dashType:"dashDot" as const}:{}),
           ...(e.line?.beginArrowType&&e.line.beginArrowType!=="none"?{beginArrowType:e.line.beginArrowType as any}:{}),
           ...(e.line?.endArrowType&&e.line.endArrowType!=="none"?{endArrowType:e.line.endArrowType as any}:{}),
         };
         if(e.shape==="elbow"){
-          const middle=bounds.x+bounds.w/2;
-          slide.addShape(deck.ShapeType.line,{x:bounds.x,y:bounds.y,w:bounds.w/2,h:0,line:{...exportedLine,endArrowType:undefined}});
-          slide.addShape(deck.ShapeType.line,{x:middle,y:bounds.y,w:0,h:bounds.h,line:{...exportedLine,beginArrowType:undefined,endArrowType:undefined}});
-          slide.addShape(deck.ShapeType.line,{x:middle,y:bounds.y+bounds.h,w:bounds.w/2,h:0,line:{...exportedLine,beginArrowType:undefined}});
+          const begin={x:bounds.x+(e.line?.flipH?bounds.w:0),y:bounds.y+(e.line?.flipV?bounds.h:0)},end={x:bounds.x+(e.line?.flipH?0:bounds.w),y:bounds.y+(e.line?.flipV?0:bounds.h)},middle=(begin.x+end.x)/2;
+          const segment=(a:{x:number;y:number},b:{x:number;y:number},line:any)=>slide.addShape(deck.ShapeType.line,{x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),w:Math.abs(b.x-a.x),h:Math.abs(b.y-a.y),flipH:a.x>b.x,flipV:a.y>b.y,line});
+          segment(begin,{x:middle,y:begin.y},{...exportedLine,endArrowType:undefined});
+          segment({x:middle,y:begin.y},{x:middle,y:end.y},{...exportedLine,beginArrowType:undefined,endArrowType:undefined});
+          segment({x:middle,y:end.y},end,{...exportedLine,beginArrowType:undefined});
           continue;
         }
         const shapeBounds =
@@ -190,15 +192,15 @@ export async function writeDeckPptx(
                 y: Math.min(bounds.y, bounds.y + bounds.h),
                 w: Math.abs(bounds.w),
                 h: Math.abs(bounds.h),
-                flipH: bounds.w < 0,
-                flipV: bounds.h < 0,
+                flipH: e.line?.flipH ?? bounds.w < 0,
+                flipV: e.line?.flipV ?? bounds.h < 0,
               }
             : bounds;
         const shapeType=shapeTypes[e.shape??'rect'];
         const shapeOptions={
             ...shapeBounds,
             fill:
-              e.shape === "line" ? undefined : { color: color(e.fill, "2563EB") },
+              e.shape === "line" ? undefined : { color: color(e.fill, "2563EB"), transparency:e.fillTransparency??0 },
             line: exportedLine,
           };
         if(e.shape!=="line"&&e.text)slide.addText(e.text,{...shapeOptions,shape:shapeType,fontFace:e.fontFace??compiled.theme.fontFace,fontSize:e.fontSize??16,color:color(e.color,compiled.theme.textColor),bold:e.bold===true,italic:e.italic===true,align:e.align??'center',valign:e.valign??'middle',margin:4,breakLine:false,paraSpaceAfter:0});

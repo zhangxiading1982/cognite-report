@@ -6,6 +6,7 @@
 .editor.focused-editor .canvas-bottom button{background:#fff;box-shadow:0 1px 4px #0001}
 .editor.focused-editor .toolbar{gap:4px;flex-wrap:wrap;height:auto;min-height:46px;padding:5px 8px;overflow:visible}
 .editor.focused-editor .toolbar button{padding:6px 8px}
+.editor.focused-editor .toolbar .ppt-textbox-icon,.editor.focused-editor .toolbar .ppt-shapes-icon{flex:none;color:#263744}
 .editor.focused-editor .canvas-text-input{position:absolute;inset:0;width:100%;height:100%;resize:none;border:1px solid #1b7468;background:#fff;padding:0;border-radius:0;color:#25364a;line-height:1.2;outline:none}
 .editor.focused-editor.editor-fullscreen{position:fixed;inset:0;z-index:1150;height:100dvh!important;min-height:0;background:#f4f6f8}
 .editor.focused-editor.editor-fullscreen .editor-header{display:none}
@@ -23,6 +24,9 @@
 .editor.focused-editor .alignment-guide{position:absolute;display:block;z-index:180;pointer-events:none;filter:drop-shadow(0 0 1px #fff)}
 .editor.focused-editor .alignment-guide.vertical{top:-8px;bottom:-8px;width:0;border-left:1px dashed #d946ef}
 .editor.focused-editor .alignment-guide.horizontal{left:-8px;right:-8px;height:0;border-top:1px dashed #d946ef}
+.editor.focused-editor .connector-handle{position:absolute;width:10px;height:10px;transform:translate(-50%,-50%);border:1px solid #5f7f26;border-radius:50%;background:#c9f36a;box-shadow:0 0 0 2px #fff;cursor:crosshair;z-index:205}
+.editor.focused-editor .connector-anchor{position:absolute;width:9px;height:9px;transform:translate(-50%,-50%);border:1px solid #1686d9;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #ffffffcc;pointer-events:none;z-index:204}
+.editor.focused-editor .connector-anchor.active{width:13px;height:13px;background:#c9f36a;border-color:#5f7f26;box-shadow:0 0 0 3px #dff7a5aa}
 .ppt-style-block{margin:16px 0;padding-top:14px;border-top:1px solid #e5eae9}
 .ppt-style-block h4{margin:0 0 8px}
 .ppt-style-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 12px}
@@ -48,4 +52,6 @@
 .ppt-line-controls{display:grid;grid-template-columns:minmax(0,1fr) 82px;gap:8px;align-items:end}
 .ppt-line-controls .field{margin:0}
 .line-ending-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}.line-ending-controls .field{margin:0}
+.ppt-format-title{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 0 8px;border-bottom:1px solid var(--line)}.ppt-format-title strong{color:var(--ink);font-size:14px}.ppt-format-title span{color:var(--accent);font-size:12px}
+.ppt-format-options{display:grid;gap:8px;margin:10px 0 16px}.ppt-format-section{border:1px solid #dfe5e4;border-radius:7px;background:#fff;overflow:visible}.ppt-format-section>summary{padding:8px 10px;background:#f2f4f4;font-size:12px;font-weight:650;color:#334155;cursor:pointer;list-style:none}.ppt-format-section>summary::-webkit-details-marker{display:none}.ppt-format-section>summary::before{content:"⌄";display:inline-block;width:16px;color:#64748b}.ppt-format-section:not([open])>summary::before{content:"›"}.ppt-format-section>*:not(summary){margin-left:10px;margin-right:10px}.ppt-format-radio{display:grid;gap:5px;margin-top:9px!important;padding:0;border:0}.ppt-format-radio label{display:flex;align-items:center;gap:7px;margin:0;font-size:12px}.ppt-format-radio input{accent-color:#ce3d17}.ppt-range-field{display:grid!important;grid-template-columns:58px minmax(0,1fr) 38px;align-items:center;gap:7px;margin:9px 10px!important;font-size:11px}.ppt-range-field input{width:100%;accent-color:#1686d9}.ppt-range-field output{text-align:right;font-variant-numeric:tabular-nums;color:#475569}.ppt-line-grid,.ppt-arrow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px!important;margin-bottom:10px!important}.ppt-line-grid .field,.ppt-arrow-grid .field{margin:0;font-size:11px}.ppt-line-grid select,.ppt-arrow-grid select,.ppt-line-grid input{min-height:31px;padding-top:4px;padding-bottom:4px}
 @media(max-width:900px){.shape-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}

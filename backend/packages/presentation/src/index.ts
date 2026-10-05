@@ -530,9 +530,28 @@ export function compileSlide(
     margin: 0,
   });
   const anchors = new Map<string, { x: number; y: number }>();
+  const sourceRect = (element: any) => ({ ...element.rect, ...slide.layoutOverrides?.[element.id]?.rect });
+  const connectionPoint = (connection: any) => {
+    const target = slide.elements.find(item => item.id === connection?.elementId);
+    if (!target || target.shape === "line" || target.shape === "elbow") return undefined;
+    const targetRect = sourceRect(target);
+    if (connection.side === "top") return { x: targetRect.x + targetRect.w / 2, y: targetRect.y };
+    if (connection.side === "right") return { x: targetRect.x + targetRect.w, y: targetRect.y + targetRect.h / 2 };
+    if (connection.side === "bottom") return { x: targetRect.x + targetRect.w / 2, y: targetRect.y + targetRect.h };
+    if (connection.side === "left") return { x: targetRect.x, y: targetRect.y + targetRect.h / 2 };
+    return undefined;
+  };
   for (const e of [...(slide.elements ?? [])].sort((a, b) => a.z - b.z)) {
     const ov = slide.layoutOverrides?.[e.id];
-    const rect = { ...e.rect, ...ov?.rect };
+    let rect = { ...e.rect, ...ov?.rect };
+    let resolvedLine: any = e.line;
+    if (e.type === "shape" && (e.shape === "line" || e.shape === "elbow")) {
+      const line: any = e.line ?? {};
+      const begin = connectionPoint(line.beginConnection) ?? { x: rect.x + (line.flipH ? rect.w : 0), y: rect.y + (line.flipV ? rect.h : 0) };
+      const end = connectionPoint(line.endConnection) ?? { x: rect.x + (line.flipH ? 0 : rect.w), y: rect.y + (line.flipV ? 0 : rect.h) };
+      rect = { x: Math.min(begin.x, end.x), y: Math.min(begin.y, end.y), w: Math.max(1, Math.abs(end.x - begin.x)), h: Math.max(1, Math.abs(end.y - begin.y)) };
+      resolvedLine = { ...line, flipH: begin.x > end.x, flipV: begin.y > end.y };
+    }
     const style = { ...e.style, ...ov?.style };
     // Legacy default is resolved at render time; immutable saved revisions stay unchanged.
     if (style.fontFace === "Noto Sans CJK SC") style.fontFace = "SimHei";
@@ -620,6 +639,7 @@ export function compileSlide(
         italic: style.italic === true,
         align: style.align ?? "left",
         fill: style.fill,
+        fillTransparency: style.fillTransparency,
         line: style.line,
       });
       continue;
@@ -682,7 +702,8 @@ export function compileSlide(
         rect,
         shape,
         fill: e.fill ?? style.fill ?? theme.seriesColors[0],
-        line: e.line,
+        fillTransparency: e.fillTransparency ?? style.fillTransparency,
+        line: resolvedLine,
         ...(shapeText?{text:shapeLines.join('\n'),fontFace:style.fontFace??theme.fontFace,fontSize:shapeFontSize,color:style.color??theme.textColor,bold:style.bold===true,italic:style.italic===true,align:style.align??'center',valign:style.valign??'middle'}:{}),
       });
       continue;

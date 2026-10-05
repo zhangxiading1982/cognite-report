@@ -27,7 +27,11 @@ const dash = (value?: string) =>
     ? ' stroke-dasharray="8 5"'
     : value === "dot"
       ? ' stroke-dasharray="2 4"'
+      : value === "dashDot"
+        ? ' stroke-dasharray="8 4 2 4"'
       : "";
+const opacity = (value?: number) => Math.max(0, Math.min(1, 1 - Number(value ?? 0) / 100));
+const lineCap = (value?: string) => value === "round" || value === "square" ? value : "butt";
 function starPoints(r: CompiledElement["rect"]) {
   const points: [number, number][] = [];
   for (let index = 0; index < 10; index++) {
@@ -44,22 +48,33 @@ function lineGeometry(n: CompiledElement) {
   const r = n.rect;
   const stroke = color(n.line?.color);
   const safeId = String(n.id).replace(/[^a-z0-9_-]/gi, "-");
-  const hasStart = !!n.line?.beginArrowType && n.line.beginArrowType !== "none";
-  const hasEnd = !!n.line?.endArrowType && n.line.endArrowType !== "none";
-  const markerId = `line-arrow-${safeId}`;
-  const marker = hasStart || hasEnd
-    ? `<defs><marker id="${markerId}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="${stroke}"/></marker></defs>`
-    : "";
-  const arrows = `${hasStart ? ` marker-start="url(#${markerId})"` : ""}${hasEnd ? ` marker-end="url(#${markerId})"` : ""}`;
-  const common = `fill="none" stroke="${stroke}" stroke-width="${num(n.line?.width ?? 1)}"${dash(n.line?.dash)}${arrows}`;
+  const beginType = n.line?.beginArrowType;
+  const endType = n.line?.endArrowType;
+  const hasStart = !!beginType && beginType !== "none";
+  const hasEnd = !!endType && endType !== "none";
+  const markerShape = (type?: string) => type === "oval"
+    ? `<circle cx="4" cy="4" r="3" fill="${stroke}"/>`
+    : type === "diamond"
+      ? `<path d="M0 4 4 0 8 4 4 8Z" fill="${stroke}"/>`
+      : type === "arrow"
+        ? `<path d="M0 1 8 4 0 7 3 4Z" fill="${stroke}"/>`
+        : type === "stealth"
+          ? `<path d="M0 0 8 4 0 8 2.5 4Z" fill="${stroke}"/>`
+          : `<path d="M0 0 8 4 0 8Z" fill="${stroke}"/>`;
+  const startId = `line-arrow-${safeId}-start`, endId = `line-arrow-${safeId}-end`;
+  const marker = hasStart || hasEnd ? `<defs>${hasStart?`<marker id="${startId}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth">${markerShape(beginType)}</marker>`:""}${hasEnd?`<marker id="${endId}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth">${markerShape(endType)}</marker>`:""}</defs>` : "";
+  const arrows = `${hasStart ? ` marker-start="url(#${startId})"` : ""}${hasEnd ? ` marker-end="url(#${endId})"` : ""}`;
+  const start = { x: r.x + (n.line?.flipH ? r.w : 0), y: r.y + (n.line?.flipV ? r.h : 0) };
+  const end = { x: r.x + (n.line?.flipH ? 0 : r.w), y: r.y + (n.line?.flipV ? 0 : r.h) };
+  const common = `fill="none" stroke="${stroke}" stroke-width="${num(n.line?.width ?? 1)}" stroke-opacity="${opacity(n.line?.transparency)}" stroke-linecap="${lineCap(n.line?.cap)}" stroke-linejoin="${n.line?.join ?? "round"}"${dash(n.line?.dash)}${arrows}`;
   return n.shape === "elbow"
-    ? `${marker}<polyline points="${polygon([[r.x,r.y],[r.x+r.w/2,r.y],[r.x+r.w/2,r.y+r.h],[r.x+r.w,r.y+r.h]])}" ${common}/>`
-    : `${marker}<line x1="${num(r.x)}" y1="${num(r.y)}" x2="${num(r.x + r.w)}" y2="${num(r.y + r.h)}" ${common}/>`;
+    ? `${marker}<polyline points="${polygon([[start.x,start.y],[(start.x+end.x)/2,start.y],[(start.x+end.x)/2,end.y],[end.x,end.y]])}" ${common}/>`
+    : `${marker}<line x1="${num(start.x)}" y1="${num(start.y)}" x2="${num(end.x)}" y2="${num(end.y)}" ${common}/>`;
 }
 function shapeGeometry(n: CompiledElement) {
   const r = n.rect;
-  const outline=`stroke="${color(n.line?.color,n.fill??'94A3B8')}" stroke-width="${num(n.line?.width??0)}"${dash(n.line?.dash)}`;
-  const attrs=`fill="${color(n.fill)}" ${outline}`;
+  const outline=`stroke="${color(n.line?.color,n.fill??'94A3B8')}" stroke-width="${num(n.line?.width??0)}" stroke-opacity="${opacity(n.line?.transparency)}" stroke-linecap="${lineCap(n.line?.cap)}" stroke-linejoin="${n.line?.join ?? "round"}"${dash(n.line?.dash)}`;
+  const attrs=`fill="${color(n.fill)}" fill-opacity="${opacity(n.fillTransparency)}" ${outline}`;
   if (n.shape === "ellipse" || n.shape === "circle")
     return `<ellipse cx="${num(r.x+r.w/2)}" cy="${num(r.y+r.h/2)}" rx="${num(r.w/2)}" ry="${num(r.h/2)}" ${attrs}/>`;
   if (n.shape === "roundRect")
@@ -94,7 +109,7 @@ export function renderSlideSvg(c: CompiledSlide): string {
           (n.align === "center" ? r.w / 2 : n.align === "right" ? r.w : 0);
         const height = (n.text ?? "").split("\n").length * (n.fontSize ?? 16) * 1.25;
         const offset = n.valign === "bottom" ? Math.max(0, r.h - height) : n.valign === "middle" ? Math.max(0, (r.h - height) / 2) : 0;
-        const box=n.fill||Number(n.line?.width)>0?`<rect x="${num(r.x)}" y="${num(r.y)}" width="${num(r.w)}" height="${num(r.h)}" fill="${n.fill?color(n.fill):'none'}" stroke="${Number(n.line?.width)>0?color(n.line?.color):'none'}" stroke-width="${num(n.line?.width??0)}"${n.line?.dash==='dash'?' stroke-dasharray="8 5"':''}/>`:'';
+        const box=n.fill||Number(n.line?.width)>0?`<rect x="${num(r.x)}" y="${num(r.y)}" width="${num(r.w)}" height="${num(r.h)}" fill="${n.fill?color(n.fill):'none'}" fill-opacity="${opacity(n.fillTransparency)}" stroke="${Number(n.line?.width)>0?color(n.line?.color):'none'}" stroke-opacity="${opacity(n.line?.transparency)}" stroke-width="${num(n.line?.width??0)}" stroke-linecap="${lineCap(n.line?.cap)}" stroke-linejoin="${n.line?.join ?? "round"}"${dash(n.line?.dash)}/>`:'';
         return `${box}<text text-anchor="${n.align === "center" ? "middle" : n.align === "right" ? "end" : "start"}" font-weight="${n.bold ? "bold" : "normal"}" font-style="${n.italic ? "italic" : "normal"}" x="${num(tx)}" y="${num(r.y + offset)}" font-family="${esc(fontCss(n.fontFace ?? c.theme.fontFace))}" font-size="${num(n.fontSize ?? 16)}" fill="${color(n.color)}">${(
           n.text ?? ""
         )

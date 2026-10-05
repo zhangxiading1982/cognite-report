@@ -5,9 +5,7 @@ import {
   Redo2,
   Save,
   Download,
-  Type,
   ImagePlus,
-  Shapes,
   AlignLeft,
   AlignCenter,
   AlignRight,
@@ -66,7 +64,18 @@ import { ExportList } from "./App";
 import "./editor-workspace.css";
 import {ChartDataPanel} from "./ChartDataPanel";
 import { PptColorPicker, TextColorPicker } from "./PptColorPicker";
+import { PptFillLinePanel } from "./PptFillLinePanel";
+import { PptShapesIcon, PptTextBoxIcon } from "./PptToolbarIcons";
 import { INSERT_SHAPE_GROUPS, ShapeGlyph } from "./shape-catalog";
+import {
+  connectionAnchors,
+  connectorBounds,
+  connectorEndpoints,
+  findConnectorSnap,
+  isConnector,
+  setConnectorEndpoint,
+  type ConnectorEnd,
+} from "./connector-geometry";
 import {toDataSpec} from "./table-import";
 const INSERT_CHART_GROUPS=[
   {label:"比较与趋势",items:[["comparison","簇状柱图",ChartColumn],["line","折线图",ChartLine],["waterfall","瀑布图",GitCompareArrows],["area","面积图",ChartArea]]},
@@ -128,6 +137,8 @@ export function Editor({
   const [propertiesCollapsed,PropertiesCollapsed]=useState(false);
   const [editingText, EditingText] = useState<string>();
   const [alignmentGuides,AlignmentGuides]=useState<{vertical?:number;horizontal?:number}>({});
+  const [connectorEditing, ConnectorEditing] = useState<{ id: string; endpoint: ConnectorEnd }>();
+  const [connectionHint, ConnectionHint] = useState<any>();
   const chartFlush=useRef<()=>Promise<void>>(async()=>{});
   const chartDirty=useRef(false);
   const [chartPreview,ChartPreview]=useState<Record<string,any>>({});
@@ -421,7 +432,7 @@ export function Editor({
       Sel(clones.map((x: any) => x.id));
     });
   }
-  function pointerStart(e: React.PointerEvent, id: string, resize = false) {
+  function pointerStart(e: React.PointerEvent, id: string, resize = false, connectorEnd?: ConnectorEnd) {
     e.preventDefault();
     e.stopPropagation();
     const ids = expandSelection(
@@ -440,10 +451,13 @@ export function Editor({
       original: structuredClone(slide),
       ids,
       resize,
+      connectorEnd,
       id,
       scale: stage.current!.getBoundingClientRect().width / 960,
       moved: false,
     };
+    ConnectorEditing(connectorEnd ? { id, endpoint: connectorEnd } : undefined);
+    ConnectionHint(undefined);
     e.currentTarget.setPointerCapture(e.pointerId);
   }
   function pointerMove(e: React.PointerEvent) {
@@ -453,8 +467,35 @@ export function Editor({
       dy = Math.round((e.clientY - d.y) / d.scale / 4) * 4;
     if (!dx && !dy) return;
     d.moved = true;
+    if (d.connectorEnd) {
+      const connector = d.original.elements.find((item: any) => item.id === d.id);
+      const origin = connectorEndpoints(d.original, connector)[d.connectorEnd as ConnectorEnd];
+      const point = {
+        x: Math.max(0, Math.min(960, origin.x + dx)),
+        y: Math.max(0, Math.min(540, origin.y + dy)),
+      };
+      const snap = findConnectorSnap(d.original, d.id, point, 14);
+      ConnectionHint(snap);
+      const next = setConnectorEndpoint(
+        d.original,
+        d.id,
+        d.connectorEnd as ConnectorEnd,
+        snap?.point ?? point,
+        snap ? { elementId: snap.elementId, side: snap.side } : undefined,
+      );
+      S(next);
+      current.current = next;
+      return;
+    }
     if (!d.resize) {
       const snapped = snapSelection(d.original, d.ids, dx, dy);
+      for (const id of d.ids) {
+        const moved = snapped.slide.elements.find((item: any) => item.id === id);
+        if (isConnector(moved)) {
+          delete moved.line?.beginConnection;
+          delete moved.line?.endConnection;
+        }
+      }
       AlignmentGuides(snapped.guides);
       S(snapped.slide);
       current.current = snapped.slide;
@@ -513,6 +554,8 @@ export function Editor({
     if (drag.current?.moved) commit(current.current);
     drag.current = undefined;
     AlignmentGuides({});
+    ConnectorEditing(undefined);
+    ConnectionHint(undefined);
   }
   async function reloadChartData(){
     const sent=current.current;
@@ -650,6 +693,7 @@ export function Editor({
         </button>
         <span className="divider" />
         <button
+          aria-label="文本框"
           onClick={() =>
             edit((n) => {
               const id = crypto.randomUUID();
@@ -665,14 +709,14 @@ export function Editor({
             })
           }
         >
-          <Type size={16} />
-          文字
+          <PptTextBoxIcon />
+          文本框
         </button>
         <button onClick={() => M("assets")}>
           <ImagePlus size={16} />
           资源
         </button>
-        <button onClick={() => M("shapes")}><Shapes size={16}/>形状</button>
+        <button onClick={() => M("shapes")}><PptShapesIcon/>形状</button>
         <button onClick={()=>M("chart")}><ChartColumn size={16}/>图表</button>
         <span className="divider" />
         {selectedTextElements.length?<div className="text-toolbar" aria-label="文字工具栏"><span><select aria-label="工具栏字体" value={sharedTextStyle("fontFace","SimHei")??""} onChange={event=>changeSelectedTextStyle({fontFace:event.target.value})} style={{fontFamily:FONT_OPTIONS.find(option=>option.id===(sharedTextStyle("fontFace","SimHei")??"SimHei"))?.css}}><option value="" disabled>混合字体</option>{FONT_OPTIONS.map(option=><option key={option.id} value={option.id} style={{fontFamily:option.css}}>{option.label}</option>)}</select></span><span><input aria-label="工具栏字号" type="number" min="8" max="72" value={sharedTextStyle("fontSize",16)??""} onChange={event=>event.target.value&&changeSelectedTextStyle({fontSize:Math.max(8,Math.min(72,Number(event.target.value)))})}/></span><button type="button" className="text-bold" aria-label="粗体" aria-pressed={sharedTextStyle("bold",false)===true} title="粗体" onClick={()=>changeSelectedTextStyle({bold:sharedTextStyle("bold",false)!==true})}><Bold size={16}/></button><TextColorPicker color={sharedTextStyle("color","#334155")??"#334155"} onChange={color=>changeSelectedTextStyle({color})}/>{[["left",AlignLeft,"文字左对齐"],["center",AlignCenter,"文字居中"],["right",AlignRight,"文字右对齐"]].map(([value,Icon,label]:any)=><button key={value} aria-label={label} aria-pressed={sharedTextStyle("align","left")===value} onClick={()=>changeSelectedTextStyle({align:value})}><Icon size={16}/></button>)}{[["top",AlignStartVertical,"文字顶部对齐"],["middle",AlignCenterVertical,"文字垂直居中"],["bottom",AlignEndVertical,"文字底部对齐"]].map(([value,Icon,label]:any)=><button key={value} aria-label={label} aria-pressed={sharedTextStyle("valign","top")===value} onClick={()=>changeSelectedTextStyle({valign:value})}><Icon size={16}/></button>)}</div>:<>{[
@@ -756,8 +800,15 @@ export function Editor({
             />
             {alignmentGuides.vertical!==undefined&&<i className="alignment-guide vertical" aria-label="垂直对齐参考线" style={{left:`${alignmentGuides.vertical/9.6}%`}}/>}
             {alignmentGuides.horizontal!==undefined&&<i className="alignment-guide horizontal" aria-label="水平对齐参考线" style={{top:`${alignmentGuides.horizontal/5.4}%`}}/>}
+            {connectorEditing && connectionAnchors(slide, connectorEditing.id).map(anchor => {
+              const sideLabel={top:"上侧",right:"右侧",bottom:"下侧",left:"左侧"}[anchor.side];
+              const active=connectionHint?.elementId===anchor.elementId&&connectionHint?.side===anchor.side;
+              return <i key={`${anchor.elementId}-${anchor.side}`} className={`connector-anchor ${active?"active":""}`} aria-label={active?`连接到 ${anchor.elementId} ${sideLabel}`:`连接点 ${anchor.elementId} ${sideLabel}`} style={{left:`${anchor.point.x/9.6}%`,top:`${anchor.point.y/5.4}%`}}/>;
+            })}
             {slide.elements.map((e: any) => {
-              const r = rectOf(slide, e);
+              const connector=isConnector(e);
+              const r = connector ? connectorBounds(slide, e) : rectOf(slide, e);
+              const endpoints=connector?connectorEndpoints(slide,e):undefined;
               return (
                 <div
                   key={e.id}
@@ -790,13 +841,16 @@ export function Editor({
                       <span className="selection-label">
                         {Math.round(r.w)} × {Math.round(r.h)}
                       </span>
-                      <i
-                        className="handle"
-                        onPointerDown={(ev) => pointerStart(ev, e.id, true)}
-                        onPointerMove={pointerMove}
-                        onPointerUp={pointerEnd}
-                        onPointerCancel={pointerEnd}
-                      />
+                      {connector && endpoints ? <>
+                        <i aria-label="拖动线条起点" className="connector-handle begin" style={{left:`${((endpoints.begin.x-r.x)/r.w)*100}%`,top:`${((endpoints.begin.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"begin")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>
+                        <i aria-label="拖动线条终点" className="connector-handle end" style={{left:`${((endpoints.end.x-r.x)/r.w)*100}%`,top:`${((endpoints.end.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"end")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>
+                      </> : <i
+                          className="handle"
+                          onPointerDown={(ev) => pointerStart(ev, e.id, true)}
+                          onPointerMove={pointerMove}
+                          onPointerUp={pointerEnd}
+                          onPointerCancel={pointerEnd}
+                        />}
                     </>
                   )}
                 </div>
@@ -1385,6 +1439,7 @@ function TextStylePanel({
     color = value("color");
   return (
     <section className="text-style-panel">
+      {boxStyle&&<header className="ppt-format-title"><strong>设置形状格式</strong><span>文本选项</span></header>}
       <h4>文字样式</h4>
       <p className="muted">
         应用于 {elements.length} 个文字 / 来源对象
@@ -1466,9 +1521,7 @@ function TextStylePanel({
       </label>
       <PptColorPicker label="文字颜色" ariaLabel="属性文字颜色" customAriaLabel="文字颜色" color={color??"#334155"} kind="outline" onChange={value=>value&&onChange({color:value})}/>
       {color === undefined && <small>混合值；选择颜色后统一应用</small>}
-      {boxStyle&&<section className="ppt-style-block" aria-label="文本框填充"><h4>文本框</h4><div className="ppt-style-actions"><PptColorPicker label="填充" ariaLabel="文本框底色" color={value("fill")} allowNone onChange={fill=>onChange({fill})}/><PptColorPicker label="轮廓" ariaLabel="文本框边框颜色" color={elements[0]?.style?.line?.color||"#334155"} kind="outline" onChange={lineColor=>lineColor&&onChange({line:{...(elements[0]?.style?.line??{}),color:lineColor,width:elements[0]?.style?.line?.width||1,dash:elements[0]?.style?.line?.dash==="dash"?"dash":"solid"}})}/></div>
-      <div className="ppt-line-controls"><label className="field">边框样式<select aria-label="文本框边框样式" value={elements[0]?.style?.line?.width>0?(elements[0].style.line.dash==="dash"?"dash":"solid"):"none"} onChange={event=>{const current=elements[0]?.style?.line??{};onChange({line:event.target.value==="none"?{...current,width:0,dash:"none"}:{color:current.color||"#334155",width:current.width>0?current.width:1,dash:event.target.value}})}}><option value="none">无边框</option><option value="solid">实线</option><option value="dash">虚线</option></select></label>
-      <label className="field">边框粗细<input aria-label="文本框边框粗细" type="number" min="0" max="12" step="0.5" value={elements[0]?.style?.line?.width??0} onChange={event=>onChange({line:{...(elements[0]?.style?.line??{}),color:elements[0]?.style?.line?.color||"#334155",width:Math.max(0,Math.min(12,Number(event.target.value))),dash:elements[0]?.style?.line?.dash==="dash"?"dash":"solid"}})}/></label></div></section>}
+      {boxStyle&&<PptFillLinePanel prefix="文本框" fill={value("fill")} fillTransparency={value("fillTransparency")??0} line={elements[0]?.style?.line} onChange={onChange}/>}
     </section>
   );
 }
@@ -1481,7 +1534,7 @@ function TableStylePanel({element,onChange}:{element:any;onChange:(patch:Record<
 function ShapeStylePanel({element,onChange}:{element:any;onChange:(patch:Record<string,any>)=>void}){
  const line=element.line??{};
  const connector=["line","elbow"].includes(element.shape);
- return <section className="property-section"><h4>形状样式</h4><div className="ppt-style-actions">{!connector&&<PptColorPicker label="形状填充" ariaLabel="形状底色" color={element.fill||"#DCEAE8"} onChange={fill=>fill&&onChange({fill})}/>}<PptColorPicker label={connector?"线条颜色":"形状轮廓"} ariaLabel="形状线条颜色" color={line.color||"#52768B"} kind="outline" onChange={lineColor=>lineColor&&onChange({line:{...line,color:lineColor}})}/></div><div className="ppt-line-controls"><label className="field">线条样式<select aria-label="形状线条样式" value={line.width>0?(line.dash==="dash"?"dash":line.dash==="dot"?"dot":"solid"):"none"} onChange={event=>onChange({line:event.target.value==="none"?{...line,width:0,dash:"none"}:{color:line.color||"#52768B",width:line.width>0?line.width:2,dash:event.target.value}})}><option value="none">无线条</option><option value="solid">实线</option><option value="dash">虚线</option><option value="dot">点线</option></select></label><label className="field">线条粗细<input aria-label="形状线条粗细" type="number" min="0" max="12" step="0.5" value={line.width??2} onChange={event=>onChange({line:{...line,width:Math.max(0,Math.min(12,Number(event.target.value)))}})}/></label></div>{connector&&<div className="line-ending-controls"><label className="field">起点<select aria-label="线条起点" value={line.beginArrowType||"none"} onChange={event=>onChange({line:{...line,beginArrowType:event.target.value}})}><option value="none">无</option><option value="triangle">箭头</option></select></label><label className="field">终点<select aria-label="线条终点" value={line.endArrowType||"none"} onChange={event=>onChange({line:{...line,endArrowType:event.target.value}})}><option value="none">无</option><option value="triangle">箭头</option></select></label></div>}</section>;
+ return <section className="property-section"><header className="ppt-format-title"><strong>设置形状格式</strong><span>形状选项</span></header><h4>形状样式</h4><PptFillLinePanel prefix={connector?"线条":"形状"} connector={connector} fill={element.fill} fillTransparency={element.fillTransparency??0} line={line} onChange={onChange}/></section>;
 }
 
 function ChartStylePanel({element,onChange}:{element:any;onChange:(patch:Record<string,any>)=>void}){

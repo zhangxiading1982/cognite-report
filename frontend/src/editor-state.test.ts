@@ -6,6 +6,12 @@ import {
   snapSelection,
   transformSelection,
 } from "./editor-state";
+import {
+  connectionAnchors,
+  connectorEndpoints,
+  findConnectorSnap,
+  setConnectorEndpoint,
+} from "./connector-geometry";
 const doc = {
   id: "s",
   revision: 1,
@@ -64,6 +70,31 @@ describe("editor commands", () => {
     );
     expect(centered.slide.layoutOverrides.a.rect).toMatchObject({ x: 430, y: 240 });
     expect(centered.guides).toEqual({ vertical: 480, horizontal: 270 });
+  });
+});
+describe("PowerPoint-like connector geometry", () => {
+  const connectorDoc = {
+    ...doc,
+    elements: [
+      { id: "line", type: "shape", shape: "line", rect: { x: 40, y: 80, w: 120, h: 40 }, line: { color: "#2563EB", width: 2 } },
+      { id: "target", type: "shape", shape: "rect", rect: { x: 280, y: 70, w: 120, h: 100 } },
+    ],
+  };
+  it("offers four edge-midpoint anchors and snaps an endpoint to the nearest one", () => {
+    const anchors = connectionAnchors(connectorDoc, "line");
+    expect(anchors.map(anchor => anchor.side)).toEqual(["top", "right", "bottom", "left"]);
+    const snap = findConnectorSnap(connectorDoc, "line", { x: 282, y: 121 }, 12);
+    expect(snap).toMatchObject({ elementId: "target", side: "left", point: { x: 280, y: 120 } });
+  });
+  it("persists endpoint direction and keeps a connected endpoint attached after its shape moves", () => {
+    const attached = setConnectorEndpoint(connectorDoc, "line", "end", { x: 280, y: 120 }, { elementId: "target", side: "left" });
+    expect(attached.elements[0].line.endConnection).toEqual({ elementId: "target", side: "left" });
+    expect(connectorEndpoints(attached, attached.elements[0]).end).toEqual({ x: 280, y: 120 });
+    attached.layoutOverrides.target = { rect: { x: 340, y: 90, w: 120, h: 100 } };
+    expect(connectorEndpoints(attached, attached.elements[0]).end).toEqual({ x: 340, y: 140 });
+    const reversed = setConnectorEndpoint(attached, "line", "begin", { x: 420, y: 170 });
+    expect(reversed.elements[0].line.flipH).toBe(true);
+    expect(reversed.elements[0].line.flipV).toBe(true);
   });
 });
 describe("serial immutable revision saves", () => {
