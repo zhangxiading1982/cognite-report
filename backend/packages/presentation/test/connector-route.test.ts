@@ -27,4 +27,19 @@ describe('PowerPoint-style elbow routes from the line6 reference',()=>{
   expect(route.controls.map(control=>control.segmentIndex)).toEqual([1,2,3]);
   expect(route.controls.map(control=>control.axis)).toEqual(['x','y','x']);
  });
+
+ it('keeps every segment orthogonal when either free endpoint of a manual route moves',()=>{
+  const manualPoints=[{x:140,y:380},{x:140,y:430},{x:600,y:430},{x:600,y:72},{x:480,y:72},{x:480,y:120}];
+  const beginMoved=buildOrthogonalRoute({begin:{x:205,y:345},end:manualPoints.at(-1)!,manualPoints});
+  expect(beginMoved.points[0]).toEqual({x:205,y:345});
+  expect(orthogonal(beginMoved.points)).toBe(true);
+  const endMoved=buildOrthogonalRoute({begin:beginMoved.points[0],end:{x:735,y:188},manualPoints:beginMoved.points});
+  expect(endMoved.points.at(-1)).toEqual({x:735,y:188});
+  expect(orthogonal(endMoved.points)).toBe(true);
+ });
+
+ it('never returns a diagonal manual segment from legacy malformed data',()=>{
+  const route=buildOrthogonalRoute({begin:{x:120,y:180},end:{x:520,y:360},manualPoints:[{x:120,y:180},{x:210,y:240},{x:360,y:240},{x:520,y:360}]});
+  expect(orthogonal(route.points)).toBe(true);
+ });
 });

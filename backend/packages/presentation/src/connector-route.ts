@@ -47,12 +47,16 @@ function controlsForPoints(points:RoutePoint[],keys?:ElbowControlKey[]):ElbowCon
 function manualRoute(input:OrthogonalRouteInput){
  const points=(input.manualPoints??[]).slice(0,32).map(point=>({x:Number(point.x),y:Number(point.y)}));
  if(points.length<4||points.some(point=>!Number.isFinite(point.x)||!Number.isFinite(point.y)))return undefined;
+ const orthogonal=points.slice(1).every((point,index)=>point.x===points[index].x||point.y===points[index].y);
+ if(!orthogonal)return undefined;
+ const beginWasVertical=points[1].x===points[0].x;
+ const endWasVertical=points.at(-2)!.x===points.at(-1)!.x;
  points[0]={...input.begin};points[points.length-1]={...input.end};
  const first=points[1],last=points[points.length-2];
- if(input.beginSide==='top'||input.beginSide==='bottom')first.x=input.begin.x;
- else if(input.beginSide)first.y=input.begin.y;
- if(input.endSide==='top'||input.endSide==='bottom')last.x=input.end.x;
- else if(input.endSide)last.y=input.end.y;
+ if(input.beginSide==='top'||input.beginSide==='bottom'||(!input.beginSide&&beginWasVertical))first.x=input.begin.x;
+ else first.y=input.begin.y;
+ if(input.endSide==='top'||input.endSide==='bottom'||(!input.endSide&&endWasVertical))last.x=input.end.x;
+ else last.y=input.end.y;
  const vertical=points.slice(1,-1).find((point,index)=>point.x===points[index+2]?.x);
  return {begin:input.begin,end:input.end,middleX:vertical?.x??(input.begin.x+input.end.x)/2,points,controls:controlsForPoints(points)};
 }

@@ -15,6 +15,11 @@ const TYPES = new Set([
   "regionMap",
   "hierarchy",
   "statusTable",
+  "journeyMap",
+  "decisionScorecard",
+  "portfolioMatrix",
+  "proposalFlow",
+  "swotMatrix",
 ]);
 const palette = ["2563EB", "0891B2", "7C3AED", "16A34A", "F59E0B", "DC2626", "64748B"];
 
@@ -164,15 +169,134 @@ export function compileBusinessComponent(
     const label = role("label"), owner = role("owner"), output = role("output"), sort = role("sort");
     if (!label) return { handled: true, elements: [], error: "业务流程需要步骤字段" };
     const ordered = [...rows].sort((a, b) => Number(value(a, sort)) - Number(value(b, sort)));
-    const gap = 18, width = (rect.w - gap * (ordered.length - 1)) / ordered.length;
+    const gap = 20, width = (rect.w - gap * (ordered.length - 1)) / ordered.length;
     return { handled: true, elements: ordered.flatMap((row, index) => {
-      const box = { x: rect.x + index * (width + gap), y: rect.y, w: width, h: rect.h - 38 };
+      const box = { x: rect.x + index * (width + gap), y: rect.y + 58, w: width, h: rect.h - 58 };
+      const accent = ["2458A6", "3277C8", "168E96", "167567"][index % 4];
       return [
-        shape(`${element.id}-box-${index}`, box, index % 2 ? "E0F2FE" : "DBEAFE", "roundRect", "93C5FD"),
-        text(`${element.id}-number-${index}`, { x: box.x + 8, y: box.y + 8, w: 24, h: 24 }, String(index + 1), 11, "FFFFFF", { fill: "2563EB", bold: true, align: "center" }),
-        text(`${element.id}-label-${index}`, { x: box.x + 10, y: box.y + 34, w: box.w - 20, h: 28 }, display(row, label), 13, "172033", { bold: true, align: "center" }),
-        text(`${element.id}-meta-${index}`, { x: box.x + 8, y: box.y + 64, w: box.w - 16, h: Math.max(28, box.h - 68) }, `${owner ? display(row, owner) : ""}${output ? `\n${display(row, output)}` : ""}`, 9, "64748B", { align: "center" }),
-        ...(index < ordered.length - 1 ? [line(`${element.id}-arrow-${index}`, box.x + box.w, box.y + box.h / 2, gap, 0, "2563EB", 2)] : []),
+        ...(index < ordered.length - 1 ? [line(`${element.id}-track-${index}`, box.x + width / 2, rect.y + 25, width + gap, 0, "B8C8DC", 2)] : []),
+        shape(`${element.id}-number-bg-${index}`, { x: box.x + width / 2 - 25, y: rect.y, w: 50, h: 50 }, accent, "ellipse", accent),
+        text(`${element.id}-number-${index}`, { x: box.x + width / 2 - 25, y: rect.y, w: 50, h: 50 }, `0${index + 1}`, 13, "FFFFFF", { bold: true, align: "center" }),
+        shape(`${element.id}-box-${index}`, box, "FFFFFF", "rect", "D8E2EE"),
+        shape(`${element.id}-accent-${index}`, { x: box.x, y: box.y, w: 5, h: box.h }, accent, "rect", accent),
+        text(`${element.id}-label-${index}`, { x: box.x + 16, y: box.y + 14, w: box.w - 28, h: 30 }, display(row, label), 15, "102B57", { bold: true }),
+        text(`${element.id}-owner-label-${index}`, { x: box.x + 16, y: box.y + 54, w: 44, h: 18 }, "负责", 9, "7B8DA5", { bold: true }),
+        text(`${element.id}-owner-${index}`, { x: box.x + 62, y: box.y + 54, w: box.w - 76, h: 18 }, owner ? display(row, owner) : "—", 10, "29466F", { bold: true }),
+        text(`${element.id}-output-label-${index}`, { x: box.x + 16, y: box.y + 78, w: 44, h: 18 }, "产出", 9, "7B8DA5", { bold: true }),
+        text(`${element.id}-output-${index}`, { x: box.x + 62, y: box.y + 78, w: box.w - 76, h: 20 }, output ? display(row, output) : "—", 10, "29466F", { bold: true }),
+      ];
+    }) };
+  }
+
+  if (element.type === "journeyMap") {
+    const stage = role("stage"), goal = role("goal"), pain = role("pain"), opportunity = role("opportunity");
+    if (!stage || !goal || !pain || !opportunity) return { handled: true, elements: [], error: "客户旅程需要阶段、目标、痛点和机会字段" };
+    const gap = 14, width = (rect.w - gap * (rows.length - 1)) / rows.length;
+    const elements: CompiledElement[] = [];
+    rows.forEach((row, index) => {
+      const x = rect.x + index * (width + gap), accent = ["315C93", "4C86D7", "E6A100", "168E96"][index % 4];
+      if (index < rows.length - 1) elements.push(line(`${element.id}-track-${index}`, x + width / 2, rect.y + 24, width + gap, 0, "CBD8E8", 2));
+      elements.push(shape(`${element.id}-stage-${index}`, { x, y: rect.y + 50, w: width, h: rect.h - 50 }, "FFFFFF", "roundRect", "D8E2EE"));
+      elements.push(shape(`${element.id}-node-${index}`, { x: x + width / 2 - 23, y: rect.y, w: 46, h: 46 }, accent, "ellipse", accent));
+      elements.push(text(`${element.id}-number-${index}`, { x: x + width / 2 - 23, y: rect.y, w: 46, h: 46 }, `0${index + 1}`, 12, "FFFFFF", { bold: true, align: "center" }));
+      elements.push(text(`${element.id}-name-${index}`, { x: x + 16, y: rect.y + 66, w: width - 32, h: 26 }, display(row, stage), 16, "102B57", { bold: true, align: "center" }));
+      elements.push(shape(`${element.id}-rule-${index}`, { x: x + width / 2 - 22, y: rect.y + 98, w: 44, h: 2 }, accent, "rect", accent));
+      const blocks = [["客户目标", goal, "F4F7FB", "29466F"], ["关键痛点", pain, "FFF4F2", "B2473E"], ["改进机会", opportunity, "EEF9F6", "167567"]] as const;
+      blocks.forEach(([label, fieldId, fill, color], blockIndex) => {
+        const y = rect.y + 112 + blockIndex * 62;
+        elements.push(shape(`${element.id}-block-${index}-${blockIndex}`, { x: x + 12, y, w: width - 24, h: 54 }, fill, "roundRect", fill));
+        elements.push(text(`${element.id}-block-label-${index}-${blockIndex}`, { x: x + 22, y: y + 6, w: width - 44, h: 15 }, label, 8, "7B8DA5", { bold: true }));
+        elements.push(text(`${element.id}-block-value-${index}-${blockIndex}`, { x: x + 22, y: y + 21, w: width - 44, h: 28 }, display(row, fieldId), 10, color, { bold: true }));
+      });
+    });
+    return { handled: true, elements };
+  }
+
+  if (element.type === "decisionScorecard") {
+    const option = role("option"), total = role("total"), criteria = roles("criteria");
+    if (!option || !total || !criteria.length) return { handled: true, elements: [], error: "决策评分需要方案、评价维度和总分字段" };
+    const totals = rows.map(row => Number(value(row, total))), winner = totals.indexOf(Math.max(...totals));
+    const labelW = 150, totalW = 82, headerH = 34, rowH = (rect.h - headerH) / rows.length, criteriaW = (rect.w - labelW - totalW) / criteria.length;
+    const elements: CompiledElement[] = [text(`${element.id}-option-header`, { x: rect.x + 14, y: rect.y, w: labelW - 14, h: headerH }, "候选方案", 10, "7B8DA5", { bold: true })];
+    criteria.forEach((fieldId, index) => elements.push(text(`${element.id}-criterion-header-${index}`, { x: rect.x + labelW + index * criteriaW, y: rect.y, w: criteriaW, h: headerH }, field(fieldId)?.name ?? fieldId, 10, "7B8DA5", { bold: true, align: "center" })));
+    elements.push(text(`${element.id}-total-header`, { x: rect.x + rect.w - totalW, y: rect.y, w: totalW, h: headerH }, "加权总分", 10, "7B8DA5", { bold: true, align: "center" }));
+    rows.forEach((row, rowIndex) => {
+      const y = rect.y + headerH + rowIndex * rowH, active = rowIndex === winner, bg = active ? "EDF7F4" : rowIndex % 2 ? "F7F9FC" : "FFFFFF";
+      elements.push(shape(`${element.id}-option-${rowIndex}`, { x: rect.x, y: y + 4, w: rect.w, h: rowH - 8 }, bg, "roundRect", active ? "8BC8BA" : bg));
+      elements.push(shape(`${element.id}-option-accent-${rowIndex}`, { x: rect.x, y: y + 4, w: active ? 5 : 2, h: rowH - 8 }, active ? "168E96" : "D8E2EE", "rect", active ? "168E96" : "D8E2EE"));
+      elements.push(text(`${element.id}-option-name-${rowIndex}`, { x: rect.x + 16, y, w: labelW - 20, h: rowH }, `${active ? "推荐  " : ""}${display(row, option)}`, 12, active ? "167567" : "29466F", { bold: true }));
+      criteria.forEach((fieldId, criterionIndex) => {
+        const score = Math.max(0, Math.min(10, Number(value(row, fieldId))));
+        const x = rect.x + labelW + criterionIndex * criteriaW + 16, barW = criteriaW - 32;
+        elements.push(shape(`${element.id}-score-track-${rowIndex}-${criterionIndex}`, { x, y: y + rowH / 2 - 4, w: barW, h: 8 }, "E3EAF2", "roundRect", "E3EAF2"));
+        elements.push(shape(`${element.id}-score-${rowIndex}-${criterionIndex}`, { x, y: y + rowH / 2 - 4, w: barW * score / 10, h: 8 }, active ? "168E96" : "4C86D7", "roundRect", active ? "168E96" : "4C86D7"));
+        elements.push(text(`${element.id}-score-value-${rowIndex}-${criterionIndex}`, { x, y: y + 8, w: barW, h: 16 }, score.toFixed(1), 9, "5B6F88", { align: "center" }));
+      });
+      elements.push(text(`${element.id}-total-${rowIndex}`, { x: rect.x + rect.w - totalW, y, w: totalW, h: rowH }, display(row, total), 18, active ? "167567" : "102B57", { bold: true, align: "center" }));
+    });
+    return { handled: true, elements };
+  }
+
+  if (element.type === "portfolioMatrix") {
+    const label = role("label"), xField = role("x"), yField = role("y"), decision = role("decision");
+    if (!label || !xField || !yField) return { handled: true, elements: [], error: "组合矩阵需要项目、成本和影响字段" };
+    const axis = 44, plot = { x: rect.x + axis, y: rect.y + 14, w: rect.w - axis - 12, h: rect.h - axis - 14 }, splitX = plot.x + plot.w / 2, splitY = plot.y + plot.h / 2;
+    const elements: CompiledElement[] = [
+      shape(`${element.id}-q1`, { x: plot.x, y: plot.y, w: plot.w / 2, h: plot.h / 2 }, "EAF6F3", "rect", "FFFFFF"),
+      shape(`${element.id}-q2`, { x: splitX, y: plot.y, w: plot.w / 2, h: plot.h / 2 }, "EFF4FA", "rect", "FFFFFF"),
+      shape(`${element.id}-q3`, { x: plot.x, y: splitY, w: plot.w / 2, h: plot.h / 2 }, "F7F9FC", "rect", "FFFFFF"),
+      shape(`${element.id}-q4`, { x: splitX, y: splitY, w: plot.w / 2, h: plot.h / 2 }, "FFF7EE", "rect", "FFFFFF"),
+      text(`${element.id}-q1-label`, { x: plot.x + 12, y: plot.y + 8, w: 140, h: 20 }, "优先投入", 11, "167567", { bold: true }),
+      text(`${element.id}-q2-label`, { x: splitX + 12, y: plot.y + 8, w: 140, h: 20 }, "分期实施", 11, "315C93", { bold: true }),
+      text(`${element.id}-q3-label`, { x: plot.x + 12, y: splitY + 8, w: 140, h: 20 }, "快速验证", 11, "5B6F88", { bold: true }),
+      text(`${element.id}-q4-label`, { x: splitX + 12, y: splitY + 8, w: 140, h: 20 }, "暂缓", 11, "A45C12", { bold: true }),
+      text(`${element.id}-y-label`, { x: rect.x, y: plot.y, w: axis - 8, h: plot.h }, "高\n\n业\n务\n影\n响\n\n低", 8, "7B8DA5", { bold: true, align: "center" }),
+      text(`${element.id}-x-label`, { x: plot.x, y: plot.y + plot.h + 8, w: plot.w, h: 24 }, "实施成本    低                                      高", 9, "7B8DA5", { bold: true, align: "center" }),
+    ];
+    rows.forEach((row, index) => {
+      const xScore = Math.max(0, Math.min(10, Number(value(row, xField)))), yScore = Math.max(0, Math.min(10, Number(value(row, yField))));
+      const cx = plot.x + (xScore / 10) * plot.w, cy = plot.y + plot.h - (yScore / 10) * plot.h;
+      const status = String(value(row, decision) ?? ""), accent = /优先|快速/.test(status) ? "168E96" : /分期/.test(status) ? "4C86D7" : "D8872D";
+      elements.push(shape(`${element.id}-point-${index}`, { x: cx - 8, y: cy - 8, w: 16, h: 16 }, accent, "ellipse", "FFFFFF"));
+      elements.push(text(`${element.id}-point-label-${index}`, { x: Math.min(plot.x + plot.w - 118, cx + 10), y: Math.max(plot.y + 28, cy - 15), w: 108, h: 30 }, `${display(row, label)}\n${decision ? display(row, decision) : ""}`, 9, "29466F", { bold: true }));
+    });
+    return { handled: true, elements };
+  }
+
+  if (element.type === "proposalFlow") {
+    const section = role("section"), message = role("message"), evidence = role("evidence");
+    if (!section || !message || !evidence) return { handled: true, elements: [], error: "销售提案需要模块、核心信息和证据字段" };
+    const gap = 16, width = (rect.w - gap * (rows.length - 1)) / rows.length;
+    const accents = ["C85C5C", "4C86D7", "168E96", "D39A1A"];
+    const elements: CompiledElement[] = [];
+    rows.forEach((row, index) => {
+      const x = rect.x + index * (width + gap), accent = accents[index % accents.length];
+      if (index < rows.length - 1) elements.push(line(`${element.id}-arrow-${index}`, x + width, rect.y + 48, gap, 0, "AFC0D3", 2));
+      elements.push(shape(`${element.id}-step-${index}`, { x, y: rect.y, w: width, h: rect.h }, "FFFFFF", "roundRect", "D8E2EE"));
+      elements.push(shape(`${element.id}-accent-${index}`, { x, y: rect.y, w: width, h: 7 }, accent, "rect", accent));
+      elements.push(text(`${element.id}-index-${index}`, { x: x + 16, y: rect.y + 22, w: 34, h: 28 }, `0${index + 1}`, 18, accent, { bold: true }));
+      elements.push(text(`${element.id}-section-${index}`, { x: x + 16, y: rect.y + 58, w: width - 32, h: 30 }, display(row, section), 16, "102B57", { bold: true }));
+      elements.push(text(`${element.id}-message-${index}`, { x: x + 16, y: rect.y + 98, w: width - 32, h: 66 }, display(row, message), 12, "29466F", { bold: true }));
+      elements.push(shape(`${element.id}-evidence-bg-${index}`, { x: x + 12, y: rect.y + rect.h - 80, w: width - 24, h: 66 }, "F4F7FB", "roundRect", "F4F7FB"));
+      elements.push(text(`${element.id}-evidence-label-${index}`, { x: x + 22, y: rect.y + rect.h - 72, w: width - 44, h: 15 }, "支撑证据", 8, "7B8DA5", { bold: true }));
+      elements.push(text(`${element.id}-evidence-${index}`, { x: x + 22, y: rect.y + rect.h - 55, w: width - 44, h: 35 }, display(row, evidence), 9, "5B6F88", { bold: true }));
+    });
+    return { handled: true, elements };
+  }
+
+  if (element.type === "swotMatrix") {
+    const quadrant = role("quadrant"), item = role("item"), priority = role("priority");
+    if (!quadrant || !item) return { handled: true, elements: [], error: "SWOT 矩阵需要象限和分析要点字段" };
+    const gap = 12, width = (rect.w - gap) / 2, height = (rect.h - gap) / 2;
+    const letters = ["S", "W", "O", "T"], fills = ["EAF6F3", "FFF2F0", "EFF4FA", "FFF7E8"], accents = ["168E96", "C85C5C", "4C86D7", "D39A1A"];
+    return { handled: true, elements: rows.slice(0, 4).flatMap((row, index) => {
+      const x = rect.x + (index % 2) * (width + gap), y = rect.y + Math.floor(index / 2) * (height + gap), accent = accents[index], box = { x, y, w: width, h: height };
+      return [
+        shape(`${element.id}-quadrant-${index}`, box, fills[index], "roundRect", fills[index]),
+        text(`${element.id}-letter-${index}`, { x: x + 18, y: y + 16, w: 46, h: 50 }, letters[index], 34, accent, { bold: true, align: "center" }),
+        text(`${element.id}-name-${index}`, { x: x + 76, y: y + 16, w: width - 94, h: 24 }, display(row, quadrant), 14, "102B57", { bold: true }),
+        text(`${element.id}-item-${index}`, { x: x + 76, y: y + 46, w: width - 94, h: height - 62 }, display(row, item), 12, "29466F", { bold: true }),
+        ...(priority ? [text(`${element.id}-priority-${index}`, { x: x + width - 64, y: y + height - 26, w: 48, h: 16 }, `${display(row, priority)}优先级`, 8, accent, { bold: true, align: "right" })] : []),
       ];
     }) };
   }
@@ -279,6 +403,32 @@ export function compileBusinessComponent(
   if (element.type === "regionMap") {
     const region = role("region"), amount = role("value"), status = role("status");
     if (!region || !amount) return { handled: true, elements: [], error: "区域图需要区域和值字段" };
+    if (style.variant === "executive") {
+      const values = rows.map(row => Number(value(row, amount))), max = Math.max(1, ...values), total = values.reduce((sum, current) => sum + current, 0);
+      const map = { x: rect.x, y: rect.y + 12, w: rect.w * .61, h: rect.h - 24 }, ranking = { x: rect.x + rect.w * .68, y: rect.y, w: rect.w * .32, h: rect.h };
+      const placements = [
+        { x: .43, y: .10, w: .34, h: .27 }, { x: .52, y: .40, w: .37, h: .25 }, { x: .24, y: .13, w: .25, h: .27 },
+        { x: .31, y: .42, w: .25, h: .26 }, { x: .05, y: .38, w: .29, h: .32 },
+      ];
+      const elements: CompiledElement[] = [
+        text(`${element.id}-total-label`, { x: ranking.x, y: ranking.y, w: ranking.w, h: 18 }, "区域收入合计", 9, "7B8DA5", { bold: true }),
+        text(`${element.id}-total`, { x: ranking.x, y: ranking.y + 18, w: ranking.w, h: 38 }, total.toLocaleString("zh-CN") + (field(amount)?.unit ?? ""), 23, "102B57", { bold: true }),
+        text(`${element.id}-rank-label`, { x: ranking.x, y: ranking.y + 70, w: ranking.w, h: 18 }, "区域贡献", 10, "5B6F88", { bold: true }),
+      ];
+      rows.forEach((row, index) => {
+        const placement = placements[index] ?? { x: .1 + (index % 3) * .3, y: .1 + Math.floor(index / 3) * .4, w: .26, h: .28 };
+        const level = Math.min(4, Math.floor((values[index] / max) * 4)), fill = ["EDF3FA", "D7E7F8", "9EC5EF", "4C86D7", "2458A6"][level];
+        const box = { x: map.x + map.w * placement.x, y: map.y + map.h * placement.y, w: map.w * placement.w, h: map.h * placement.h };
+        elements.push(shape(`${element.id}-region-${index}`, box, fill, "roundRect", "FFFFFF"));
+        elements.push(text(`${element.id}-region-text-${index}`, { x: box.x + 8, y: box.y + 6, w: box.w - 16, h: box.h - 12 }, `${display(row, region)}\n${display(row, amount)}\n${status ? display(row, status) : ""}`, 10, level >= 3 ? "FFFFFF" : "29466F", { bold: true, align: "center" }));
+        const rowY = ranking.y + 101 + index * 40, barWidth = ranking.w - 78;
+        elements.push(text(`${element.id}-rank-name-${index}`, { x: ranking.x, y: rowY, w: 54, h: 20 }, display(row, region), 9, "29466F", { bold: true }));
+        elements.push(shape(`${element.id}-rank-track-${index}`, { x: ranking.x + 58, y: rowY + 5, w: barWidth, h: 8 }, "E3EAF2", "roundRect", "E3EAF2"));
+        elements.push(shape(`${element.id}-rank-bar-${index}`, { x: ranking.x + 58, y: rowY + 5, w: barWidth * values[index] / max, h: 8 }, fill, "roundRect", fill));
+        elements.push(text(`${element.id}-rank-value-${index}`, { x: ranking.x + 58, y: rowY + 15, w: barWidth, h: 14 }, display(row, amount), 8, "7B8DA5", { align: "right" }));
+      });
+      return { handled: true, elements };
+    }
     const columns = Math.min(3, rows.length), gap = 10, width = (rect.w - gap * (columns - 1)) / columns, height = (rect.h - gap * (Math.ceil(rows.length / columns) - 1)) / Math.ceil(rows.length / columns), values = rows.map((row) => Number(value(row, amount))), max = Math.max(1, ...values);
     return { handled: true, elements: rows.flatMap((row, index) => {
       const box = { x: rect.x + (index % columns) * (width + gap), y: rect.y + Math.floor(index / columns) * (height + gap), w: width, h: height };
@@ -292,6 +442,30 @@ export function compileBusinessComponent(
     if (!key || !label || !parent) return { handled: true, elements: [], error: "层级图需要节点、名称和父节点字段" };
     const byKey = new Map(rows.map((row) => [String(value(row, key)), row]));
     const levelOf = (row: Record<string, unknown>) => { let level = 0, cursor = String(value(row, parent) ?? ""), guard = 0; while (cursor && byKey.has(cursor) && guard++ < 8) { level++; cursor = String(value(byKey.get(cursor)!, parent) ?? ""); } return level; };
+    if (style.variant === "decision") {
+      const levels = rows.map(levelOf), maxLevel = Math.max(...levels), columnW = rect.w / (maxLevel + 1), elements: CompiledElement[] = [];
+      const boxes = new Map<string, Rect>();
+      for (let level = 0; level <= maxLevel; level++) {
+        const peers = rows.filter(row => levelOf(row) === level), boxH = Math.min(88, (rect.h - 24 - (peers.length - 1) * 22) / peers.length);
+        peers.forEach((row, peerIndex) => {
+          const width = Math.min(236, columnW - 54), x = rect.x + level * columnW + (columnW - width) / 2, y = rect.y + 12 + peerIndex * (boxH + 22) + (rect.h - 24 - (peers.length * boxH + (peers.length - 1) * 22)) / 2;
+          boxes.set(String(value(row, key)), { x, y, w: width, h: boxH });
+        });
+      }
+      rows.forEach((row, index) => {
+        const box = boxes.get(String(value(row, key)))!, parentId = String(value(row, parent) ?? ""), level = levelOf(row);
+        if (parentId && boxes.has(parentId)) {
+          const parentBox = boxes.get(parentId)!, startX = parentBox.x + parentBox.w, startY = parentBox.y + parentBox.h / 2, endX = box.x, endY = box.y + box.h / 2, middleX = (startX + endX) / 2;
+          elements.push(line(`${element.id}-link-a-${index}`, startX, startY, middleX - startX, 0, "AFC0D3", 1.3));
+          elements.push(line(`${element.id}-link-b-${index}`, middleX, Math.min(startY, endY), 0, Math.abs(endY - startY), "AFC0D3", 1.3));
+          elements.push(line(`${element.id}-link-c-${index}`, middleX, endY, endX - middleX, 0, "AFC0D3", 1.3));
+        }
+        const fill = level === 0 ? "2458A6" : level === maxLevel ? "EEF7F4" : "F1F5FA", outline = level === 0 ? "2458A6" : level === maxLevel ? "8BC8BA" : "C5D4E5", color = level === 0 ? "FFFFFF" : "102B57";
+        elements.push(shape(`${element.id}-node-${index}`, box, fill, "roundRect", outline));
+        elements.push(text(`${element.id}-node-text-${index}`, { x: box.x + 12, y: box.y + 7, w: box.w - 24, h: box.h - 14 }, `${display(row, label)}${subtitle ? `\n${display(row, subtitle)}` : ""}`, level === 0 ? 12 : 10, color, { bold: true, align: "center" }));
+      });
+      return { handled: true, elements };
+    }
     const levels = rows.map(levelOf), maxLevel = Math.max(...levels), levelH = rect.h / (maxLevel + 1), elements: CompiledElement[] = [];
     rows.forEach((row, index) => {
       const level = levels[index], peers = rows.filter((candidate) => levelOf(candidate) === level), peerIndex = peers.indexOf(row), gap = 14, width = Math.min(190, (rect.w - gap * (peers.length - 1)) / peers.length), x = rect.x + (rect.w - (width * peers.length + gap * (peers.length - 1))) / 2 + peerIndex * (width + gap), y = rect.y + level * levelH + 8, box = { x, y, w: width, h: Math.max(46, levelH - 16) };

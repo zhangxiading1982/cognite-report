@@ -8,6 +8,27 @@ const template = (id: string) => {
 };
 
 describe("data-driven business components", () => {
+  it("renders the eight strategy templates as data-driven executive visuals", () => {
+    const expectations: Record<string, { type: string; compiledId: string }> = {
+      "business-process": { type: "processFlow", compiledId: "business-process-flow-box-0" },
+      "customer-journey": { type: "journeyMap", compiledId: "customer-journey-view-stage-0" },
+      "decision-matrix": { type: "decisionScorecard", compiledId: "decision-matrix-view-option-0" },
+      "decision-tree": { type: "hierarchy", compiledId: "decision-tree-view-node-0" },
+      "portfolio-prioritization": { type: "portfolioMatrix", compiledId: "portfolio-prioritization-view-point-0" },
+      "regional-market-map": { type: "regionMap", compiledId: "regional-market-map-view-region-0" },
+      "sales-proposal": { type: "proposalFlow", compiledId: "sales-proposal-view-step-0" },
+      "swot-analysis": { type: "swotMatrix", compiledId: "swot-analysis-view-quadrant-0" },
+    };
+    for (const [id, expectation] of Object.entries(expectations)) {
+      const item = template(id);
+      expect(item.payload.seedRevision).toBe(10);
+      expect(item.payload.example.designVersion).toBe(11);
+      expect(item.payload.example.slide.elements).toContainEqual(expect.objectContaining({ type: expectation.type }));
+      const compiled = compileSlide(item.payload.example.slide, item.payload.example.dataSpec);
+      expect(compiled.diagnostics.filter(diagnostic => diagnostic.severity === "error")).toEqual([]);
+      expect(compiled.elements).toContainEqual(expect.objectContaining({ id: expectation.compiledId }));
+    }
+  });
   it("uses a finance-grade P&L table with readable typography and variance semantics", () => {
     const item = template("pnl-overview");
     const table = item.payload.example.slide.elements.find(element => element.id === "pnl-table")!;

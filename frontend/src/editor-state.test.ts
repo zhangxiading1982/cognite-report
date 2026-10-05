@@ -152,6 +152,19 @@ describe("PowerPoint-like connector geometry", () => {
     expect(moved.points[2].x).toBe(route.points[2].x - 52);
     expect(moved.points.at(-2)?.x).toBe(560);
   });
+  it("keeps an adjusted elbow strictly orthogonal when its start and end points are dragged", () => {
+    const routed: any = {
+      ...doc,
+      elements: [
+        { id: "elbow", type: "shape", shape: "elbow", rect: { x: 140, y: 100, w: 340, h: 280 }, line: { elbowPoints: [{ x: 140, y: 380 }, { x: 140, y: 430 }, { x: 600, y: 430 }, { x: 600, y: 72 }, { x: 480, y: 72 }, { x: 480, y: 120 }] } },
+      ],
+    };
+    const isOrthogonal = (points: { x: number; y: number }[]) => points.slice(1).every((point, index) => point.x === points[index].x || point.y === points[index].y);
+    const beginMoved = setConnectorEndpoint(routed, "elbow", "begin", { x: 205, y: 345 });
+    expect(isOrthogonal(connectorRoute(beginMoved, beginMoved.elements[0]).points)).toBe(true);
+    const endMoved = setConnectorEndpoint(beginMoved, "elbow", "end", { x: 735, y: 188 });
+    expect(isOrthogonal(connectorRoute(endMoved, endMoved.elements[0]).points)).toBe(true);
+  });
   it("routes the outer corridor beyond both connected shapes and follows a moved target", () => {
     const routed: any = {
       ...doc,

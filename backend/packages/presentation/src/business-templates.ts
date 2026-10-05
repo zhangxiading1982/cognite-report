@@ -24,7 +24,7 @@ export interface BusinessTemplateDefinition {
   folderId: string;
   previewText: string;
   payload: {
-    seedRevision: 9;
+    seedRevision: number;
     chartType?: string;
     requiredBindings: Record<string, unknown>;
     bindingSchema: Record<string, unknown>;
@@ -36,7 +36,7 @@ export interface BusinessTemplateDefinition {
     exportCapabilities: string[];
     example: {
       identityVersion: 1;
-      designVersion: 10;
+      designVersion: number;
       slide: SlideSpec;
       dataSpec: DataSpec;
       businessContext: { background: string; scenarios: string[] };
@@ -65,6 +65,7 @@ const paleRed = "FEE2E2";
 const white = "FFFFFF";
 const money: NumberFormat = { displayDivisor: "1", decimals: 0, suffix: "万元", percent: false };
 const percent: NumberFormat = { displayDivisor: "1", decimals: 0, suffix: "%", percent: true };
+const strategyUpgrade = { seedRevision: 10, designVersion: 11 } as const;
 
 const rect = (x: number, y: number, w: number, h: number): Rect => ({ x, y, w, h });
 const text = (
@@ -272,6 +273,8 @@ function makeTemplate(input: {
   elements: SlideElement[];
   background: string;
   scenarios: string[];
+  seedRevision?: number;
+  designVersion?: number;
 }): BusinessTemplateDefinition {
   const slide: SlideSpec = {
     specVersion: "1.0",
@@ -297,7 +300,7 @@ function makeTemplate(input: {
     folderId: input.folderId,
     previewText: input.previewText,
     payload: {
-      seedRevision: 9,
+      seedRevision: input.seedRevision ?? 9,
       ...(firstChart?.chartType ? { chartType: firstChart.chartType } : {}),
       requiredBindings: { main: { roles: Object.keys(input.binding.roles), roleConstraints: roleSchema(input.binding, input.dataSpec) } },
       bindingSchema: { main: { roles: roleSchema(input.binding, input.dataSpec) } },
@@ -309,7 +312,7 @@ function makeTemplate(input: {
       exportCapabilities: ["nativeChart", "editableShapes", "nativeTable"],
       example: {
         identityVersion: 1,
-        designVersion: 10,
+        designVersion: input.designVersion ?? 10,
         slide,
         dataSpec: input.dataSpec,
         businessContext: { background: input.background, scenarios: input.scenarios },
@@ -698,14 +701,17 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     name: "业务流程",
     scene: "budgetComparison",
     folderId: "template-folder-strategy",
-    previewText: "客户交付流程",
+    previewText: "四步形成可复用的客户交付闭环",
+    ...strategyUpgrade,
     dataSpec: processData,
     binding: { resultSetId: "result-business-process", roles: { columns: ["step", "owner", "output", "sortOrder"], label: "step", owner: "owner", output: "output", sort: "sortOrder" }, computations: [] },
     elements: [
-      ...title("business-process", "客户交付流程", "从需求澄清到验收推广的标准路径"),
-      { id: "business-process-flow", type: "processFlow", rect: rect(36, 116, 888, 136), z: 4, bindingRef: "main", style: { fontSize: 12 } },
-      table("business-process-table", rect(36, 270, 888, 192), ["step", "owner", "output", "sortOrder"], 12),
-      text("business-process-note", rect(36, 478, 888, 28), "关键控制：每一步必须有明确责任团队和可验收的产出。", 13, { color: muted }),
+      ...title("business-process", "四步形成可复用的客户交付闭环", "从需求对齐到验收推广｜责任与产出同步落位"),
+      { id: "business-process-flow", type: "processFlow", rect: rect(36, 120, 888, 284), z: 4, bindingRef: "main", style: { fontSize: 12, variant: "executive" } },
+      shape("business-process-note-accent", rect(36, 432, 5, 54), "", "168E96", {}, "rect"),
+      shape("business-process-note-bg", rect(41, 432, 883, 54), "", "F4F7FB", {}, "rect"),
+      text("business-process-note-label", rect(58, 447, 100, 22), "管理控制点", 14, { color: "102B57", bold: true }),
+      text("business-process-note", rect(168, 448, 732, 20), "每一步均明确责任团队与可验收产出，交接时只确认结果，不重复确认范围。", 11, { color: "29466F" }),
     ],
     background: "用标准步骤和责任产出解释跨团队业务流程，减少口头沟通歧义。",
     scenarios: ["客户交付流程", "运营流程优化", "解决方案说明"],
@@ -715,17 +721,19 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     name: "SWOT 分析与结论",
     scene: "budgetComparison",
     folderId: "template-folder-strategy",
-    previewText: "SWOT 分析与结论",
+    previewText: "标准化窗口已打开，先建立高频模板优势",
+    ...strategyUpgrade,
     dataSpec: swotData,
-    binding: { resultSetId: "result-swot-analysis", roles: { columns: ["quadrant", "item", "priority"] }, computations: [] },
+    binding: { resultSetId: "result-swot-analysis", roles: { quadrant: "quadrant", item: "item", priority: "priority", columns: ["quadrant", "item", "priority"] }, computations: [] },
     elements: [
-      ...title("swot-analysis", "SWOT 分析与结论", "聚焦影响商业化落地的四类因素"),
-      shape("swot-strength", rect(36, 116, 270, 120), "优势 Strengths\n数据与汇报链路一体化", paleGreen, { fontSize: 16, bold: true, align: "left" }),
-      shape("swot-weakness", rect(320, 116, 270, 120), "劣势 Weaknesses\n高级图表仍需补齐", paleRed, { fontSize: 16, bold: true, align: "left" }),
-      shape("swot-opportunity", rect(36, 250, 270, 120), "机会 Opportunities\n经营汇报标准化需求增长", lightBlue, { fontSize: 16, bold: true, align: "left" }),
-      shape("swot-threat", rect(320, 250, 270, 120), "威胁 Threats\n组织模板标准不统一", paleAmber, { fontSize: 16, bold: true, align: "left" }),
-      table("swot-table", rect(620, 116, 304, 254), ["quadrant", "item", "priority"], 10),
-      text("swot-conclusion", rect(36, 398, 888, 76), "建议\n优先用高频模板建立标准，再补 Gantt、多系列瀑布等差异化能力，并通过真实使用数据持续调整模板库。", 16, { fill: "F8FAFC", line: { color: "CBD5E1", width: 1 }, bold: true }),
+      ...title("swot-analysis", "标准化窗口已打开，先建立高频模板优势", "SWOT 分析｜从能力盘点收敛到清晰行动"),
+      { id: "swot-analysis-view", type: "swotMatrix", rect: rect(36, 118, 602, 332), z: 4, bindingRef: "main", style: { fontSize: 12 } },
+      shape("swot-conclusion-bg", rect(666, 118, 258, 332), "", "F3F7FC", {}, "roundRect"),
+      text("swot-conclusion-kicker", rect(690, 142, 210, 18), "战略建议", 10, { color: "168E96", bold: true }),
+      text("swot-conclusion-title", rect(690, 172, 210, 76), "先标准化\n再规模化", 25, { color: "102B57", bold: true }),
+      shape("swot-conclusion-rule", rect(690, 260, 54, 3), "", "168E96", {}, "rect"),
+      text("swot-conclusion", rect(690, 282, 202, 104), "优先用高频模板统一表达，再补齐差异化图表能力。", 14, { color: "29466F", bold: true }),
+      text("swot-conclusion-action", rect(690, 402, 202, 30), "以真实使用数据持续迭代", 10, { color: "5B6F88", bold: true }),
     ],
     background: "将优势、劣势、机会和威胁放在统一框架中，并把分析结果收敛为明确建议。",
     scenarios: ["战略研讨", "业务规划", "风险与机会分析"],
@@ -1186,27 +1194,31 @@ const EXTENDED_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     background: "以两个评价维度和规模三变量展示客户或产品组合优先级。", scenarios: ["客户组合", "产品组合", "资源配置"],
   }),
   makeTemplate({
-    id: "regional-market-map", name: "区域市场图", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "区域市场表现", dataSpec: regionData,
+    id: "regional-market-map", name: "区域市场图", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "华东贡献最高，华北与西部是下一轮覆盖重点", dataSpec: regionData,
+    ...strategyUpgrade,
     binding: { resultSetId: "result-regional-market-map", roles: { region: "region", value: "revenue", status: "status", columns: ["region", "revenue", "status"] }, computations: [] },
-    elements: [...title("regional-market-map", "区域市场表现", "收入规模与经营状态热力分布"), { id: "regional-market-map-view", type: "regionMap", rect: rect(36, 112, 610, 330), z: 4, bindingRef: "main", style: { fontSize: 12 } }, table("regional-market-map-table", rect(676, 112, 248, 238), ["region", "revenue", "status"], 10), text("regional-market-map-note", rect(676, 374, 248, 68), "华东贡献最高；华北和西部需要提升重点客户覆盖。", 14, { fill: "FFF7ED", line: { color: "F59E0B", width: 1 }, bold: true })],
+    elements: [...title("regional-market-map", "华东贡献最高，华北与西部是下一轮覆盖重点", "区域收入规模与经营状态｜热力分布及贡献排序"), { id: "regional-market-map-view", type: "regionMap", rect: rect(36, 116, 888, 318), z: 4, bindingRef: "main", style: { fontSize: 12, variant: "executive" } }, shape("regional-market-map-action-bg", rect(36, 452, 888, 38), "", "F4F7FB", {}, "rect"), shape("regional-market-map-action-accent", rect(36, 452, 5, 38), "", "D39A1A", {}, "rect"), text("regional-market-map-note", rect(56, 461, 844, 20), "行动：复制华东重点客户打法；华北加强行业覆盖，西部优先建设标杆客户。", 11, { color: "29466F", bold: true })],
     background: "用区域色阶与指标展示区域业绩、覆盖和状态；当前采用可编辑区域块布局。", scenarios: ["区域经营复盘", "销售覆盖分析", "门店区域分析"],
   }),
   makeTemplate({
-    id: "decision-tree", name: "决策树", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "方案决策树", dataSpec: decisionTreeData,
+    id: "decision-tree", name: "决策树", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "数据先标准化，再按刷新频率选择托管方式", dataSpec: decisionTreeData,
+    ...strategyUpgrade,
     binding: { resultSetId: "result-decision-tree", roles: { key: "nodeId", label: "node", parent: "parentId", subtitle: "outcome", columns: ["node", "parentId", "outcome"] }, computations: [] },
-    elements: [...title("decision-tree", "方案决策树", "从数据基础到托管方式的选择路径"), { id: "decision-tree-view", type: "hierarchy", rect: rect(36, 112, 888, 350), z: 4, bindingRef: "main", style: { fontSize: 10 } }, text("decision-tree-note", rect(36, 478, 888, 26), "判断顺序：先确认数据是否标准化，再选择持续托管或随文稿保存。", 12, { color: muted })],
+    elements: [...title("decision-tree", "数据先标准化，再按刷新频率选择托管方式", "决策路径｜用三个问题快速确定数据接入策略"), { id: "decision-tree-view", type: "hierarchy", rect: rect(36, 118, 888, 330), z: 4, bindingRef: "main", style: { fontSize: 10, variant: "decision" } }, shape("decision-tree-note-accent", rect(36, 466, 5, 32), "", "4C86D7", {}, "rect"), text("decision-tree-note", rect(54, 472, 870, 20), "判断顺序：标准化程度 → 刷新频率 → 托管方式。", 11, { color: "29466F", bold: true })],
     background: "以条件、分支、结果和建议展示决策路径，适合方案选择与流程说明。", scenarios: ["方案选型", "业务规则说明", "产品决策"],
   }),
   makeTemplate({
-    id: "decision-matrix", name: "决策矩阵", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "方案决策矩阵", dataSpec: decisionMatrixData,
-    binding: { resultSetId: "result-decision-matrix", roles: { columns: ["option", "fit", "speed", "cost", "total"] }, computations: [] },
-    elements: [...title("decision-matrix", "方案决策矩阵", "业务适配、交付速度和成本效率加权评分"), table("decision-matrix-table", rect(36, 118, 610, 260), ["option", "fit", "speed", "cost", "total"], 13), shape("decision-matrix-winner", rect(676, 118, 248, 112), "推荐方案\n标准化模板\n8.9分", paleGreen, { fontSize: 19, bold: true }), text("decision-matrix-rationale", rect(676, 250, 248, 128), "选择依据\n在业务适配、交付速度和成本效率之间取得最佳平衡。", 15, { fill: lightBlue, line: { color: "93C5FD", width: 1 }, bold: true }), text("decision-matrix-note", rect(36, 410, 888, 54), "权重示例：业务适配40% · 交付速度30% · 成本效率30%。评审时可修改评分与权重。", 13, { fill: "F8FAFC", line: { color: "CBD5E1", width: 1 } })],
+    id: "decision-matrix", name: "决策矩阵", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "标准化模板在速度与成本之间取得最佳平衡", dataSpec: decisionMatrixData,
+    ...strategyUpgrade,
+    binding: { resultSetId: "result-decision-matrix", roles: { option: "option", criteria: ["fit", "speed", "cost"], total: "total", columns: ["option", "fit", "speed", "cost", "total"] }, computations: [] },
+    elements: [...title("decision-matrix", "标准化模板在速度与成本之间取得最佳平衡", "方案评估｜业务适配 40% · 交付速度 30% · 成本效率 30%"), { id: "decision-matrix-view", type: "decisionScorecard", rect: rect(36, 124, 888, 290), z: 4, bindingRef: "main", style: { fontSize: 12 } }, shape("decision-matrix-note-bg", rect(36, 438, 888, 50), "", "F4F7FB", {}, "rect"), shape("decision-matrix-note-accent", rect(36, 438, 5, 50), "", "168E96", {}, "rect"), text("decision-matrix-note-label", rect(56, 453, 84, 18), "决策建议", 12, { color: "167567", bold: true }), text("decision-matrix-note", rect(150, 452, 750, 20), "采用标准化模板作为默认方案，为高价值特殊场景保留定制入口。", 11, { color: "29466F", bold: true })],
     background: "按多个标准、权重和评分比较候选方案，并突出推荐结论。", scenarios: ["方案评审", "供应商选择", "产品决策"],
   }),
   makeTemplate({
-    id: "sales-proposal", name: "销售提案页面", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "从数据到决策汇报", dataSpec: salesProposalData,
-    binding: { resultSetId: "result-sales-proposal", roles: { columns: ["section", "message", "evidence"] }, computations: [] },
-    elements: [...title("sales-proposal", "从数据到决策汇报", "为客户建立可持续刷新的商业汇报工作台"), shape("sales-proposal-problem", rect(36, 116, 202, 178), "客户问题\n\n汇报制作耗时\n数据复制易失真", paleRed, { fontSize: 16, bold: true }), shape("sales-proposal-solution", rect(254, 116, 202, 178), "解决方案\n\n数据、模板、编辑\n和导出一体化", lightBlue, { fontSize: 16, bold: true }), shape("sales-proposal-value", rect(472, 116, 202, 178), "业务价值\n\n缩短周期\n统一业务表达", paleGreen, { fontSize: 16, bold: true }), shape("sales-proposal-next", rect(690, 116, 234, 178), "下一步\n\n选择经营场景\n两周完成试点", paleAmber, { fontSize: 16, bold: true }), table("sales-proposal-evidence", rect(36, 322, 888, 142), ["section", "message", "evidence"], 10)],
+    id: "sales-proposal", name: "销售提案页面", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "让月度汇报从人工复制走向持续刷新", dataSpec: salesProposalData,
+    ...strategyUpgrade,
+    binding: { resultSetId: "result-sales-proposal", roles: { section: "section", message: "message", evidence: "evidence", columns: ["section", "message", "evidence"] }, computations: [] },
+    elements: [...title("sales-proposal", "让月度汇报从人工复制走向持续刷新", "客户提案｜问题、方案、价值与试点路径一页讲清"), { id: "sales-proposal-view", type: "proposalFlow", rect: rect(36, 122, 888, 292), z: 4, bindingRef: "main", style: { fontSize: 12 } }, shape("sales-proposal-commitment-bg", rect(36, 440, 888, 48), "", "EEF7F4", {}, "rect"), text("sales-proposal-commitment-value", rect(56, 448, 98, 30), "2 周", 21, { color: "167567", bold: true }), text("sales-proposal-commitment", rect(154, 454, 742, 20), "完成一个经营场景的模板适配、数据接入与多页 PPTX 交付验证", 11, { color: "29466F", bold: true })],
     background: "以客户问题、解决方案、价值、证据和下一步构成一页销售提案。", scenarios: ["客户提案", "售前方案", "内部立项"],
   }),
   makeTemplate({
@@ -1265,8 +1277,8 @@ const HIGH_FREQUENCY_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] =
 
   return [
     makeTemplate({ id: "quarterly-business-review", name: "季度经营复盘", scene: "budgetComparison", folderId: "template-folder-finance", previewText: "季度经营复盘", dataSpec: quarterly, binding: { resultSetId: "result-quarterly-business-review", roles: { categoryKey: "quarter", categoryLabel: "quarter", barSeries: ["revenue"], lineSeries: ["margin"] }, computations: [] }, elements: [...title("quarterly-business-review", "季度经营复盘", "收入保持增长，盈利质量逐季改善"), chart("quarterly-business-review-chart", rect(36, 124, 640, 330), "combo", { secondaryAxis: true, showLabels: false }), text("quarterly-business-review-insight", rect(716, 132, 208, 178), "核心判断\n\n收入连续四季增长\n利润率提升 2.2pt\nQ4 需守住交付质量", 16, { bold: true, color: navy }), shape("quarterly-business-review-action", rect(716, 334, 208, 94), "下一步\n聚焦高毛利客户与回款", paleGreen, { fontSize: 14, bold: true })], background: "用于季度经营会，将核心趋势、判断和下一步放在同一页。", scenarios: ["季度经营复盘", "董事会汇报", "年度滚动预测"] }),
-    makeTemplate({ id: "customer-journey", name: "客户旅程地图", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "客户旅程地图", dataSpec: journey, binding: { resultSetId: "result-customer-journey", roles: { columns: ["stage", "goal", "pain", "opportunity"] }, computations: [] }, elements: [...title("customer-journey", "客户旅程地图", "从认知到使用，识别关键痛点与改进机会"), ...["01 认知", "02 评估", "03 采购", "04 使用"].map((label,index)=>shape(`customer-journey-stage-${index}`,rect(36+index*222,120,204,50),label,index===3?"0F766E":"EAF1FF",{fontSize:14,bold:true,color:index===3?white:navy})), table("customer-journey-table", rect(36, 190, 888, 252), ["stage", "goal", "pain", "opportunity"], 11), text("customer-journey-note", rect(36, 466, 888, 28), "优先改进评估与采购环节：用场景化演示和量化 ROI 降低决策成本。", 13, { color: "0F766E", bold: true })], background: "按客户阶段展示目标、触点、痛点和机会，支持体验改进与增长讨论。", scenarios: ["客户体验", "销售转化", "服务流程优化"] }),
-    makeTemplate({ id: "portfolio-prioritization", name: "项目组合优先级", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "项目组合优先级", dataSpec: portfolio, binding: { resultSetId: "result-portfolio-prioritization", roles: { columns: ["initiative", "impact", "effort", "decision"] }, computations: [] }, elements: [...title("portfolio-prioritization", "项目组合优先级", "以业务影响和实施成本形成资源取舍"), shape("portfolio-axis",rect(36,120,516,320),"高影响 / 低成本\n\n客户洞察   自动化报表\n\n\n分期实施\n主数据治理", "F8FAFC", {fontSize:18,bold:true,line:{color:"CBD5E1",width:1}}), table("portfolio-table",rect(582,120,342,258),["initiative","impact","effort","decision"],10), text("portfolio-note",rect(582,402,342,54),"决策原则：优先投入高影响、低成本项目；高影响、高成本项目分期实施。",12,{color:muted})], background: "用于项目或投资组合讨论，把影响、成本和决策放到统一框架中。", scenarios: ["项目组合", "年度投资规划", "产品路线图取舍"] }),
+    makeTemplate({ id: "customer-journey", name: "客户旅程地图", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "评估与采购是转化损失最集中的关键阶段", dataSpec: journey, ...strategyUpgrade, binding: { resultSetId: "result-customer-journey", roles: { stage: "stage", goal: "goal", pain: "pain", opportunity: "opportunity", columns: ["stage", "goal", "pain", "opportunity"] }, computations: [] }, elements: [...title("customer-journey", "评估与采购是转化损失最集中的关键阶段", "客户旅程｜从认知到使用，逐段识别目标、痛点与机会"), { id: "customer-journey-view", type: "journeyMap", rect: rect(36, 120, 888, 322), z: 4, bindingRef: "main", style: { fontSize: 11 } }, shape("customer-journey-note-bg", rect(36, 462, 888, 34), "", "EEF7F4", {}, "rect"), text("customer-journey-note", rect(54, 469, 852, 20), "优先动作：用场景化演示和量化 ROI 降低评估、采购阶段的决策成本。", 11, { color: "167567", bold: true })], background: "按客户阶段展示目标、触点、痛点和机会，支持体验改进与增长讨论。", scenarios: ["客户体验", "销售转化", "服务流程优化"] }),
+    makeTemplate({ id: "portfolio-prioritization", name: "项目组合优先级", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "客户洞察与自动化报表应进入优先投入队列", dataSpec: portfolio, ...strategyUpgrade, binding: { resultSetId: "result-portfolio-prioritization", roles: { label: "initiative", x: "effort", y: "impact", decision: "decision", columns: ["initiative", "impact", "effort", "decision"] }, computations: [] }, elements: [...title("portfolio-prioritization", "客户洞察与自动化报表应进入优先投入队列", "项目组合｜业务影响 × 实施成本"), { id: "portfolio-prioritization-view", type: "portfolioMatrix", rect: rect(36, 118, 624, 348), z: 4, bindingRef: "main", style: { fontSize: 11 } }, shape("portfolio-summary-bg", rect(690, 118, 234, 348), "", "F3F7FC", {}, "roundRect"), text("portfolio-summary-kicker", rect(714, 144, 186, 18), "资源取舍", 10, { color: "168E96", bold: true }), text("portfolio-summary-title", rect(714, 174, 186, 62), "先投高影响\n低成本项目", 21, { color: "102B57", bold: true }), shape("portfolio-summary-rule", rect(714, 250, 52, 3), "", "168E96", {}, "rect"), text("portfolio-summary-fast", rect(714, 274, 186, 58), "立即推进\n客户洞察 · 自动化报表", 11, { color: "167567", bold: true }), text("portfolio-summary-stage", rect(714, 344, 186, 58), "分期实施\n主数据治理", 11, { color: "315C93", bold: true }), text("portfolio-summary-hold", rect(714, 412, 186, 34), "暂缓：渠道改版", 10, { color: "A45C12", bold: true })], background: "用于项目或投资组合讨论，把影响、成本和决策放到统一框架中。", scenarios: ["项目组合", "年度投资规划", "产品路线图取舍"] }),
     makeTemplate({ id: "operating-model", name: "目标运营模式", scene: "budgetComparison", folderId: "template-folder-organization", previewText: "目标运营模式", dataSpec: operating, binding: { resultSetId: "result-operating-model", roles: { columns: ["pillar", "design", "owner"] }, computations: [] }, elements: [...title("operating-model", "目标运营模式", "治理、流程、组织与技术共同支撑业务目标"), ...["治理\n统一指标与决策节奏","流程\n端到端闭环","组织\n跨职能小队","技术\n数据与自动化平台"].map((label,index)=>shape(`operating-pillar-${index}`,rect(36+index*222,122,204,104),label,["EAF1FF","E7F6F2","FFF4E5","F3EEFF"][index],{fontSize:15,bold:true})), table("operating-model-table",rect(36,258,888,190),["pillar","design","owner"],12), text("operating-model-note",rect(36,470,888,26),"落地顺序：先统一治理与流程，再通过组织机制和技术平台规模化。",12,{color:muted})], background: "把目标运营模式拆解为治理、流程、组织与技术四个支柱。", scenarios: ["组织转型", "运营模式设计", "数字化规划"] }),
     makeTemplate({ id: "meeting-agenda", name: "会议议程与决策导航", scene: "budgetComparison", folderId: "template-folder-general", previewText: "会议议程", dataSpec: agenda, binding: { resultSetId: "result-meeting-agenda", roles: { columns: ["order", "topic", "purpose", "owner", "minutes"] }, computations: [] }, elements: [...title("meeting-agenda", "会议议程", "60 分钟形成问题共识、关键决策与行动计划"), shape("meeting-focus",rect(36,122,888,68),"本次会议输出：3 项关键决策 · 4 项责任到人的行动",navy,{fontSize:18,bold:true,color:white}), table("meeting-agenda-table",rect(36,218,888,236),["order","topic","purpose","owner","minutes"],12), text("meeting-agenda-note",rect(36,474,888,24),"会前材料请提前 24 小时提交；需要决策的事项必须给出明确选项和建议。",11,{color:muted})], background: "用于会议首页或章节导航，明确议题、目标、负责人、时长和预期输出。", scenarios: ["经营会", "项目委员会", "客户工作坊"] }),
     makeTemplate({ id: "root-cause-analysis", name: "根因分析 · 问题树", scene: "budgetComparison", folderId: "template-folder-analysis", previewText: "根因分析", dataSpec: rootCause, binding: { resultSetId: "result-root-cause-analysis", roles: { columns: ["branch", "evidence", "action"] }, computations: [] }, elements: [...title("root-cause-analysis", "根因分析", "从事实证据定位流程、系统、能力与协同问题"), shape("root-problem",rect(36,124,228,88),"核心问题\n交付周期偏长",navy,{fontSize:18,bold:true,color:white}), ...["流程","系统","能力","协同"].map((label,index)=>shape(`root-branch-${index}`,rect(300+index%2*168,118+Math.floor(index/2)*78,150,58),label,["EAF1FF","E7F6F2","FFF4E5","F3EEFF"][index],{fontSize:15,bold:true})), table("root-cause-table",rect(36,252,888,196),["branch","evidence","action"],11), text("root-cause-note",rect(36,470,888,28),"优先动作：压缩审批层级并打通主数据，预计缩短 4–5 个工作日。",13,{color:"0F766E",bold:true})], background: "以问题树和证据表区分表象与根因，并关联针对性改进动作。", scenarios: ["问题诊断", "质量复盘", "运营改善"] }),
