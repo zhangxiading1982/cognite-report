@@ -18,7 +18,8 @@ import {
   Trash2,
   Database,
   ChevronUp,
-  ChevronDown,
+  BringToFront,
+  SendToBack,
   Maximize,
   ChartColumn,
   Table2,
@@ -35,11 +36,6 @@ import {
   PanelRightClose,
   PanelRightOpen,
   Bold,
-  Square,
-  RectangleHorizontal,
-  Minus,
-  Triangle,
-  Diamond,
 } from "lucide-react";
 import {
   compileSlide,
@@ -58,6 +54,7 @@ import {
   expandSelection,
   moveSelection,
   scaleSelection,
+  setSelectionLayer,
   snapSelection,
 } from "./editor-state";
 import { ComponentForm } from "./ComponentForm";
@@ -68,27 +65,14 @@ import { AssetLibrary } from "./AssetLibrary";
 import { ExportList } from "./App";
 import "./editor-workspace.css";
 import {ChartDataPanel} from "./ChartDataPanel";
+import { PptColorPicker, TextColorPicker } from "./PptColorPicker";
+import { INSERT_SHAPE_GROUPS, ShapeGlyph } from "./shape-catalog";
 import {toDataSpec} from "./table-import";
 const INSERT_CHART_GROUPS=[
   {label:"比较与趋势",items:[["comparison","簇状柱图",ChartColumn],["line","折线图",ChartLine],["waterfall","瀑布图",GitCompareArrows],["area","面积图",ChartArea]]},
   {label:"构成与组合",items:[["stackedColumn","堆积柱图",Layers3],["percentStackedColumn","百分比堆积柱图",Layers3],["pie","饼图",ChartPie],["donut","圆环图",Circle],["combo","柱线组合图",ChartNoAxesCombined]]},
   {label:"关系",items:[["scatter","散点图",ChartScatter]]},
 ] as const;
-const INSERT_SHAPE_GROUPS=[
-  {label:"矩形",items:[["rect","长方形",RectangleHorizontal,160,90],["square","正方形",Square,90,90],["roundRect","圆角矩形",RectangleHorizontal,160,90]]},
-  {label:"基本形状",items:[["ellipse","椭圆形",Circle,160,90],["circle","圆形",Circle,90,90],["triangle","三角形",Triangle,130,110],["diamond","菱形",Diamond,130,100]]},
-  {label:"线条",items:[["line","直线",Minus,160,4]]},
-] as const;
-const TEXT_COLOR_PALETTE=["#000000","#334155","#64748B","#FFFFFF","#1D4ED8","#0F766E","#15803D","#B45309","#B91C1C","#7E22CE"];
-const OFFICE_COLOR_PALETTE=["#FFFFFF","#F2F2F2","#D9E2F3","#DDEBF7","#E2F0D9","#FFF2CC","#FCE4D6","#E4DFEC","#000000","#595959","#4472C4","#5B9BD5","#70AD47","#FFC000","#ED7D31","#A64D79","#334155","#1D4ED8","#0F766E","#B91C1C"];
-function TextColorPicker({color,onChange}:{color:string;onChange:(color:string)=>void}){
- return <details className="text-color-picker"><summary aria-label="打开文字颜色" title="文字颜色"><b>A</b><i style={{background:color}}/></summary><div className="text-color-popover"><strong>主题颜色</strong><div className="text-color-grid">{TEXT_COLOR_PALETTE.map(value=><button type="button" key={value} aria-label={`文字颜色 ${value}`} aria-pressed={color.toLowerCase()===value.toLowerCase()} title={value} style={{background:value}} onClick={event=>{onChange(value);event.currentTarget.closest('details')?.removeAttribute('open')}}/>)}</div><label>自定义颜色<input aria-label="工具栏文字颜色" type="color" value={color} onChange={event=>onChange(event.target.value)}/></label></div></details>;
-}
-function PptColorPicker({label,ariaLabel=label,customAriaLabel,color,onChange,allowNone=false,kind="fill"}:{label:string;ariaLabel?:string;customAriaLabel?:string;color?:string;onChange:(color:string|undefined)=>void;allowNone?:boolean;kind?:"fill"|"outline"}){
- const selected=color?.toUpperCase();
- function choose(value:string|undefined,event:React.MouseEvent<HTMLElement>){onChange(value);event.currentTarget.closest("details")?.removeAttribute("open")}
- return <details className="ppt-color-picker"><summary aria-label={ariaLabel} title={label}><span className={`ppt-color-icon ${kind}`} style={kind==="fill"?{background:color||"transparent",borderColor:color||"#94A3B8"}:{borderColor:color||"#94A3B8"}}/><span>{label}</span><ChevronDown size={14}/></summary><div className="ppt-color-popover"><strong>主题颜色</strong>{allowNone&&<button type="button" className="ppt-no-color" aria-label={`${ariaLabel} 无填充`} aria-pressed={!color} onClick={event=>choose(undefined,event)}>无填充</button>}<div className="ppt-color-grid">{OFFICE_COLOR_PALETTE.map(value=><button type="button" key={value} aria-label={`${ariaLabel} ${value}`} aria-pressed={selected===value} title={value} style={{background:value}} onClick={event=>choose(value,event)}/>)}</div><label>更多颜色<input aria-label={customAriaLabel||`${ariaLabel}自定义颜色`} type="color" value={color||"#FFFFFF"} onChange={event=>onChange(event.target.value)}/></label></div></details>;
-}
 export function createInsertedChartSource(type:string){
  const date=type==="line"||type==="area",waterfall=type==="waterfall",two=type==="combo"||type==="scatter"||type==="stackedColumn"||type==="percentStackedColumn";
  const input=waterfall
@@ -1161,24 +1145,18 @@ export function Editor({
                     </div>
                     <div className="row object-actions">
                       <button
-                        title="上移一层"
-                        onClick={() =>
-                          changeEl((x) => {
-                            x.z = (x.z || 0) + 1;
-                          })
-                        }
+                        aria-label="置于顶层"
+                        title="置于顶层"
+                        onClick={() => commit(setSelectionLayer(slide, selected, "front"))}
                       >
-                        <ChevronUp size={16} />
+                        <BringToFront size={16} />
                       </button>
                       <button
-                        title="下移一层"
-                        onClick={() =>
-                          changeEl((x) => {
-                            x.z = Math.max(0, (x.z || 0) - 1);
-                          })
-                        }
+                        aria-label="置于底层"
+                        title="置于底层"
+                        onClick={() => commit(setSelectionLayer(slide, selected, "back"))}
                       >
-                        <ChevronDown size={16} />
+                        <SendToBack size={16} />
                       </button>
                       <button aria-label="复制对象" onClick={duplicate}>
                         <Copy size={16} />
@@ -1370,7 +1348,7 @@ export function Editor({
           <AssetLibrary onSelect={insertImage} />
         </Modal>
       )}
-      {modal === "shapes" && <Modal title="插入形状" onClose={()=>M("")}><div className="shape-picker">{INSERT_SHAPE_GROUPS.map(group=><section key={group.label}><h3>{group.label}</h3><div className="shape-grid">{group.items.map(([shape,label,Icon,w,h])=><button type="button" key={shape} onClick={()=>{const id=crypto.randomUUID();edit(n=>{n.elements.push({id,type:"shape",shape,rect:{x:48,y:120,w,h},z:n.elements.length+1,fill:"#DCEAE8",line:{color:"#52768B",width:2,dash:"solid"},...(shape!=="line"?{runs:[{text:"形状文字"}],style:{fontFace:"SimHei",fontSize:16,color:"#334155",bold:false,align:"center",valign:"middle"}}:{})})});Sel([id]);Tab("style");M("")}}><Icon size={18}/><span>{label}</span></button>)}</div></section>)}</div></Modal>}
+      {modal === "shapes" && <Modal title="插入形状" wide onClose={()=>M("")}><div className="shape-picker">{INSERT_SHAPE_GROUPS.map(group=><section key={group.label}><h3>{group.label}</h3><div className="shape-grid">{group.items.map(preset=><button type="button" key={preset.id} onClick={()=>{const id=crypto.randomUUID(),connector=["line","elbow"].includes(preset.shape);edit(n=>{n.elements.push({id,type:"shape",shape:preset.shape,rect:{x:48,y:120,w:preset.w,h:preset.h},z:Math.max(0,...n.elements.map((element:any)=>element.z||0))+1,...(!connector?{fill:"#DCEAE8"}:{}),line:{color:"#52768B",width:2,dash:"solid",...preset.line},...(!connector?{runs:[{text:"形状文字"}],style:{fontFace:"SimHei",fontSize:16,color:"#334155",bold:false,align:"center",valign:"middle"}}:{})})});Sel([id]);Tab("style");M("")}}><ShapeGlyph shape={preset.shape} line={preset.line}/><span>{preset.label}</span></button>)}</div></section>)}</div></Modal>}
     </div>
   );
 }
@@ -1502,7 +1480,8 @@ function TableStylePanel({element,onChange}:{element:any;onChange:(patch:Record<
 
 function ShapeStylePanel({element,onChange}:{element:any;onChange:(patch:Record<string,any>)=>void}){
  const line=element.line??{};
- return <section className="property-section"><h4>形状样式</h4><div className="ppt-style-actions">{element.shape!=="line"&&<PptColorPicker label="形状填充" ariaLabel="形状底色" color={element.fill||"#DCEAE8"} onChange={fill=>fill&&onChange({fill})}/>}<PptColorPicker label="形状轮廓" ariaLabel="形状线条颜色" color={line.color||"#52768B"} kind="outline" onChange={lineColor=>lineColor&&onChange({line:{...line,color:lineColor}})}/></div><div className="ppt-line-controls"><label className="field">线条样式<select aria-label="形状线条样式" value={line.width>0?(line.dash==="dash"?"dash":"solid"):"none"} onChange={event=>onChange({line:event.target.value==="none"?{...line,width:0,dash:"none"}:{color:line.color||"#52768B",width:line.width>0?line.width:2,dash:event.target.value}})}><option value="none">无线条</option><option value="solid">实线</option><option value="dash">虚线</option></select></label><label className="field">线条粗细<input aria-label="形状线条粗细" type="number" min="0" max="12" step="0.5" value={line.width??2} onChange={event=>onChange({line:{...line,width:Math.max(0,Math.min(12,Number(event.target.value)))}})}/></label></div></section>;
+ const connector=["line","elbow"].includes(element.shape);
+ return <section className="property-section"><h4>形状样式</h4><div className="ppt-style-actions">{!connector&&<PptColorPicker label="形状填充" ariaLabel="形状底色" color={element.fill||"#DCEAE8"} onChange={fill=>fill&&onChange({fill})}/>}<PptColorPicker label={connector?"线条颜色":"形状轮廓"} ariaLabel="形状线条颜色" color={line.color||"#52768B"} kind="outline" onChange={lineColor=>lineColor&&onChange({line:{...line,color:lineColor}})}/></div><div className="ppt-line-controls"><label className="field">线条样式<select aria-label="形状线条样式" value={line.width>0?(line.dash==="dash"?"dash":line.dash==="dot"?"dot":"solid"):"none"} onChange={event=>onChange({line:event.target.value==="none"?{...line,width:0,dash:"none"}:{color:line.color||"#52768B",width:line.width>0?line.width:2,dash:event.target.value}})}><option value="none">无线条</option><option value="solid">实线</option><option value="dash">虚线</option><option value="dot">点线</option></select></label><label className="field">线条粗细<input aria-label="形状线条粗细" type="number" min="0" max="12" step="0.5" value={line.width??2} onChange={event=>onChange({line:{...line,width:Math.max(0,Math.min(12,Number(event.target.value)))}})}/></label></div>{connector&&<div className="line-ending-controls"><label className="field">起点<select aria-label="线条起点" value={line.beginArrowType||"none"} onChange={event=>onChange({line:{...line,beginArrowType:event.target.value}})}><option value="none">无</option><option value="triangle">箭头</option></select></label><label className="field">终点<select aria-label="线条终点" value={line.endArrowType||"none"} onChange={event=>onChange({line:{...line,endArrowType:event.target.value}})}><option value="none">无</option><option value="triangle">箭头</option></select></label></div>}</section>;
 }
 
 function ChartStylePanel({element,onChange}:{element:any;onChange:(patch:Record<string,any>)=>void}){

@@ -46,7 +46,7 @@ export interface SlideElement {
   iconId?: string;
   shape?: string;
   fill?: string;
-  line?: { color: string; width: number; dash?: string };
+  line?: { color: string; width: number; dash?: string; beginArrowType?: string; endArrowType?: string };
   [key: string]: any;
 }
 export interface Annotation {
@@ -104,9 +104,9 @@ export interface CompiledElement {
   }[];
   numericUnit?: { baseUnit: string; displayDivisor: string; label: string };
   valueAxis?: { min: number; max: number; step: number; title: string };
-  shape?: "rect" | "square" | "roundRect" | "ellipse" | "circle" | "triangle" | "diamond" | "line";
+  shape?: "rect" | "square" | "roundRect" | "ellipse" | "circle" | "triangle" | "rtTriangle" | "diamond" | "parallelogram" | "trapezoid" | "pentagon" | "hexagon" | "star5" | "heart" | "plus" | "rightArrow" | "leftRightArrow" | "chevron" | "notchedRightArrow" | "line" | "elbow";
   fill?: string;
-  line?: { color: string; width: number; dash?: string };
+  line?: { color: string; width: number; dash?: string; beginArrowType?: string; endArrowType?: string };
   assetId?: string;
   stepId?: string;
   [key: string]: any;

@@ -670,9 +670,9 @@ export function compileSlide(
       continue;
     }
     if (e.type === "shape") {
-      const supported=["rect","square","roundRect","ellipse","circle","triangle","diamond","line"] as const;
+      const supported=["rect","square","roundRect","ellipse","circle","triangle","rtTriangle","diamond","parallelogram","trapezoid","pentagon","hexagon","star5","heart","plus","rightArrow","leftRightArrow","chevron","notchedRightArrow","line","elbow"] as const;
       const shape:CompiledElement["shape"]=supported.includes(e.shape as any)?e.shape as CompiledElement["shape"]:"rect";
-      const shapeText=shape==='line'?'':(e.runs??[]).map((run:any)=>run.text??'').join('');
+      const shapeText=shape==='line'||shape==='elbow'?'':(e.runs??[]).map((run:any)=>run.text??'').join('');
       const shapeFontSize=Number(style.fontSize??16);
       const shapeLines=shapeText?wrapText(shapeText,Math.max(1,rect.w-16),shapeFontSize):[];
       if(shapeLines.length*shapeFontSize*1.25>rect.h)diag('TEXT_OVERFLOW','Text exceeds its rectangle',e.id);

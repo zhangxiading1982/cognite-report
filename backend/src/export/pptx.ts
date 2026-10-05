@@ -166,8 +166,23 @@ export async function writeDeckPptx(
           options,
         );
       } else if (e.type === "shape") {
-        if (!['rect','square','roundRect','ellipse','circle','triangle','diamond','line'].includes(e.shape??''))
+        const shapeTypes:Record<string,any>={rect:deck.ShapeType.rect,square:deck.ShapeType.rect,roundRect:deck.ShapeType.roundRect,ellipse:deck.ShapeType.ellipse,circle:deck.ShapeType.ellipse,triangle:deck.ShapeType.triangle,rtTriangle:deck.ShapeType.rtTriangle,diamond:deck.ShapeType.diamond,parallelogram:deck.ShapeType.parallelogram,trapezoid:deck.ShapeType.trapezoid,pentagon:deck.ShapeType.pentagon,hexagon:deck.ShapeType.hexagon,star5:deck.ShapeType.star5,heart:deck.ShapeType.heart,plus:deck.ShapeType.plus,rightArrow:deck.ShapeType.rightArrow,leftRightArrow:deck.ShapeType.leftRightArrow,chevron:deck.ShapeType.chevron,notchedRightArrow:deck.ShapeType.notchedRightArrow,line:deck.ShapeType.line};
+        if (!shapeTypes[e.shape??''] && e.shape!=="elbow")
           throw new Error("UNSUPPORTED_SHAPE");
+        const exportedLine:any={
+          color: color(e.line?.color, e.fill ?? "94A3B8"),
+          width: e.line?.width ?? ((e.shape === "line"||e.shape === "elbow") ? 1 : 0),
+          ...(e.line?.dash === "dash" ? { dashType: "dash" as const } : e.line?.dash === "dot" ? { dashType: "sysDot" as const } : {}),
+          ...(e.line?.beginArrowType&&e.line.beginArrowType!=="none"?{beginArrowType:e.line.beginArrowType as any}:{}),
+          ...(e.line?.endArrowType&&e.line.endArrowType!=="none"?{endArrowType:e.line.endArrowType as any}:{}),
+        };
+        if(e.shape==="elbow"){
+          const middle=bounds.x+bounds.w/2;
+          slide.addShape(deck.ShapeType.line,{x:bounds.x,y:bounds.y,w:bounds.w/2,h:0,line:{...exportedLine,endArrowType:undefined}});
+          slide.addShape(deck.ShapeType.line,{x:middle,y:bounds.y,w:0,h:bounds.h,line:{...exportedLine,beginArrowType:undefined,endArrowType:undefined}});
+          slide.addShape(deck.ShapeType.line,{x:middle,y:bounds.y+bounds.h,w:bounds.w/2,h:0,line:{...exportedLine,beginArrowType:undefined}});
+          continue;
+        }
         const shapeBounds =
           e.shape === "line"
             ? {
@@ -179,16 +194,12 @@ export async function writeDeckPptx(
                 flipV: bounds.h < 0,
               }
             : bounds;
-        const shapeType=e.shape === "line" ? deck.ShapeType.line : e.shape==='roundRect'?deck.ShapeType.roundRect:(e.shape==='ellipse'||e.shape==='circle')?deck.ShapeType.ellipse:e.shape==='triangle'?deck.ShapeType.triangle:e.shape==='diamond'?deck.ShapeType.diamond:deck.ShapeType.rect;
+        const shapeType=shapeTypes[e.shape??'rect'];
         const shapeOptions={
             ...shapeBounds,
             fill:
               e.shape === "line" ? undefined : { color: color(e.fill, "2563EB") },
-            line: {
-              color: color(e.line?.color, e.fill ?? "94A3B8"),
-              width: e.line?.width ?? (e.shape === "line" ? 1 : 0),
-              ...(e.line?.dash === "dash" ? { dashType: "dash" as const } : {}),
-            },
+            line: exportedLine,
           };
         if(e.shape!=="line"&&e.text)slide.addText(e.text,{...shapeOptions,shape:shapeType,fontFace:e.fontFace??compiled.theme.fontFace,fontSize:e.fontSize??16,color:color(e.color,compiled.theme.textColor),bold:e.bold===true,italic:e.italic===true,align:e.align??'center',valign:e.valign??'middle',margin:4,breakLine:false,paraSpaceAfter:0});
         else slide.addShape(shapeType,shapeOptions);

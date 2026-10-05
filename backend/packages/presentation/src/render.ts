@@ -20,6 +20,70 @@ const color = (x: unknown, fallback = "1F2937") =>
     ? "#" + x.replace("#", "")
     : "#" + fallback;
 const num = (v: number) => (Number.isFinite(v) ? v : 0);
+const polygon = (points: [number, number][]) =>
+  points.map(([x, y]) => `${num(x)},${num(y)}`).join(" ");
+const dash = (value?: string) =>
+  value === "dash"
+    ? ' stroke-dasharray="8 5"'
+    : value === "dot"
+      ? ' stroke-dasharray="2 4"'
+      : "";
+function starPoints(r: CompiledElement["rect"]) {
+  const points: [number, number][] = [];
+  for (let index = 0; index < 10; index++) {
+    const angle = -Math.PI / 2 + (index * Math.PI) / 5;
+    const radius = index % 2 === 0 ? 1 : 0.42;
+    points.push([
+      r.x + r.w / 2 + Math.cos(angle) * (r.w / 2) * radius,
+      r.y + r.h / 2 + Math.sin(angle) * (r.h / 2) * radius,
+    ]);
+  }
+  return points;
+}
+function lineGeometry(n: CompiledElement) {
+  const r = n.rect;
+  const stroke = color(n.line?.color);
+  const safeId = String(n.id).replace(/[^a-z0-9_-]/gi, "-");
+  const hasStart = !!n.line?.beginArrowType && n.line.beginArrowType !== "none";
+  const hasEnd = !!n.line?.endArrowType && n.line.endArrowType !== "none";
+  const markerId = `line-arrow-${safeId}`;
+  const marker = hasStart || hasEnd
+    ? `<defs><marker id="${markerId}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="${stroke}"/></marker></defs>`
+    : "";
+  const arrows = `${hasStart ? ` marker-start="url(#${markerId})"` : ""}${hasEnd ? ` marker-end="url(#${markerId})"` : ""}`;
+  const common = `fill="none" stroke="${stroke}" stroke-width="${num(n.line?.width ?? 1)}"${dash(n.line?.dash)}${arrows}`;
+  return n.shape === "elbow"
+    ? `${marker}<polyline points="${polygon([[r.x,r.y],[r.x+r.w/2,r.y],[r.x+r.w/2,r.y+r.h],[r.x+r.w,r.y+r.h]])}" ${common}/>`
+    : `${marker}<line x1="${num(r.x)}" y1="${num(r.y)}" x2="${num(r.x + r.w)}" y2="${num(r.y + r.h)}" ${common}/>`;
+}
+function shapeGeometry(n: CompiledElement) {
+  const r = n.rect;
+  const outline=`stroke="${color(n.line?.color,n.fill??'94A3B8')}" stroke-width="${num(n.line?.width??0)}"${dash(n.line?.dash)}`;
+  const attrs=`fill="${color(n.fill)}" ${outline}`;
+  if (n.shape === "ellipse" || n.shape === "circle")
+    return `<ellipse cx="${num(r.x+r.w/2)}" cy="${num(r.y+r.h/2)}" rx="${num(r.w/2)}" ry="${num(r.h/2)}" ${attrs}/>`;
+  if (n.shape === "roundRect")
+    return `<rect x="${num(r.x)}" y="${num(r.y)}" width="${num(r.w)}" height="${num(r.h)}" rx="${num(Math.min(r.w,r.h)*0.14)}" ry="${num(Math.min(r.w,r.h)*0.14)}" ${attrs}/>`;
+  const shapes: Record<string, [number, number][]> = {
+    triangle:[[r.x+r.w/2,r.y],[r.x+r.w,r.y+r.h],[r.x,r.y+r.h]],
+    rtTriangle:[[r.x,r.y],[r.x+r.w,r.y+r.h],[r.x,r.y+r.h]],
+    diamond:[[r.x+r.w/2,r.y],[r.x+r.w,r.y+r.h/2],[r.x+r.w/2,r.y+r.h],[r.x,r.y+r.h/2]],
+    parallelogram:[[r.x+r.w*.18,r.y],[r.x+r.w,r.y],[r.x+r.w*.82,r.y+r.h],[r.x,r.y+r.h]],
+    trapezoid:[[r.x+r.w*.18,r.y],[r.x+r.w*.82,r.y],[r.x+r.w,r.y+r.h],[r.x,r.y+r.h]],
+    pentagon:[[r.x+r.w*.5,r.y],[r.x+r.w,r.y+r.h*.38],[r.x+r.w*.81,r.y+r.h],[r.x+r.w*.19,r.y+r.h],[r.x,r.y+r.h*.38]],
+    hexagon:[[r.x+r.w*.25,r.y],[r.x+r.w*.75,r.y],[r.x+r.w,r.y+r.h*.5],[r.x+r.w*.75,r.y+r.h],[r.x+r.w*.25,r.y+r.h],[r.x,r.y+r.h*.5]],
+    plus:[[r.x+r.w*.35,r.y],[r.x+r.w*.65,r.y],[r.x+r.w*.65,r.y+r.h*.35],[r.x+r.w,r.y+r.h*.35],[r.x+r.w,r.y+r.h*.65],[r.x+r.w*.65,r.y+r.h*.65],[r.x+r.w*.65,r.y+r.h],[r.x+r.w*.35,r.y+r.h],[r.x+r.w*.35,r.y+r.h*.65],[r.x,r.y+r.h*.65],[r.x,r.y+r.h*.35],[r.x+r.w*.35,r.y+r.h*.35]],
+    rightArrow:[[r.x,r.y+r.h*.25],[r.x+r.w*.62,r.y+r.h*.25],[r.x+r.w*.62,r.y],[r.x+r.w,r.y+r.h*.5],[r.x+r.w*.62,r.y+r.h],[r.x+r.w*.62,r.y+r.h*.75],[r.x,r.y+r.h*.75]],
+    leftRightArrow:[[r.x,r.y+r.h*.5],[r.x+r.w*.2,r.y],[r.x+r.w*.2,r.y+r.h*.25],[r.x+r.w*.8,r.y+r.h*.25],[r.x+r.w*.8,r.y],[r.x+r.w,r.y+r.h*.5],[r.x+r.w*.8,r.y+r.h],[r.x+r.w*.8,r.y+r.h*.75],[r.x+r.w*.2,r.y+r.h*.75],[r.x+r.w*.2,r.y+r.h]],
+    chevron:[[r.x,r.y],[r.x+r.w*.68,r.y],[r.x+r.w,r.y+r.h*.5],[r.x+r.w*.68,r.y+r.h],[r.x,r.y+r.h],[r.x+r.w*.32,r.y+r.h*.5]],
+    notchedRightArrow:[[r.x,r.y+r.h*.25],[r.x+r.w*.62,r.y+r.h*.25],[r.x+r.w*.62,r.y],[r.x+r.w,r.y+r.h*.5],[r.x+r.w*.62,r.y+r.h],[r.x+r.w*.62,r.y+r.h*.75],[r.x,r.y+r.h*.75],[r.x+r.w*.18,r.y+r.h*.5]],
+  };
+  if (n.shape === "star5") return `<polygon points="${polygon(starPoints(r))}" ${attrs}/>`;
+  if (n.shape === "heart")
+    return `<path d="M ${num(r.x+r.w/2)} ${num(r.y+r.h)} C ${num(r.x+r.w*.42)} ${num(r.y+r.h*.86)}, ${num(r.x)} ${num(r.y+r.h*.6)}, ${num(r.x)} ${num(r.y+r.h*.3)} C ${num(r.x)} ${num(r.y)}, ${num(r.x+r.w*.38)} ${num(r.y-r.h*.05)}, ${num(r.x+r.w/2)} ${num(r.y+r.h*.22)} C ${num(r.x+r.w*.62)} ${num(r.y-r.h*.05)}, ${num(r.x+r.w)} ${num(r.y)}, ${num(r.x+r.w)} ${num(r.y+r.h*.3)} C ${num(r.x+r.w)} ${num(r.y+r.h*.6)}, ${num(r.x+r.w*.58)} ${num(r.y+r.h*.86)}, ${num(r.x+r.w/2)} ${num(r.y+r.h)} Z" ${attrs}/>`;
+  if (shapes[n.shape ?? ""]) return `<polygon points="${polygon(shapes[n.shape ?? ""])}" ${attrs}/>`;
+  return `<rect x="${num(r.x)}" y="${num(r.y)}" width="${num(r.w)}" height="${num(r.h)}" ${attrs}/>`;
+}
 export function renderSlideSvg(c: CompiledSlide): string {
   const body = c.elements
     .map((n) => {
@@ -50,16 +114,8 @@ export function renderSlideSvg(c: CompiledSlide): string {
         }).join('')).join('');
       }
       if (n.type === "shape") {
-        if (n.shape === "line")
-          return `<line x1="${num(r.x)}" y1="${num(r.y)}" x2="${num(r.x + r.w)}" y2="${num(r.y + r.h)}" stroke="${color(n.line?.color)}" stroke-width="${num(n.line?.width ?? 1)}"${n.line?.dash==='dash'?' stroke-dasharray="8 5"':''}/>`;
-        const outline=`stroke="${color(n.line?.color,n.fill??'94A3B8')}" stroke-width="${num(n.line?.width??0)}"${n.line?.dash==='dash'?' stroke-dasharray="8 5"':''}`;
-        const body=n.shape==="ellipse"||n.shape==="circle"
-          ?`<ellipse cx="${num(r.x+r.w/2)}" cy="${num(r.y+r.h/2)}" rx="${num(r.w/2)}" ry="${num(r.h/2)}" fill="${color(n.fill)}" ${outline}/>`
-          :n.shape==="triangle"
-            ?`<polygon points="${num(r.x+r.w/2)},${num(r.y)} ${num(r.x+r.w)},${num(r.y+r.h)} ${num(r.x)},${num(r.y+r.h)}" fill="${color(n.fill)}" ${outline}/>`
-            :n.shape==="diamond"
-              ?`<polygon points="${num(r.x+r.w/2)},${num(r.y)} ${num(r.x+r.w)},${num(r.y+r.h/2)} ${num(r.x+r.w/2)},${num(r.y+r.h)} ${num(r.x)},${num(r.y+r.h/2)}" fill="${color(n.fill)}" ${outline}/>`
-              :`<rect x="${num(r.x)}" y="${num(r.y)}" width="${num(r.w)}" height="${num(r.h)}"${n.shape==="roundRect"?` rx="${num(Math.min(r.w,r.h)*0.14)}" ry="${num(Math.min(r.w,r.h)*0.14)}"`:''} fill="${color(n.fill)}" ${outline}/>`;
+        if (n.shape === "line" || n.shape === "elbow") return lineGeometry(n);
+        const body=shapeGeometry(n);
         if(!n.text)return body;
         const tx=r.x+(n.align==='left'?8:n.align==='right'?r.w-8:r.w/2),anchor=n.align==='left'?'start':n.align==='right'?'end':'middle',fs=n.fontSize??16,lines=String(n.text).split('\n'),height=lines.length*fs*1.25,top=n.valign==='top'?r.y+8:n.valign==='bottom'?r.y+r.h-height-8:r.y+(r.h-height)/2;
         return `<g>${body}<text text-anchor="${anchor}" font-weight="${n.bold?'bold':'normal'}" font-style="${n.italic?'italic':'normal'}" x="${num(tx)}" y="${num(top)}" font-family="${esc(fontCss(n.fontFace??c.theme.fontFace))}" font-size="${num(fs)}" fill="${color(n.color)}">${lines.map((line,i)=>`<tspan x="${num(tx)}" dy="${i===0?fs:fs*1.25}">${esc(line)}</tspan>`).join('')}</text></g>`;

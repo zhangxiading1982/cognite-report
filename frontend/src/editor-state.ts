@@ -330,3 +330,23 @@ export function swapSelection(d: any, ids: string[]) {
   });
   return next;
 }
+
+/**
+ * Moves a selection to an absolute layer boundary. The element array and z
+ * values are kept in the same order because the browser preview and PPT
+ * compiler both use that order when objects overlap.
+ */
+export function setSelectionLayer(
+  d: any,
+  ids: string[],
+  destination: "front" | "back",
+) {
+  const next = structuredClone(d);
+  const selected = next.elements.filter((element: any) => ids.includes(element.id));
+  const rest = next.elements.filter((element: any) => !ids.includes(element.id));
+  next.elements = destination === "front" ? [...rest, ...selected] : [...selected, ...rest];
+  next.elements.forEach((element: any, index: number) => {
+    element.z = index + 1;
+  });
+  return next;
+}

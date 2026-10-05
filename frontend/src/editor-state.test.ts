@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   History,
   SaveQueue,
+  setSelectionLayer,
   snapSelection,
   transformSelection,
 } from "./editor-state";
@@ -17,6 +18,23 @@ const doc = {
   layoutOverrides: {},
 };
 describe("editor commands", () => {
+  it("moves selected objects to the absolute front or back and normalizes layer order", () => {
+    const layered = {
+      ...doc,
+      elements: [
+        { ...doc.elements[0], z: 8 },
+        { ...doc.elements[1], z: 2 },
+        { id: "c", rect: { x: 320, y: 90, w: 80, h: 40 }, z: 99 },
+      ],
+    };
+    const front = setSelectionLayer(layered, ["a"], "front");
+    expect(front.elements.map((element: any) => element.id)).toEqual(["b", "c", "a"]);
+    expect(front.elements.map((element: any) => element.z)).toEqual([1, 2, 3]);
+    const back = setSelectionLayer(front, ["c", "a"], "back");
+    expect(back.elements.map((element: any) => element.id)).toEqual(["c", "a", "b"]);
+    expect(back.elements.map((element: any) => element.z)).toEqual([1, 2, 3]);
+    expect(layered.elements.map((element: any) => element.id)).toEqual(["a", "b", "c"]);
+  });
   it("undoes one gesture and invalidates redo after a new edit", () => {
     const h = new History(doc);
     h.commit({ ...doc, title: "B" });
