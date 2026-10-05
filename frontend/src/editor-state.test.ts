@@ -101,7 +101,7 @@ describe("PowerPoint-like connector geometry", () => {
   it("moves an elbow middle segment independently and keeps it adjusted when endpoints move", () => {
     const elbowDoc = structuredClone(connectorDoc) as any;
     elbowDoc.elements[0].shape = "elbow";
-    const adjusted = setElbowControl(elbowDoc, "line", { x: 140, y: 100 });
+    const adjusted = setElbowControl(elbowDoc, "line", "middle", { x: 140, y: 100 });
     expect(adjusted.elements[0].line.elbowOffset).toBe(40);
     expect(connectorRoute(adjusted, adjusted.elements[0]).middleX).toBe(140);
     const attached = setConnectorEndpoint(adjusted, "line", "end", { x: 280, y: 120 }, { elementId: "target", side: "left" });
@@ -109,6 +109,23 @@ describe("PowerPoint-like connector geometry", () => {
     const route = connectorRoute(attached, attached.elements[0]);
     expect(route.end).toEqual({ x: 340, y: 140 });
     expect(route.middleX).toBe(230);
+  });
+  it("builds a five-segment route with two controls when connected sides face away", () => {
+    const routed = {
+      ...doc,
+      elements: [
+        { id: "source", type: "shape", shape: "rect", rect: { x: 80, y: 448, w: 136, h: 136 } },
+        { id: "target", type: "shape", shape: "rect", rect: { x: 450, y: 448, w: 136, h: 136 } },
+        { id: "elbow", type: "shape", shape: "elbow", rect: { x: 148, y: 448, w: 370, h: 136 }, line: { color: "#2563EB", width: 2, beginConnection: { elementId: "source", side: "bottom" }, endConnection: { elementId: "target", side: "top" } } },
+      ],
+    };
+    const route = connectorRoute(routed, routed.elements[2]);
+    expect(route.points).toHaveLength(6);
+    expect(route.points[0]).toEqual({ x: 148, y: 584 });
+    expect(route.points.at(-1)).toEqual({ x: 518, y: 448 });
+    expect(route.controls.map(control => control.key)).toEqual(["departure", "corridor"]);
+    const moved = setElbowControl(routed, "elbow", "departure", { ...route.controls[0].point, y: route.controls[0].point.y + 24 });
+    expect(connectorRoute(moved, moved.elements[2]).points[1].y).toBe(route.points[1].y + 24);
   });
 });
 describe("serial immutable revision saves", () => {

@@ -9,6 +9,7 @@ export {PHASE2_CHARTS} from "./charts-phase2";
 import { compileComponent } from "./components-phase2";
 import { compileBusinessComponent } from "./business-components";
 import { FONT_OPTIONS } from "./fonts";
+import { buildOrthogonalRoute } from "./connector-route";
 export { FONT_OPTIONS } from "./fonts";
 import { z } from "zod";
 export * from "./schema";
@@ -16,6 +17,7 @@ export * from "./types";
 export * from "./math";
 export * from "./render";
 export * from "./layout";
+export * from "./connector-route";
 import {
   validateDataSpec,
   formatSchema,
@@ -551,6 +553,23 @@ export function compileSlide(
       const end = connectionPoint(line.endConnection) ?? { x: rect.x + (line.flipH ? 0 : rect.w), y: rect.y + (line.flipV ? 0 : rect.h) };
       rect = { x: Math.min(begin.x, end.x), y: Math.min(begin.y, end.y), w: Math.max(1, Math.abs(end.x - begin.x)), h: Math.max(1, Math.abs(end.y - begin.y)) };
       resolvedLine = { ...line, flipH: begin.x > end.x, flipV: begin.y > end.y };
+      if (e.shape === "elbow") {
+        const excluded = new Set([line.beginConnection?.elementId, line.endConnection?.elementId]);
+        const obstacles = slide.elements
+          .filter(item => item.id !== e.id && item.type === "shape" && item.shape !== "line" && item.shape !== "elbow" && !excluded.has(item.id))
+          .map(sourceRect);
+        resolvedLine.elbowPoints = buildOrthogonalRoute({
+          begin,
+          end,
+          beginSide: line.beginConnection?.side,
+          endSide: line.endConnection?.side,
+          obstacles,
+          canvas: { width: slide.canvas.width, height: slide.canvas.height },
+          elbowOffset: line.elbowOffset,
+          elbowStartOffset: line.elbowStartOffset,
+          elbowCorridorOffset: line.elbowCorridorOffset,
+        }).points;
+      }
     }
     const style = { ...e.style, ...ov?.style };
     // Legacy default is resolved at render time; immutable saved revisions stay unchanged.

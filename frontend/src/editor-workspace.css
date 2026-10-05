@@ -26,7 +26,7 @@
 .editor.focused-editor .alignment-guide.horizontal{left:-8px;right:-8px;height:0;border-top:1px dashed #d946ef}
 .editor.focused-editor .connector-handle{position:absolute;width:10px;height:10px;transform:translate(-50%,-50%);border:1px solid #5f7f26;border-radius:50%;background:#c9f36a;box-shadow:0 0 0 2px #fff;cursor:crosshair;z-index:205}
 .editor.focused-editor .element-hit.connector,.editor.focused-editor .element-hit.connector:hover,.editor.focused-editor .element-hit.connector.selected{border-color:transparent;box-shadow:none;background:transparent}
-.editor.focused-editor .connector-bend-handle{position:absolute;width:11px;height:11px;transform:translate(-50%,-50%);border:1px solid #b7791f;border-radius:2px;background:#ffdda0;box-shadow:0 0 0 2px #fff;cursor:ew-resize;z-index:206}
+.editor.focused-editor .connector-bend-handle{position:absolute;width:11px;height:11px;transform:translate(-50%,-50%);border:1px solid #b7791f;border-radius:2px;background:#ffdda0;box-shadow:0 0 0 2px #fff;z-index:206}.editor.focused-editor .connector-bend-handle.axis-x{cursor:ew-resize}.editor.focused-editor .connector-bend-handle.axis-y{cursor:ns-resize}
 .editor.focused-editor .connector-anchor{position:absolute;width:9px;height:9px;transform:translate(-50%,-50%);border:1px solid #1686d9;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #ffffffcc;pointer-events:none;z-index:204}
 .editor.focused-editor .connector-anchor.active{width:13px;height:13px;background:#c9f36a;border-color:#5f7f26;box-shadow:0 0 0 3px #dff7a5aa}
 .ppt-style-block{margin:16px 0;padding-top:14px;border-top:1px solid #e5eae9}

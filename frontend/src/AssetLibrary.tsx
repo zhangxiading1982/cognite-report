@@ -4,11 +4,14 @@ import {api,post} from './api';
 import {Modal} from './ui';
 import {DirectoryBrowser,InlineName} from './DirectoryBrowser';
 import {ImageProcessing} from './ImageProcessing';
+import {AssetPicker} from './AssetPicker';
 import './asset-library.css';
 import {useLibraryNavigation,LibraryToolbar} from './LibraryNavigation';
 const kinds=[['icon','图标'],['vector','矢量图'],['image','图片']];
 function KindIcon({kind}:{kind:string}){const Icon=kind==='icon'?Smile:kind==='vector'?Shapes:Image;return <Icon size={16} aria-label={kinds.find(k=>k[0]===kind)?.[1]||'图片'}/>}
-export function AssetLibrary({onSelect,folderId:externalFolder,onFolderChange,toolbar}:{onSelect?:(asset:any)=>void;folderId?:string|null;onFolderChange?:(id:string|null)=>void;toolbar?:React.ReactNode}){
+type AssetLibraryProps={onSelect?:(asset:any)=>void;folderId?:string|null;onFolderChange?:(id:string|null)=>void;toolbar?:React.ReactNode};
+export function AssetLibrary(props:AssetLibraryProps){return props.onSelect?<AssetPicker onSelect={props.onSelect}/>:<ManagedAssetLibrary {...props}/>}
+function ManagedAssetLibrary({onSelect,folderId:externalFolder,onFolderChange,toolbar}:AssetLibraryProps){
  const[assets,A]=useState<any[]>([]),[localFolder,F]=useState<string|null>(null),[folders,Fs]=useState<any[]>([]),[search,Q]=useState(''),[selected,S]=useState<any>(),[error,E]=useState(''),[busy,B]=useState(false),[confirm,C]=useState<any>(),[uploading,U]=useState(false),[manage,M]=useState(false),[moving,Move]=useState(false),[kind,K]=useState(''),[uploadKind,UK]=useState('image'),[svgName,N]=useState(''),[svgCode,Code]=useState('');
  const navigation=useLibraryNavigation(),managed=navigation.managed&&navigation.kind==='assets'&&!onSelect;
  const folderId=managed?navigation.folderId:externalFolder===undefined?localFolder:externalFolder;const setFolder=managed?navigation.setFolderId:onFolderChange||F;

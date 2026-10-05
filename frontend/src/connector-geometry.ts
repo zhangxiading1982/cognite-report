@@ -1,4 +1,6 @@
 import { rectOf } from "./editor-state";
+import { buildOrthogonalRoute, type ElbowControlKey } from "@slidebi/presentation";
+export type { ElbowControlKey } from "@slidebi/presentation";
 
 export type ConnectorEnd = "begin" | "end";
 export type ConnectionSide = "top" | "right" | "bottom" | "left";
@@ -41,15 +43,22 @@ export function connectorEndpoints(document: any, element: any) {
 
 export function connectorRoute(document: any, element: any) {
   const { begin, end } = connectorEndpoints(document, element);
-  const middleX = (begin.x + end.x) / 2 + Number(element?.line?.elbowOffset ?? 0);
-  return {
+  if (element?.shape !== "elbow") return { begin, end, middleX: (begin.x + end.x) / 2, points: [begin, end], controls: [] };
+  const excluded = new Set([element.line?.beginConnection?.elementId, element.line?.endConnection?.elementId]);
+  const obstacles = document.elements
+    .filter((item: any) => item.id !== element.id && item.type === "shape" && !isConnector(item) && !excluded.has(item.id))
+    .map((item: any) => rectOf(document, item));
+  return buildOrthogonalRoute({
     begin,
     end,
-    middleX,
-    points: element?.shape === "elbow"
-      ? [begin, { x: middleX, y: begin.y }, { x: middleX, y: end.y }, end]
-      : [begin, end],
-  };
+    beginSide: element.line?.beginConnection?.side,
+    endSide: element.line?.endConnection?.side,
+    obstacles,
+    canvas: { width: document.canvas?.width ?? 960, height: document.canvas?.height ?? 540 },
+    elbowOffset: element.line?.elbowOffset,
+    elbowStartOffset: element.line?.elbowStartOffset,
+    elbowCorridorOffset: element.line?.elbowCorridorOffset,
+  });
 }
 
 export function connectorBounds(document: any, element: any) {
@@ -61,11 +70,6 @@ export function connectorBounds(document: any, element: any) {
     w: Math.max(1, Math.max(...xs) - Math.min(...xs)),
     h: Math.max(1, Math.max(...ys) - Math.min(...ys)),
   };
-}
-
-export function elbowControlPoint(document: any, element: any): ConnectorPoint {
-  const route = connectorRoute(document, element);
-  return { x: route.middleX, y: (route.begin.y + route.end.y) / 2 };
 }
 
 export function connectionAnchors(document: any, connectorId: string): ConnectionAnchor[] {
@@ -124,15 +128,22 @@ export function setConnectorEndpoint(
   return next;
 }
 
-export function setElbowControl(document: any, connectorId: string, point: ConnectorPoint) {
+export function setElbowControl(document: any, connectorId: string, controlKey: ElbowControlKey, point: ConnectorPoint) {
   const next = structuredClone(document);
   const original = document.elements.find((element: any) => element.id === connectorId);
   const connector = next.elements.find((element: any) => element.id === connectorId);
   if (!original || !connector || original.shape !== "elbow") return next;
-  const { begin, end } = connectorEndpoints(document, original);
-  connector.line = {
-    ...(connector.line ?? {}),
-    elbowOffset: Math.round(point.x - (begin.x + end.x) / 2),
-  };
+  const control = connectorRoute(document, original).controls.find(item => item.key === controlKey);
+  if (!control) return next;
+  const delta = point[control.axis] - control.point[control.axis];
+  const line = connector.line ?? {};
+  if (controlKey === "middle") line.elbowOffset = Math.round(Number(line.elbowOffset ?? 0) + delta);
+  if (controlKey === "corridor") line.elbowCorridorOffset = Math.round(Number(line.elbowCorridorOffset ?? 0) + delta);
+  if (controlKey === "departure") {
+    const side = line.beginConnection?.side as ConnectionSide | undefined;
+    const sign = side === "top" || side === "left" ? -1 : 1;
+    line.elbowStartOffset = Math.round(Number(line.elbowStartOffset ?? 0) + delta * sign);
+  }
+  connector.line = line;
   return next;
 }

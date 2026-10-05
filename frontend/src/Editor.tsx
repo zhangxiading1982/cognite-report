@@ -71,12 +71,13 @@ import {
   connectionAnchors,
   connectorBounds,
   connectorEndpoints,
-  elbowControlPoint,
+  connectorRoute,
   findConnectorSnap,
   isConnector,
   setElbowControl,
   setConnectorEndpoint,
   type ConnectorEnd,
+  type ElbowControlKey,
 } from "./connector-geometry";
 import {toDataSpec} from "./table-import";
 const INSERT_CHART_GROUPS=[
@@ -434,7 +435,7 @@ export function Editor({
       Sel(clones.map((x: any) => x.id));
     });
   }
-  function pointerStart(e: React.PointerEvent, id: string, resize = false, connectorHandle?: ConnectorEnd | "elbow") {
+  function pointerStart(e: React.PointerEvent, id: string, resize = false, connectorHandle?: ConnectorEnd | ElbowControlKey) {
     e.preventDefault();
     e.stopPropagation();
     const ids = expandSelection(
@@ -469,12 +470,13 @@ export function Editor({
       dy = Math.round((e.clientY - d.y) / d.scale / 4) * 4;
     if (!dx && !dy) return;
     d.moved = true;
-    if (d.connectorHandle === "elbow") {
+    if (["middle", "departure", "corridor"].includes(d.connectorHandle)) {
       const connector = d.original.elements.find((item: any) => item.id === d.id);
-      const origin = elbowControlPoint(d.original, connector);
-      const next = setElbowControl(d.original, d.id, {
-        x: Math.max(0, Math.min(960, origin.x + dx)),
-        y: origin.y,
+      const control = connectorRoute(d.original, connector).controls.find(item => item.key === d.connectorHandle);
+      if (!control) return;
+      const next = setElbowControl(d.original, d.id, d.connectorHandle as ElbowControlKey, {
+        x: Math.max(0, Math.min(960, control.point.x + dx)),
+        y: Math.max(0, Math.min(540, control.point.y + dy)),
       });
       S(next);
       current.current = next;
@@ -822,7 +824,7 @@ export function Editor({
               const connector=isConnector(e);
               const r = connector ? connectorBounds(slide, e) : rectOf(slide, e);
               const endpoints=connector?connectorEndpoints(slide,e):undefined;
-              const elbowControl=e.shape==="elbow"?elbowControlPoint(slide,e):undefined;
+              const elbowControls=e.shape==="elbow"?connectorRoute(slide,e).controls:[];
               return (
                 <div
                   key={e.id}
@@ -858,7 +860,7 @@ export function Editor({
                       {connector && endpoints ? <>
                         <i aria-label="拖动线条起点" className="connector-handle begin" style={{left:`${((endpoints.begin.x-r.x)/r.w)*100}%`,top:`${((endpoints.begin.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"begin")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>
                         <i aria-label="拖动线条终点" className="connector-handle end" style={{left:`${((endpoints.end.x-r.x)/r.w)*100}%`,top:`${((endpoints.end.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"end")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>
-                        {elbowControl&&<i aria-label="拖动折线中段" className="connector-bend-handle" style={{left:`${((elbowControl.x-r.x)/r.w)*100}%`,top:`${((elbowControl.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"elbow")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>}
+                        {elbowControls.map(control=><i key={control.key} aria-label={control.key==="middle"?"拖动折线中段":control.key==="departure"?"拖动折线起始段":"拖动折线外侧段"} className={`connector-bend-handle axis-${control.axis}`} style={{left:`${((control.point.x-r.x)/r.w)*100}%`,top:`${((control.point.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,control.key)} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>) }
                       </> : <i
                           className="handle"
                           onPointerDown={(ev) => pointerStart(ev, e.id, true)}

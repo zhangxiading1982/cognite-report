@@ -178,11 +178,13 @@ export async function writeDeckPptx(
           ...(e.line?.endArrowType&&e.line.endArrowType!=="none"?{endArrowType:e.line.endArrowType as any}:{}),
         };
         if(e.shape==="elbow"){
-          const begin={x:bounds.x+(e.line?.flipH?bounds.w:0),y:bounds.y+(e.line?.flipV?bounds.h:0)},end={x:bounds.x+(e.line?.flipH?0:bounds.w),y:bounds.y+(e.line?.flipV?0:bounds.h)},middle=(begin.x+end.x)/2+Number(e.line?.elbowOffset??0)/72;
           const segment=(a:{x:number;y:number},b:{x:number;y:number},line:any)=>slide.addShape(deck.ShapeType.line,{x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),w:Math.abs(b.x-a.x),h:Math.abs(b.y-a.y),flipH:a.x>b.x,flipV:a.y>b.y,line});
-          segment(begin,{x:middle,y:begin.y},{...exportedLine,endArrowType:undefined});
-          segment({x:middle,y:begin.y},{x:middle,y:end.y},{...exportedLine,beginArrowType:undefined,endArrowType:undefined});
-          segment({x:middle,y:end.y},end,{...exportedLine,beginArrowType:undefined});
+          const resolvedElbowPoints=e.line?.elbowPoints;
+          const begin={x:e.rect.x+(e.line?.flipH?e.rect.w:0),y:e.rect.y+(e.line?.flipV?e.rect.h:0)};
+          const end={x:e.rect.x+(e.line?.flipH?0:e.rect.w),y:e.rect.y+(e.line?.flipV?0:e.rect.h)};
+          const middleX=(begin.x+end.x)/2+Number(e.line?.elbowOffset??0);
+          const points=(resolvedElbowPoints&&resolvedElbowPoints.length>=2?resolvedElbowPoints:[begin,{x:middleX,y:begin.y},{x:middleX,y:end.y},end]).map((point:any)=>({x:point.x/72,y:point.y/72}));
+          for(let index=1;index<points.length;index++)segment(points[index-1],points[index],{...exportedLine,...(index>1?{beginArrowType:undefined}:{}),...(index<points.length-1?{endArrowType:undefined}:{})});
           continue;
         }
         const shapeBounds =

@@ -38,6 +38,28 @@ it("uses raster previews and reuses the chosen asset in editor", async () => {
   );
   expect(screen.queryByText("归档素材")).toBeNull();
 });
+it("uses a read-only directory tree while choosing a resource for the editor", async () => {
+  const pick = vi.fn();
+  vi.stubGlobal("fetch", async (url: string) => new Response(JSON.stringify({items:url.includes("/folders")
+    ? [{id:"folder-icons",name:"图标",parentId:null},{id:"folder-people",name:"人物",parentId:"folder-icons"}]
+    : [{id:"root",name:"根目录素材",kind:"image",folderId:null,canEdit:true},{id:"avatar",name:"人物头像",kind:"icon",folderId:"folder-people",canEdit:true}]})));
+  render(<AssetLibrary onSelect={pick}/>);
+  expect(await screen.findByRole("tree",{name:"资源目录"})).toBeTruthy();
+  expect(screen.getByRole("button",{name:"根目录素材"})).toBeTruthy();
+  fireEvent.click(screen.getByRole("button",{name:"打开目录 人物"}));
+  expect(await screen.findByRole("button",{name:"人物头像"})).toBeTruthy();
+  expect(screen.queryByRole("button",{name:"根目录素材"})).toBeNull();
+  expect(screen.queryByRole("button",{name:"上传资源"})).toBeNull();
+  expect(screen.queryByRole("button",{name:"目录管理"})).toBeNull();
+  expect(screen.queryByRole("button",{name:"删除 人物头像"})).toBeNull();
+  fireEvent.click(screen.getByRole("button",{name:"人物头像"}));
+  expect(screen.getByRole("dialog",{name:"人物头像"})).toBeTruthy();
+  expect(screen.queryByRole("button",{name:/可见性/})).toBeNull();
+  expect(screen.queryByRole("button",{name:"修改资源目录"})).toBeNull();
+  expect(screen.queryByText("保存新副本")).toBeNull();
+  fireEvent.click(screen.getByRole("button",{name:"插入此素材"}));
+  expect(pick).toHaveBeenCalledWith(expect.objectContaining({id:"avatar"}));
+});
 it("uploads pasted SVG through the file API without inserting its markup", async () => {
   const fetcher = vi.fn(
     async (_url: string, init: any = {}) =>
