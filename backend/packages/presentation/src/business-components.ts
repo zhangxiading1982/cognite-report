@@ -441,14 +441,43 @@ export function compileBusinessComponent(
     const key = role("key"), label = role("label"), parent = role("parent"), subtitle = role("subtitle");
     if (!key || !label || !parent) return { handled: true, elements: [], error: "层级图需要节点、名称和父节点字段" };
     const byKey = new Map(rows.map((row) => [String(value(row, key)), row]));
-    const levelOf = (row: Record<string, unknown>) => { let level = 0, cursor = String(value(row, parent) ?? ""), guard = 0; while (cursor && byKey.has(cursor) && guard++ < 8) { level++; cursor = String(value(byKey.get(cursor)!, parent) ?? ""); } return level; };
+    const levelOf = (row: Record<string, unknown>) => { let level = 0, cursor = String(value(row, parent) ?? ""); const visited = new Set<string>(); while (cursor && byKey.has(cursor) && !visited.has(cursor)) { visited.add(cursor); level++; cursor = String(value(byKey.get(cursor)!, parent) ?? ""); } return level; };
+    if (style.variant === "decision" && style.orientation === "vertical") {
+      const levels = rows.map(levelOf), maxLevel = Math.max(...levels), levelH = rect.h / (maxLevel + 1), elements: CompiledElement[] = [];
+      const boxes = new Map<string, Rect>();
+      for (let level = 0; level <= maxLevel; level++) {
+        const peers = rows.filter(row => levelOf(row) === level), gap = 18;
+        const width = Math.min(220, (rect.w - gap * Math.max(0, peers.length - 1)) / Math.max(1, peers.length));
+        const boxH = Math.max(46, Math.min(66, levelH - 22));
+        const rowWidth = peers.length * width + Math.max(0, peers.length - 1) * gap;
+        peers.forEach((row, peerIndex) => boxes.set(String(value(row, key)), {
+          x: rect.x + (rect.w - rowWidth) / 2 + peerIndex * (width + gap),
+          y: rect.y + level * levelH + (levelH - boxH) / 2,
+          w: width,
+          h: boxH,
+        }));
+      }
+      rows.forEach((row, index) => {
+        const box = boxes.get(String(value(row, key)))!, parentId = String(value(row, parent) ?? ""), level = levels[index];
+        if (parentId && boxes.has(parentId)) {
+          const parentBox = boxes.get(parentId)!, startX = parentBox.x + parentBox.w / 2, startY = parentBox.y + parentBox.h, endX = box.x + box.w / 2, endY = box.y, middleY = (startY + endY) / 2;
+          elements.push(line(`${element.id}-link-a-${index}`, startX, startY, 0, middleY - startY, "AFC0D3", 1.3));
+          elements.push(line(`${element.id}-link-b-${index}`, Math.min(startX, endX), middleY, Math.abs(endX - startX), 0, "AFC0D3", 1.3));
+          elements.push(line(`${element.id}-link-c-${index}`, endX, middleY, 0, endY - middleY, "AFC0D3", 1.3));
+        }
+        const fill = level === 0 ? "2458A6" : level === maxLevel ? "EEF7F4" : "F1F5FA", outline = level === 0 ? "2458A6" : level === maxLevel ? "8BC8BA" : "C5D4E5", color = level === 0 ? "FFFFFF" : "102B57";
+        elements.push(shape(`${element.id}-node-${index}`, box, fill, "roundRect", outline));
+        elements.push(text(`${element.id}-node-text-${index}`, { x: box.x + 12, y: box.y + 7, w: box.w - 24, h: box.h - 14 }, `${display(row, label)}${subtitle ? `\n${display(row, subtitle)}` : ""}`, level === 0 ? 12 : 10, color, { bold: true, align: "center" }));
+      });
+      return { handled: true, elements };
+    }
     if (style.variant === "decision") {
       const levels = rows.map(levelOf), maxLevel = Math.max(...levels), columnW = rect.w / (maxLevel + 1), elements: CompiledElement[] = [];
       const boxes = new Map<string, Rect>();
       for (let level = 0; level <= maxLevel; level++) {
         const peers = rows.filter(row => levelOf(row) === level), boxH = Math.min(88, (rect.h - 24 - (peers.length - 1) * 22) / peers.length);
         peers.forEach((row, peerIndex) => {
-          const width = Math.min(236, columnW - 54), x = rect.x + level * columnW + (columnW - width) / 2, y = rect.y + 12 + peerIndex * (boxH + 22) + (rect.h - 24 - (peers.length * boxH + (peers.length - 1) * 22)) / 2;
+          const width = Math.max(88, Math.min(236, columnW - 54)), x = rect.x + level * columnW + (columnW - width) / 2, y = rect.y + 12 + peerIndex * (boxH + 22) + (rect.h - 24 - (peers.length * boxH + (peers.length - 1) * 22)) / 2;
           boxes.set(String(value(row, key)), { x, y, w: width, h: boxH });
         });
       }

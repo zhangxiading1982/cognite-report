@@ -21,12 +21,42 @@ describe("data-driven business components", () => {
     };
     for (const [id, expectation] of Object.entries(expectations)) {
       const item = template(id);
-      expect(item.payload.seedRevision).toBe(10);
-      expect(item.payload.example.designVersion).toBe(11);
+      expect(item.payload.seedRevision).toBeGreaterThanOrEqual(10);
+      expect(item.payload.example.designVersion).toBeGreaterThanOrEqual(11);
       expect(item.payload.example.slide.elements).toContainEqual(expect.objectContaining({ type: expectation.type }));
       const compiled = compileSlide(item.payload.example.slide, item.payload.example.dataSpec);
       expect(compiled.diagnostics.filter(diagnostic => diagnostic.severity === "error")).toEqual([]);
       expect(compiled.elements).toContainEqual(expect.objectContaining({ id: expectation.compiledId }));
+    }
+  });
+  it("lays out an arbitrary-depth decision tree horizontally or vertically from current data", () => {
+    const item = template("decision-tree");
+    expect(item.payload.seedRevision).toBe(11);
+    expect(item.payload.example.designVersion).toBe(12);
+    const data = structuredClone(item.payload.example.dataSpec);
+    data.resultSets[0].rows.push({ nodeId: "refresh", node: "按小时刷新", parentId: "managed", outcome: "启用增量查询" });
+    const slide = structuredClone(item.payload.example.slide);
+    const tree: any = slide.elements.find((element: any) => element.id === "decision-tree-view");
+    expect(tree.style.orientation).toBe("horizontal");
+    const horizontal = compileSlide(slide, data);
+    const rootH = horizontal.elements.find(element => element.id === "decision-tree-view-node-0")!;
+    const leafH = horizontal.elements.find(element => element.id === "decision-tree-view-node-5")!;
+    expect(leafH.rect.x).toBeGreaterThan(rootH.rect.x);
+    expect(horizontal.diagnostics.filter(diagnostic => diagnostic.severity === "error")).toEqual([]);
+
+    tree.style.orientation = "vertical";
+    const vertical = compileSlide(slide, data);
+    const rootV = vertical.elements.find(element => element.id === "decision-tree-view-node-0")!;
+    const leafV = vertical.elements.find(element => element.id === "decision-tree-view-node-5")!;
+    expect(leafV.rect.y).toBeGreaterThan(rootV.rect.y);
+    expect(vertical.diagnostics.filter(diagnostic => diagnostic.severity === "error")).toEqual([]);
+  });
+  it("ships compilable repaired previews for sales proposal and SWOT", () => {
+    for (const id of ["sales-proposal", "swot-analysis"]) {
+      const item = template(id);
+      expect(item.payload.seedRevision).toBe(11);
+      expect(item.payload.example.designVersion).toBe(12);
+      expect(compileSlide(item.payload.example.slide, item.payload.example.dataSpec).diagnostics.filter(diagnostic => diagnostic.severity === "error"), id).toEqual([]);
     }
   });
   it("uses a finance-grade P&L table with readable typography and variance semantics", () => {

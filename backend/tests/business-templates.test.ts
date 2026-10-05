@@ -100,10 +100,11 @@ describe("commercial business templates", () => {
 
   test("every business template uses the reference-grade presentation frame and hierarchy", () => {
     const optimized = new Set(["business-process", "customer-journey", "decision-matrix", "decision-tree", "portfolio-prioritization", "regional-market-map", "sales-proposal", "swot-analysis"]);
+    const repaired = new Set(["decision-tree", "sales-proposal", "swot-analysis"]);
     for (const template of BUSINESS_TEMPLATES) {
       const elements = template.payload.example.slide.elements;
-      expect(template.payload.seedRevision).toBe(optimized.has(template.id) ? 10 : 9);
-      expect(template.payload.example.designVersion).toBe(optimized.has(template.id) ? 11 : 10);
+      expect(template.payload.seedRevision).toBe(repaired.has(template.id) ? 11 : optimized.has(template.id) ? 10 : 9);
+      expect(template.payload.example.designVersion).toBe(repaired.has(template.id) ? 12 : optimized.has(template.id) ? 11 : 10);
       if (["cover-page", "section-page"].includes(template.id)) {
         expect(elements.some((element) => element.type === "text" && Number(element.style?.fontSize) >= 34 && element.style?.bold)).toBe(true);
       } else {

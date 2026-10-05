@@ -66,6 +66,7 @@ const white = "FFFFFF";
 const money: NumberFormat = { displayDivisor: "1", decimals: 0, suffix: "万元", percent: false };
 const percent: NumberFormat = { displayDivisor: "1", decimals: 0, suffix: "%", percent: true };
 const strategyUpgrade = { seedRevision: 10, designVersion: 11 } as const;
+const strategyRepair = { seedRevision: 11, designVersion: 12 } as const;
 
 const rect = (x: number, y: number, w: number, h: number): Rect => ({ x, y, w, h });
 const text = (
@@ -722,7 +723,7 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     scene: "budgetComparison",
     folderId: "template-folder-strategy",
     previewText: "标准化窗口已打开，先建立高频模板优势",
-    ...strategyUpgrade,
+    ...strategyRepair,
     dataSpec: swotData,
     binding: { resultSetId: "result-swot-analysis", roles: { quadrant: "quadrant", item: "item", priority: "priority", columns: ["quadrant", "item", "priority"] }, computations: [] },
     elements: [
@@ -1202,9 +1203,9 @@ const EXTENDED_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
   }),
   makeTemplate({
     id: "decision-tree", name: "决策树", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "数据先标准化，再按刷新频率选择托管方式", dataSpec: decisionTreeData,
-    ...strategyUpgrade,
+    ...strategyRepair,
     binding: { resultSetId: "result-decision-tree", roles: { key: "nodeId", label: "node", parent: "parentId", subtitle: "outcome", columns: ["node", "parentId", "outcome"] }, computations: [] },
-    elements: [...title("decision-tree", "数据先标准化，再按刷新频率选择托管方式", "决策路径｜用三个问题快速确定数据接入策略"), { id: "decision-tree-view", type: "hierarchy", rect: rect(36, 118, 888, 330), z: 4, bindingRef: "main", style: { fontSize: 10, variant: "decision" } }, shape("decision-tree-note-accent", rect(36, 466, 5, 32), "", "4C86D7", {}, "rect"), text("decision-tree-note", rect(54, 472, 870, 20), "判断顺序：标准化程度 → 刷新频率 → 托管方式。", 11, { color: "29466F", bold: true })],
+    elements: [...title("decision-tree", "数据先标准化，再按刷新频率选择托管方式", "决策路径｜用三个问题快速确定数据接入策略"), { id: "decision-tree-view", type: "hierarchy", rect: rect(36, 118, 888, 330), z: 4, bindingRef: "main", style: { fontSize: 10, variant: "decision", orientation: "horizontal" } }, shape("decision-tree-note-accent", rect(36, 466, 5, 32), "", "4C86D7", {}, "rect"), text("decision-tree-note", rect(54, 472, 870, 20), "判断顺序：标准化程度 → 刷新频率 → 托管方式。", 11, { color: "29466F", bold: true })],
     background: "以条件、分支、结果和建议展示决策路径，适合方案选择与流程说明。", scenarios: ["方案选型", "业务规则说明", "产品决策"],
   }),
   makeTemplate({
@@ -1216,7 +1217,7 @@ const EXTENDED_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
   }),
   makeTemplate({
     id: "sales-proposal", name: "销售提案页面", scene: "budgetComparison", folderId: "template-folder-strategy", previewText: "让月度汇报从人工复制走向持续刷新", dataSpec: salesProposalData,
-    ...strategyUpgrade,
+    ...strategyRepair,
     binding: { resultSetId: "result-sales-proposal", roles: { section: "section", message: "message", evidence: "evidence", columns: ["section", "message", "evidence"] }, computations: [] },
     elements: [...title("sales-proposal", "让月度汇报从人工复制走向持续刷新", "客户提案｜问题、方案、价值与试点路径一页讲清"), { id: "sales-proposal-view", type: "proposalFlow", rect: rect(36, 122, 888, 292), z: 4, bindingRef: "main", style: { fontSize: 12 } }, shape("sales-proposal-commitment-bg", rect(36, 440, 888, 48), "", "EEF7F4", {}, "rect"), text("sales-proposal-commitment-value", rect(56, 448, 98, 30), "2 周", 21, { color: "167567", bold: true }), text("sales-proposal-commitment", rect(154, 454, 742, 20), "完成一个经营场景的模板适配、数据接入与多页 PPTX 交付验证", 11, { color: "29466F", bold: true })],
     background: "以客户问题、解决方案、价值、证据和下一步构成一页销售提案。", scenarios: ["客户提案", "售前方案", "内部立项"],

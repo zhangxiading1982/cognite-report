@@ -165,6 +165,28 @@ describe("PowerPoint-like connector geometry", () => {
     const endMoved = setConnectorEndpoint(beginMoved, "elbow", "end", { x: 735, y: 188 });
     expect(isOrthogonal(connectorRoute(endMoved, endMoved.elements[0]).points)).toBe(true);
   });
+  it("normalizes the saved page-three route when its arrow endpoint moves past a redundant bend", () => {
+    const routed: any = {
+      ...doc,
+      layoutOverrides: { elbow: { rect: { x: 260, y: 237, w: 276, h: 89 } } },
+      elements: [{
+        id: "elbow", type: "shape", shape: "elbow", rect: { x: 240, y: 187, w: 164, h: 45 },
+        line: {
+          flipH: false, flipV: true, endArrowType: "arrow",
+          elbowPoints: [
+            { x: 260, y: 326 }, { x: 312, y: 326 }, { x: 312, y: 239 },
+            { x: 424, y: 239 }, { x: 424, y: 193 }, { x: 424, y: 165 },
+          ],
+        },
+      }],
+    };
+    const moved = setConnectorEndpoint(routed, "elbow", "end", { x: 536, y: 237 });
+    const stored = moved.elements[0].line.elbowPoints;
+    const isOrthogonal = (points: { x: number; y: number }[]) => points.slice(1).every((point, index) => point.x === points[index].x || point.y === points[index].y);
+    expect(isOrthogonal(stored)).toBe(true);
+    expect(isOrthogonal(connectorRoute(moved, moved.elements[0]).points)).toBe(true);
+    expect(stored.at(-1)).toEqual({ x: 536, y: 237 });
+  });
   it("routes the outer corridor beyond both connected shapes and follows a moved target", () => {
     const routed: any = {
       ...doc,

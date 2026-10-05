@@ -34,6 +34,7 @@ import {
   PanelRightClose,
   PanelRightOpen,
   Bold,
+  Check,
 } from "lucide-react";
 import {
   compileSlide,
@@ -110,6 +111,10 @@ export function Editor({
   onSaved,
   onChanged,
   frozen = false,
+  workspaceMode = "document",
+  workspaceData,
+  initialFullscreen = false,
+  onWorkspaceClose,
 }: {
   initial: any;
   templates: Template[];
@@ -121,9 +126,14 @@ export function Editor({
   onSaved?: (slide: any) => void;
   onChanged?: () => void;
   frozen?: boolean;
+  workspaceMode?: "document" | "template";
+  workspaceData?: any;
+  initialFullscreen?: boolean;
+  onWorkspaceClose?: () => void;
 }) {
+  const templateWorkspace = workspaceMode === "template";
   const [slide, S] = useState(initial),
-    [data, D] = useState<any>(),
+    [data, D] = useState<any>(workspaceData),
     [lineage, Lineage] = useState<any>(),
     [selected, Sel] = useState<string[]>([]),
     [tab, Tab] = useState("content"),
@@ -137,7 +147,7 @@ export function Editor({
     [candidate, Candidate] = useState<any>(),
     [embedded, Embedded] = useState<any[]>([]),
     [imagesLoading, ImagesLoading] = useState(false);
-  const [fullscreen, Fullscreen] = useState(false);
+  const [fullscreen, Fullscreen] = useState(initialFullscreen);
   const [propertiesCollapsed,PropertiesCollapsed]=useState(false);
   const [editingText, EditingText] = useState<string>();
   const [alignmentGuides,AlignmentGuides]=useState<{vertical?:number;horizontal?:number}>({});
@@ -147,9 +157,17 @@ export function Editor({
   const chartDirty=useRef(false);
   const [chartPreview,ChartPreview]=useState<Record<string,any>>({});
   const historyRef = useRef(new History(initial));
+  const savedCallback = useRef(onSaved);
+  savedCallback.current = onSaved;
   const queue = useRef<SaveQueue<any>>(null);
   if (!queue.current)
-    queue.current = new SaveQueue(initial, saveSlide, () => Tick((t) => t + 1));
+    queue.current = new SaveQueue(initial, templateWorkspace
+      ? async (draft, revision) => {
+          const saved = { ...draft, revision };
+          savedCallback.current?.(saved);
+          return saved;
+        }
+      : saveSlide, () => Tick((t) => t + 1));
   const q = queue.current;
   const stage = useRef<HTMLDivElement>(null);
   const drag = useRef<any>(undefined);
@@ -194,7 +212,7 @@ export function Editor({
     await q.flush();
     S((s: any) => ({ ...s, revision: q.revision }));
     const saved = { ...current.current, revision: q.revision };
-    onSaved?.(saved);
+    if (!templateWorkspace) onSaved?.(saved);
     return saved;
   }
   useEffect(() => { registerFlush?.(flush); }, [registerFlush]);
@@ -207,11 +225,13 @@ export function Editor({
     return () => window.clearTimeout(timer);
   }, [tick, frozen]);
   useEffect(() => {
+    if (templateWorkspace) return;
     api(`/data-snapshots/${initial.snapshotRef}`)
       .then(D)
       .catch((e) => { if(e.status!==404) E(e.message); });
   }, [initial.id]);
   async function checkCurrent(beforeExport = false) {
+    if (templateWorkspace) return false;
     const linked = current.current.extensions?.dataset;
     if (!linked?.id && !Object.values(current.current.extensions?.chartData||{}).some((s:any)=>s.mode==="dataset")) return false;
     if (linked && (linked.refreshMode ?? (linked.origin?.kind === "biStudio" ? "biStudioMock" : "manual")) === "biStudioMock") {
@@ -248,6 +268,7 @@ export function Editor({
     return true;
   }
   useEffect(() => {
+    if (templateWorkspace) return;
     const run = () => {
       if (document.visibilityState !== "hidden")
         checkCurrent().catch((e) => E(e.message));
@@ -259,7 +280,7 @@ export function Editor({
       clearInterval(timer);
       window.removeEventListener("focus", run);
     };
-  }, [initial.id]);
+  }, [initial.id, templateWorkspace]);
   useEffect(() => {
     if (!q.dirty || q.status === "conflict") return;
     const timer = setTimeout(() => q.flush().catch((e) => E(e.message)), 800);
@@ -574,6 +595,7 @@ export function Editor({
     ConnectionHint(undefined);
   }
   async function reloadChartData(){
+    if(templateWorkspace){D(workspaceData);return;}
     const sent=current.current;
     const latest=await api(`/slides/${initial.id}`);
     q.adoptRemote(latest,sent);
@@ -747,14 +769,15 @@ export function Editor({
         <span className="toolbar-spacer" />
         <button aria-label={propertiesCollapsed?"展开配置栏":"收起配置栏"} title={propertiesCollapsed?"展开配置栏":"收起配置栏"} onClick={()=>PropertiesCollapsed(value=>!value)}>{propertiesCollapsed?<PanelRightOpen size={17}/>:<PanelRightClose size={17}/>}</button>
         <button aria-label={fullscreen?"退出全屏编辑":"全屏编辑页面"} title={fullscreen?"退出全屏编辑":"全屏编辑页面"} onClick={()=>Fullscreen(!fullscreen)}>{fullscreen?<Minimize size={17}/>:<Maximize size={17}/>}</button>
-        <button
+        {!templateWorkspace && <button
           onClick={() => {
             Personal(`${slide.title} · 个人模板`);
             M("personal");
           }}
         >
           <LayoutTemplate size={16} />另存为模板
-        </button>
+        </button>}
+        {templateWorkspace && <button className="primary" aria-label="完成模板页面编辑" onClick={async()=>{try{await flush();onWorkspaceClose?.()}catch(error:any){E(error.message)}}}><Check size={17}/>完成</button>}
       </div>
       {error && (
         <div className="editor-error error" role="alert">
@@ -1025,6 +1048,7 @@ export function Editor({
                           />
                         )}
                         {el.type === "table" && <section className="property-section"><h4>表格内容</h4><p className="muted">表格字段、字段顺序和数据内容在“数据”中维护；这里仅保留页面展示相关设置。</p></section>}
+                        {el.type === "hierarchy" && el.style?.variant === "decision" && <label className="field">决策树展开方向<select aria-label="决策树展开方向" value={el.style?.orientation || "horizontal"} onChange={event=>changeEl(item=>{item.style={...item.style,orientation:event.target.value}})}><option value="horizontal">横向展开</option><option value="vertical">纵向展开</option></select></label>}
                         {el.runs && (
                           <label className="field">
                             文字内容

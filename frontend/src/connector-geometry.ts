@@ -131,6 +131,12 @@ export function setConnectorEndpoint(
   const key = endpoint === "begin" ? "beginConnection" : "endConnection";
   if (connection) connector.line[key] = connection;
   else delete connector.line[key];
+  if (connector.shape === "elbow" && original.line?.elbowPoints?.length) {
+    connector.line.elbowPoints = connectorRoute(next, connector).points.map(routePoint => ({
+      x: Math.round(routePoint.x),
+      y: Math.round(routePoint.y),
+    }));
+  }
   return next;
 }
 

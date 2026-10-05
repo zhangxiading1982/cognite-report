@@ -1,7 +1,51 @@
 // @vitest-environment jsdom
-import React from 'react';
-import {render,screen,fireEvent,cleanup} from '@testing-library/react';
-import {test,expect,vi,afterEach} from 'vitest';
-import {TemplateCanvasEditor} from './TemplateCanvasEditor';
-afterEach(cleanup);
-test('canvas edits selected text and resolved geometry without creating a document',()=>{const change=vi.fn(),slide={canvas:{width:960,height:540},elements:[{id:'title',type:'text',rect:{x:10,y:10,w:200,h:80},runs:[{text:'旧标题'}],style:{fontSize:24}}],layoutOverrides:{title:{rect:{x:20}}}};render(<TemplateCanvasEditor slide={slide} svg="<svg/>" onChange={change} onClose={()=>{}}/>);fireEvent.click(screen.getByRole('button',{name:'选择文字 title'}));expect((screen.getByLabelText('水平位置') as HTMLInputElement).value).toBe('20');fireEvent.change(screen.getByLabelText('文字内容'),{target:{value:'新标题'}});expect(change.mock.calls[0][0].elements[0].runs).toEqual([{text:'新标题'}]);expect(slide.elements[0].runs[0].text).toBe('旧标题');fireEvent.change(screen.getByLabelText('水平位置'),{target:{value:'30'}});expect(change.mock.calls[1][0].elements[0].rect.x).toBe(30);expect(change.mock.calls[1][0].layoutOverrides.title.rect).toBeUndefined()});
+import React from "react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, expect, test, vi } from "vitest";
+import { BUSINESS_TEMPLATES, createSlide } from "@slidebi/presentation";
+import data from "../../../prompt/sd/examples/monthly-operations.data.json";
+import { TemplateCanvasEditor } from "./TemplateCanvasEditor";
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
+
+test("template page editing reuses the full document workspace and saves back to the draft", async () => {
+  vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ items: [] }))));
+  const change = vi.fn(), close = vi.fn();
+  const slide: any = createSlide(data as any, "budget-comparison");
+  render(<TemplateCanvasEditor slide={slide} dataSpec={data} onChange={change} onClose={close} />);
+
+  expect(document.querySelector(".editor-fullscreen")).toBeTruthy();
+  expect(screen.getByRole("button", { name: "文本框" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "形状" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "图表" })).toBeTruthy();
+  expect(screen.getByRole("complementary", { name: "页面属性" })).toBeTruthy();
+
+  const title = slide.elements.find((element: any) => element.type === "text");
+  fireEvent.click(screen.getByRole("button", { name: `选择${title.id}` }));
+  fireEvent.change(await screen.findByLabelText("文字内容"), { target: { value: "模板页面新标题" } });
+  fireEvent.click(screen.getByRole("button", { name: "完成模板页面编辑" }));
+
+  await waitFor(() => expect(change).toHaveBeenCalled());
+  expect(change.mock.calls.at(-1)![0].elements.find((element: any) => element.id === title.id).runs[0].text).toBe("模板页面新标题");
+  expect(close).toHaveBeenCalledOnce();
+});
+
+test("decision trees expose horizontal and vertical data-driven expansion in the shared property panel", async () => {
+  vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ items: [] }))));
+  const template = BUSINESS_TEMPLATES.find(item => item.id === "decision-tree")!;
+  const slide = structuredClone(template.payload.example.slide), change = vi.fn();
+  render(<TemplateCanvasEditor slide={slide} dataSpec={template.payload.example.dataSpec} onChange={change} onClose={() => {}} />);
+
+  fireEvent.click(screen.getByRole("button", { name: "选择decision-tree-view" }));
+  const direction = await screen.findByLabelText("决策树展开方向");
+  expect((direction as HTMLSelectElement).value).toBe("horizontal");
+  fireEvent.change(direction, { target: { value: "vertical" } });
+  fireEvent.click(screen.getByRole("button", { name: "完成模板页面编辑" }));
+
+  await waitFor(() => expect(change).toHaveBeenCalled());
+  expect(change.mock.calls.at(-1)![0].elements.find((element: any) => element.id === "decision-tree-view").style.orientation).toBe("vertical");
+});

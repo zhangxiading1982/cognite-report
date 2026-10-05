@@ -44,11 +44,29 @@ function controlsForPoints(points:RoutePoint[],keys?:ElbowControlKey[]):ElbowCon
  });
 }
 
+function compactOrthogonalPoints(points:RoutePoint[]){
+ let compact=points.filter((point,index)=>index===0||point.x!==points[index-1].x||point.y!==points[index-1].y);
+ let changed=true;
+ while(changed){
+  changed=false;
+  compact=compact.filter((point,index)=>{
+   if(index===0||index===compact.length-1)return true;
+   const previous=compact[index-1],next=compact[index+1];
+   const redundant=(previous.x===point.x&&point.x===next.x)||(previous.y===point.y&&point.y===next.y);
+   if(redundant)changed=true;
+   return !redundant;
+  });
+ }
+ return compact;
+}
+
 function manualRoute(input:OrthogonalRouteInput){
- const points=(input.manualPoints??[]).slice(0,32).map(point=>({x:Number(point.x),y:Number(point.y)}));
+ let points=(input.manualPoints??[]).slice(0,32).map(point=>({x:Number(point.x),y:Number(point.y)}));
  if(points.length<4||points.some(point=>!Number.isFinite(point.x)||!Number.isFinite(point.y)))return undefined;
  const orthogonal=points.slice(1).every((point,index)=>point.x===points[index].x||point.y===points[index].y);
  if(!orthogonal)return undefined;
+ points=compactOrthogonalPoints(points);
+ if(points.length<4)return undefined;
  const beginWasVertical=points[1].x===points[0].x;
  const endWasVertical=points.at(-2)!.x===points.at(-1)!.x;
  points[0]={...input.begin};points[points.length-1]={...input.end};
@@ -57,6 +75,8 @@ function manualRoute(input:OrthogonalRouteInput){
  else first.y=input.begin.y;
  if(input.endSide==='top'||input.endSide==='bottom'||(!input.endSide&&endWasVertical))last.x=input.end.x;
  else last.y=input.end.y;
+ points=compactOrthogonalPoints(points);
+ if(!points.slice(1).every((point,index)=>point.x===points[index].x||point.y===points[index].y))return undefined;
  const vertical=points.slice(1,-1).find((point,index)=>point.x===points[index+2]?.x);
  return {begin:input.begin,end:input.end,middleX:vertical?.x??(input.begin.x+input.end.x)/2,points,controls:controlsForPoints(points)};
 }
