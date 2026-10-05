@@ -9,7 +9,9 @@ import {
 import {
   connectionAnchors,
   connectorEndpoints,
+  connectorRoute,
   findConnectorSnap,
+  setElbowControl,
   setConnectorEndpoint,
 } from "./connector-geometry";
 const doc = {
@@ -95,6 +97,18 @@ describe("PowerPoint-like connector geometry", () => {
     const reversed = setConnectorEndpoint(attached, "line", "begin", { x: 420, y: 170 });
     expect(reversed.elements[0].line.flipH).toBe(true);
     expect(reversed.elements[0].line.flipV).toBe(true);
+  });
+  it("moves an elbow middle segment independently and keeps it adjusted when endpoints move", () => {
+    const elbowDoc = structuredClone(connectorDoc) as any;
+    elbowDoc.elements[0].shape = "elbow";
+    const adjusted = setElbowControl(elbowDoc, "line", { x: 140, y: 100 });
+    expect(adjusted.elements[0].line.elbowOffset).toBe(40);
+    expect(connectorRoute(adjusted, adjusted.elements[0]).middleX).toBe(140);
+    const attached = setConnectorEndpoint(adjusted, "line", "end", { x: 280, y: 120 }, { elementId: "target", side: "left" });
+    attached.layoutOverrides.target = { rect: { x: 340, y: 90, w: 120, h: 100 } };
+    const route = connectorRoute(attached, attached.elements[0]);
+    expect(route.end).toEqual({ x: 340, y: 140 });
+    expect(route.middleX).toBe(230);
   });
 });
 describe("serial immutable revision saves", () => {

@@ -47,7 +47,7 @@ export interface SlideElement {
   shape?: string;
   fill?: string;
   fillTransparency?: number;
-  line?: { color: string; width: number; dash?: string; transparency?: number; cap?: string; join?: string; flipH?: boolean; flipV?: boolean; beginArrowType?: string; endArrowType?: string; beginConnection?: { elementId: string; side: string }; endConnection?: { elementId: string; side: string } };
+  line?: { color: string; width: number; dash?: string; transparency?: number; cap?: string; join?: string; flipH?: boolean; flipV?: boolean; elbowOffset?: number; beginArrowType?: string; endArrowType?: string; beginConnection?: { elementId: string; side: string }; endConnection?: { elementId: string; side: string } };
   [key: string]: any;
 }
 export interface Annotation {
@@ -108,7 +108,7 @@ export interface CompiledElement {
   shape?: "rect" | "square" | "roundRect" | "ellipse" | "circle" | "triangle" | "rtTriangle" | "diamond" | "parallelogram" | "trapezoid" | "pentagon" | "hexagon" | "star5" | "heart" | "plus" | "rightArrow" | "leftRightArrow" | "chevron" | "notchedRightArrow" | "line" | "elbow";
   fill?: string;
   fillTransparency?: number;
-  line?: { color: string; width: number; dash?: string; transparency?: number; cap?: string; join?: string; flipH?: boolean; flipV?: boolean; beginArrowType?: string; endArrowType?: string; beginConnection?: { elementId: string; side: string }; endConnection?: { elementId: string; side: string } };
+  line?: { color: string; width: number; dash?: string; transparency?: number; cap?: string; join?: string; flipH?: boolean; flipV?: boolean; elbowOffset?: number; beginArrowType?: string; endArrowType?: string; beginConnection?: { elementId: string; side: string }; endConnection?: { elementId: string; side: string } };
   assetId?: string;
   stepId?: string;
   [key: string]: any;

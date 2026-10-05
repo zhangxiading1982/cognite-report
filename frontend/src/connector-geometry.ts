@@ -39,14 +39,33 @@ export function connectorEndpoints(document: any, element: any) {
   return { begin, end };
 }
 
-export function connectorBounds(document: any, element: any) {
+export function connectorRoute(document: any, element: any) {
   const { begin, end } = connectorEndpoints(document, element);
+  const middleX = (begin.x + end.x) / 2 + Number(element?.line?.elbowOffset ?? 0);
   return {
-    x: Math.min(begin.x, end.x),
-    y: Math.min(begin.y, end.y),
-    w: Math.max(1, Math.abs(end.x - begin.x)),
-    h: Math.max(1, Math.abs(end.y - begin.y)),
+    begin,
+    end,
+    middleX,
+    points: element?.shape === "elbow"
+      ? [begin, { x: middleX, y: begin.y }, { x: middleX, y: end.y }, end]
+      : [begin, end],
   };
+}
+
+export function connectorBounds(document: any, element: any) {
+  const { points } = connectorRoute(document, element);
+  const xs = points.map(point => point.x), ys = points.map(point => point.y);
+  return {
+    x: Math.min(...xs),
+    y: Math.min(...ys),
+    w: Math.max(1, Math.max(...xs) - Math.min(...xs)),
+    h: Math.max(1, Math.max(...ys) - Math.min(...ys)),
+  };
+}
+
+export function elbowControlPoint(document: any, element: any): ConnectorPoint {
+  const route = connectorRoute(document, element);
+  return { x: route.middleX, y: (route.begin.y + route.end.y) / 2 };
 }
 
 export function connectionAnchors(document: any, connectorId: string): ConnectionAnchor[] {
@@ -102,5 +121,18 @@ export function setConnectorEndpoint(
   const key = endpoint === "begin" ? "beginConnection" : "endConnection";
   if (connection) connector.line[key] = connection;
   else delete connector.line[key];
+  return next;
+}
+
+export function setElbowControl(document: any, connectorId: string, point: ConnectorPoint) {
+  const next = structuredClone(document);
+  const original = document.elements.find((element: any) => element.id === connectorId);
+  const connector = next.elements.find((element: any) => element.id === connectorId);
+  if (!original || !connector || original.shape !== "elbow") return next;
+  const { begin, end } = connectorEndpoints(document, original);
+  connector.line = {
+    ...(connector.line ?? {}),
+    elbowOffset: Math.round(point.x - (begin.x + end.x) / 2),
+  };
   return next;
 }

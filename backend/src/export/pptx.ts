@@ -178,7 +178,7 @@ export async function writeDeckPptx(
           ...(e.line?.endArrowType&&e.line.endArrowType!=="none"?{endArrowType:e.line.endArrowType as any}:{}),
         };
         if(e.shape==="elbow"){
-          const begin={x:bounds.x+(e.line?.flipH?bounds.w:0),y:bounds.y+(e.line?.flipV?bounds.h:0)},end={x:bounds.x+(e.line?.flipH?0:bounds.w),y:bounds.y+(e.line?.flipV?0:bounds.h)},middle=(begin.x+end.x)/2;
+          const begin={x:bounds.x+(e.line?.flipH?bounds.w:0),y:bounds.y+(e.line?.flipV?bounds.h:0)},end={x:bounds.x+(e.line?.flipH?0:bounds.w),y:bounds.y+(e.line?.flipV?0:bounds.h)},middle=(begin.x+end.x)/2+Number(e.line?.elbowOffset??0)/72;
           const segment=(a:{x:number;y:number},b:{x:number;y:number},line:any)=>slide.addShape(deck.ShapeType.line,{x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),w:Math.abs(b.x-a.x),h:Math.abs(b.y-a.y),flipH:a.x>b.x,flipV:a.y>b.y,line});
           segment(begin,{x:middle,y:begin.y},{...exportedLine,endArrowType:undefined});
           segment({x:middle,y:begin.y},{x:middle,y:end.y},{...exportedLine,beginArrowType:undefined,endArrowType:undefined});

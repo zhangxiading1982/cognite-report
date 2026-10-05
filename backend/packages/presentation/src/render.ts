@@ -67,8 +67,9 @@ function lineGeometry(n: CompiledElement) {
   const start = { x: r.x + (n.line?.flipH ? r.w : 0), y: r.y + (n.line?.flipV ? r.h : 0) };
   const end = { x: r.x + (n.line?.flipH ? 0 : r.w), y: r.y + (n.line?.flipV ? 0 : r.h) };
   const common = `fill="none" stroke="${stroke}" stroke-width="${num(n.line?.width ?? 1)}" stroke-opacity="${opacity(n.line?.transparency)}" stroke-linecap="${lineCap(n.line?.cap)}" stroke-linejoin="${n.line?.join ?? "round"}"${dash(n.line?.dash)}${arrows}`;
+  const middleX=(start.x+end.x)/2+Number(n.line?.elbowOffset??0);
   return n.shape === "elbow"
-    ? `${marker}<polyline points="${polygon([[start.x,start.y],[(start.x+end.x)/2,start.y],[(start.x+end.x)/2,end.y],[end.x,end.y]])}" ${common}/>`
+    ? `${marker}<polyline points="${polygon([[start.x,start.y],[middleX,start.y],[middleX,end.y],[end.x,end.y]])}" ${common}/>`
     : `${marker}<line x1="${num(start.x)}" y1="${num(start.y)}" x2="${num(end.x)}" y2="${num(end.y)}" ${common}/>`;
 }
 function shapeGeometry(n: CompiledElement) {

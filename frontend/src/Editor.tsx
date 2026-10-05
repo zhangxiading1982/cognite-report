@@ -71,8 +71,10 @@ import {
   connectionAnchors,
   connectorBounds,
   connectorEndpoints,
+  elbowControlPoint,
   findConnectorSnap,
   isConnector,
+  setElbowControl,
   setConnectorEndpoint,
   type ConnectorEnd,
 } from "./connector-geometry";
@@ -432,7 +434,7 @@ export function Editor({
       Sel(clones.map((x: any) => x.id));
     });
   }
-  function pointerStart(e: React.PointerEvent, id: string, resize = false, connectorEnd?: ConnectorEnd) {
+  function pointerStart(e: React.PointerEvent, id: string, resize = false, connectorHandle?: ConnectorEnd | "elbow") {
     e.preventDefault();
     e.stopPropagation();
     const ids = expandSelection(
@@ -451,12 +453,12 @@ export function Editor({
       original: structuredClone(slide),
       ids,
       resize,
-      connectorEnd,
+      connectorHandle,
       id,
       scale: stage.current!.getBoundingClientRect().width / 960,
       moved: false,
     };
-    ConnectorEditing(connectorEnd ? { id, endpoint: connectorEnd } : undefined);
+    ConnectorEditing(connectorHandle === "begin" || connectorHandle === "end" ? { id, endpoint: connectorHandle } : undefined);
     ConnectionHint(undefined);
     e.currentTarget.setPointerCapture(e.pointerId);
   }
@@ -467,9 +469,20 @@ export function Editor({
       dy = Math.round((e.clientY - d.y) / d.scale / 4) * 4;
     if (!dx && !dy) return;
     d.moved = true;
-    if (d.connectorEnd) {
+    if (d.connectorHandle === "elbow") {
       const connector = d.original.elements.find((item: any) => item.id === d.id);
-      const origin = connectorEndpoints(d.original, connector)[d.connectorEnd as ConnectorEnd];
+      const origin = elbowControlPoint(d.original, connector);
+      const next = setElbowControl(d.original, d.id, {
+        x: Math.max(0, Math.min(960, origin.x + dx)),
+        y: origin.y,
+      });
+      S(next);
+      current.current = next;
+      return;
+    }
+    if (d.connectorHandle) {
+      const connector = d.original.elements.find((item: any) => item.id === d.id);
+      const origin = connectorEndpoints(d.original, connector)[d.connectorHandle as ConnectorEnd];
       const point = {
         x: Math.max(0, Math.min(960, origin.x + dx)),
         y: Math.max(0, Math.min(540, origin.y + dy)),
@@ -479,7 +492,7 @@ export function Editor({
       const next = setConnectorEndpoint(
         d.original,
         d.id,
-        d.connectorEnd as ConnectorEnd,
+        d.connectorHandle as ConnectorEnd,
         snap?.point ?? point,
         snap ? { elementId: snap.elementId, side: snap.side } : undefined,
       );
@@ -809,10 +822,11 @@ export function Editor({
               const connector=isConnector(e);
               const r = connector ? connectorBounds(slide, e) : rectOf(slide, e);
               const endpoints=connector?connectorEndpoints(slide,e):undefined;
+              const elbowControl=e.shape==="elbow"?elbowControlPoint(slide,e):undefined;
               return (
                 <div
                   key={e.id}
-                  className={`element-hit ${selected.includes(e.id) ? "selected" : ""}`}
+                  className={`element-hit ${connector ? "connector" : ""} ${selected.includes(e.id) ? "selected" : ""}`}
                   aria-label={`选择${e.type === "chart" ? "图表" : e.type === "table" ? "表格" : e.id}`}
                   title={["text","shape"].includes(e.type)&&e.runs?"拖动移动；双击编辑文字":undefined}
                   role="button"
@@ -838,12 +852,13 @@ export function Editor({
                   {editingText===e.id && <textarea autoFocus aria-label="画布文字编辑" className="canvas-text-input" value={(e.runs??[]).some((r:any)=>r.inlineValue)?(e.runs??[]).find((r:any)=>r.text!==undefined)?.text||"":(e.runs??[]).map((r:any)=>r.text||"").join("")} onPointerDown={ev=>ev.stopPropagation()} onClick={ev=>ev.stopPropagation()} onChange={ev=>edit(n=>{const target=n.elements.find((x:any)=>x.id===e.id);target.runs??=[];if(target.runs.some((r:any)=>r.inlineValue)){const first=target.runs.findIndex((r:any)=>r.text!==undefined);if(first>=0)target.runs[first]={...target.runs[first],text:ev.target.value};else target.runs.unshift({text:ev.target.value});}else target.runs=[{text:ev.target.value}];},e.id)} onBlur={()=>{EditingText(undefined);historyRef.current.endGroup()}} onKeyDown={ev=>{ev.stopPropagation();if(ev.key==="Escape"){EditingText(undefined);historyRef.current.endGroup()}}} style={{fontSize:`${(e.style?.fontSize||18)*(stage.current?.getBoundingClientRect().width||960)/960}px`,fontFamily:FONT_OPTIONS.find(option=>option.id===(e.style?.fontFace||"SimHei"))?.css||e.style?.fontFace||"SimHei",fontWeight:e.style?.bold?700:400,color:e.style?.color||"#334155",background:e.type==='shape'?(e.fill||'#DCEAE8'):(e.style?.fill||'#fff'),textAlign:e.style?.align||"left"}}/>}
                   {selected.includes(e.id) && editingText!==e.id && (
                     <>
-                      <span className="selection-label">
+                      {!connector&&<span className="selection-label">
                         {Math.round(r.w)} × {Math.round(r.h)}
-                      </span>
+                      </span>}
                       {connector && endpoints ? <>
                         <i aria-label="拖动线条起点" className="connector-handle begin" style={{left:`${((endpoints.begin.x-r.x)/r.w)*100}%`,top:`${((endpoints.begin.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"begin")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>
                         <i aria-label="拖动线条终点" className="connector-handle end" style={{left:`${((endpoints.end.x-r.x)/r.w)*100}%`,top:`${((endpoints.end.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"end")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>
+                        {elbowControl&&<i aria-label="拖动折线中段" className="connector-bend-handle" style={{left:`${((elbowControl.x-r.x)/r.w)*100}%`,top:`${((elbowControl.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"elbow")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>}
                       </> : <i
                           className="handle"
                           onPointerDown={(ev) => pointerStart(ev, e.id, true)}
