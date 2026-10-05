@@ -38,6 +38,8 @@ test("seeds, previews and imports every P0/P1 commercial template with owned sam
     const item = list.body.items.find((candidate: any) => candidate.id === definition.id);
     expect(item).toMatchObject({ name: definition.name, visibility: "public" });
     expect(item.folderId).toBe(definition.folderId);
+    expect(item.seedRevision).toBe(definition.payload.seedRevision);
+    expect(item.example.designVersion).toBe(definition.payload.example.designVersion);
 
     const preview = await request(app).post(`/api/templates/${definition.id}/preview`).send({});
     expect(preview.status, JSON.stringify(preview.body)).toBe(200);

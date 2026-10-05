@@ -110,7 +110,7 @@ describe("PowerPoint-like connector geometry", () => {
     expect(route.end).toEqual({ x: 340, y: 140 });
     expect(route.middleX).toBe(230);
   });
-  it("builds a five-segment route with two controls when connected sides face away", () => {
+  it("builds a five-segment route with three independently adjustable controls when connected sides face away", () => {
     const routed = {
       ...doc,
       elements: [
@@ -123,9 +123,12 @@ describe("PowerPoint-like connector geometry", () => {
     expect(route.points).toHaveLength(6);
     expect(route.points[0]).toEqual({ x: 148, y: 584 });
     expect(route.points.at(-1)).toEqual({ x: 518, y: 448 });
-    expect(route.controls.map(control => control.key)).toEqual(["departure", "corridor"]);
+    expect(route.controls.map(control => control.key)).toEqual(["departure", "corridor", "arrival"]);
     const moved = setElbowControl(routed, "elbow", "departure", { ...route.controls[0].point, y: route.controls[0].point.y + 24 });
     expect(connectorRoute(moved, moved.elements[2]).points[1].y).toBe(route.points[1].y + 24);
+    const arrivalMoved = setElbowControl(routed, "elbow", "arrival", { ...route.controls[2].point, y: route.controls[2].point.y - 20 });
+    expect(arrivalMoved.elements[2].line.elbowEndOffset).toBe(20);
+    expect(connectorRoute(arrivalMoved, arrivalMoved.elements[2]).points[4].y).toBe(route.points[4].y - 20);
   });
   it("routes the outer corridor beyond both connected shapes and follows a moved target", () => {
     const routed: any = {

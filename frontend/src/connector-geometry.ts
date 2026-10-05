@@ -62,6 +62,7 @@ export function connectorRoute(document: any, element: any) {
     elbowOffset: element.line?.elbowOffset,
     elbowStartOffset: element.line?.elbowStartOffset,
     elbowCorridorOffset: element.line?.elbowCorridorOffset,
+    elbowEndOffset: element.line?.elbowEndOffset,
   });
 }
 
@@ -147,6 +148,11 @@ export function setElbowControl(document: any, connectorId: string, controlKey: 
     const side = line.beginConnection?.side as ConnectionSide | undefined;
     const sign = side === "top" || side === "left" ? -1 : 1;
     line.elbowStartOffset = Math.round(Number(line.elbowStartOffset ?? 0) + delta * sign);
+  }
+  if (controlKey === "arrival") {
+    const side = line.endConnection?.side as ConnectionSide | undefined;
+    const sign = side === "top" || side === "left" ? -1 : 1;
+    line.elbowEndOffset = Math.round(Number(line.elbowEndOffset ?? 0) + delta * sign);
   }
   connector.line = line;
   return next;

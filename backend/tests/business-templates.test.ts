@@ -97,4 +97,33 @@ describe("commercial business templates", () => {
       expect(template.payload.example.slide.elements.some((element) => element.type === type)).toBe(true);
     }
   });
+
+  test("every business template uses the reference-grade presentation frame and hierarchy", () => {
+    for (const template of BUSINESS_TEMPLATES) {
+      const elements = template.payload.example.slide.elements;
+      expect(template.payload.seedRevision).toBe(8);
+      expect(template.payload.example.designVersion).toBe(9);
+      if (["cover-page", "section-page"].includes(template.id)) {
+        expect(elements.some((element) => element.type === "text" && Number(element.style?.fontSize) >= 34 && element.style?.bold)).toBe(true);
+      } else {
+        expect(elements).toEqual(expect.arrayContaining([
+          expect.objectContaining({ id: `${template.id}-frame`, type: "shape" }),
+          expect.objectContaining({ id: `${template.id}-title`, type: "text", style: expect.objectContaining({ fontSize: 31, bold: true }) }),
+          expect.objectContaining({ id: `${template.id}-tagline`, type: "text" }),
+          expect.objectContaining({ id: `${template.id}-footer`, type: "text" }),
+          expect.objectContaining({ id: `${template.id}-page`, type: "text" }),
+        ]));
+      }
+    }
+  });
+
+  test("the four reference archetypes use distinct business layouts", () => {
+    const elements = (id: string) => BUSINESS_TEMPLATES.find((template) => template.id === id)!.payload.example.slide.elements;
+    expect(elements("executive-summary").filter((element) => element.id.endsWith("-card"))).toHaveLength(4);
+    expect(elements("executive-summary")).toContainEqual(expect.objectContaining({ id: "executive-chart", type: "chart" }));
+    expect(BUSINESS_TEMPLATES.find((template) => template.id === "executive-summary")!.payload.defaultBindings.main.roles).toMatchObject({ categoryKey: "metricId", categoryLabel: "metricName", series: ["current", "target"] });
+    expect(elements("pnl-overview")).toContainEqual(expect.objectContaining({ id: "pnl-table", rect: expect.objectContaining({ w: 888 }) }));
+    expect(elements("roadmap").filter((element) => element.id.startsWith("roadmap-phase-"))).toHaveLength(4);
+    expect(elements("competitive-positioning").filter((element) => /^competition-q\d$/.test(element.id))).toHaveLength(4);
+  });
 });

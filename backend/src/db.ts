@@ -129,11 +129,11 @@ export async function seed(pool: Pool) {
   const businessSeedsToWrite=BUSINESS_TEMPLATES.filter(t=>{
     const current:any=currentBusinessVersions.get(t.id);
     const currentSeedRevision=Number(current?.payload?.seedRevision??0);
+    const currentDesignVersion=Number(current?.payload?.example?.designVersion??0);
     return !existingBusinessTemplates.has(t.id)||!current||
-      (current.payload?.example?.designVersion===4&&currentSeedRevision<Number(t.payload.seedRevision)&&(
-        Number(current.version)===1||
-        Number(current.version)===currentSeedRevision+1
-      ));
+      (currentDesignVersion>0&&currentSeedRevision>0&&
+        currentDesignVersion<Number(t.payload.example.designVersion)&&
+        currentSeedRevision<Number(t.payload.seedRevision));
   });
   if(businessSeedsToWrite.length)await transaction(pool,async db=>{
     for(const t of businessSeedsToWrite){
@@ -148,7 +148,7 @@ export async function seed(pool: Pool) {
           [t.id,t.name,t.scene,t.payload],
         );
       }else{
-        // Upgrade only known generated revisions. An owner-created higher version remains immutable.
+        // Generated examples retain designVersion; owner edits are captured without it and remain immutable.
         await db.query(
           "INSERT INTO app.template_versions(template_id,version,name,scene,theme_id,theme_version,payload) VALUES($1,$2,$3,$4,'corporate-blue',1,$5) ON CONFLICT DO NOTHING",
           [t.id,Number(current.version)+1,t.name,t.scene,t.payload],

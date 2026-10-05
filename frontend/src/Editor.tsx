@@ -471,7 +471,7 @@ export function Editor({
       dy = Math.round((e.clientY - d.y) / d.scale / 4) * 4;
     if (!dx && !dy) return;
     d.moved = true;
-    if (["middle", "departure", "corridor"].includes(d.connectorHandle)) {
+    if (["middle", "departure", "corridor", "arrival"].includes(d.connectorHandle)) {
       const connector = d.original.elements.find((item: any) => item.id === d.id);
       const control = connectorRoute(d.original, connector).controls.find(item => item.key === d.connectorHandle);
       if (!control) return;
@@ -861,7 +861,7 @@ export function Editor({
                       {connector && endpoints ? <>
                         <i aria-label="拖动线条起点" className="connector-handle begin" style={{left:`${((endpoints.begin.x-r.x)/r.w)*100}%`,top:`${((endpoints.begin.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"begin")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>
                         <i aria-label="拖动线条终点" className="connector-handle end" style={{left:`${((endpoints.end.x-r.x)/r.w)*100}%`,top:`${((endpoints.end.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,"end")} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>
-                        {elbowControls.map(control=><i key={control.key} aria-label={control.key==="middle"?"拖动折线中段":control.key==="departure"?"拖动折线起始段":"拖动折线外侧段"} className={`connector-bend-handle axis-${control.axis}`} style={{left:`${((control.point.x-r.x)/r.w)*100}%`,top:`${((control.point.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,control.key)} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>) }
+                        {elbowControls.map(control=><i key={control.key} aria-label={control.key==="middle"?"拖动折线中段":control.key==="departure"?"拖动折线起始段":control.key==="arrival"?"拖动折线结束段":"拖动折线外侧段"} className={`connector-bend-handle axis-${control.axis}`} style={{left:`${((control.point.x-r.x)/r.w)*100}%`,top:`${((control.point.y-r.y)/r.h)*100}%`}} onPointerDown={ev=>pointerStart(ev,e.id,false,control.key)} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}/>) }
                       </> : <i
                           className="handle"
                           onPointerDown={(ev) => pointerStart(ev, e.id, true)}

@@ -24,7 +24,7 @@ export interface BusinessTemplateDefinition {
   folderId: string;
   previewText: string;
   payload: {
-    seedRevision: 4;
+    seedRevision: 8;
     chartType?: string;
     requiredBindings: Record<string, unknown>;
     bindingSchema: Record<string, unknown>;
@@ -36,7 +36,7 @@ export interface BusinessTemplateDefinition {
     exportCapabilities: string[];
     example: {
       identityVersion: 1;
-      designVersion: 5;
+      designVersion: 9;
       slide: SlideSpec;
       dataSpec: DataSpec;
       businessContext: { background: string; scenarios: string[] };
@@ -145,10 +145,27 @@ const status = (
   label,
   style: { fontSize: 13, fill },
 });
+const taglineFor = (id: string) => {
+  if (["pnl-overview", "kpi-dashboard", "metric-scorecard", "multi-profit-bridge", "cost-variance", "scenario-comparison", "quarterly-business-review", "resource-capacity"].some((key) => id.includes(key))) return "稳健经营  ·  价值创造";
+  if (["project", "roadmap", "milestone", "gantt", "workflow", "dependency", "risk", "action"].some((key) => id.includes(key))) return "按期交付  ·  创造价值";
+  if (["competitive", "market", "sales", "customer", "swot", "decision", "portfolio", "operating", "process"].some((key) => id.includes(key))) return "立足当下  ·  赢得未来";
+  return "聚焦重点  ·  推动决策";
+};
 const title = (id: string, value: string, subtitle: string): SlideElement[] => [
-  text(`${id}-title`, rect(36, 24, 888, 42), value, 29, { bold: true }),
-  text(`${id}-subtitle`, rect(36, 67, 888, 24), subtitle, 11, { color: muted }),
-  shape(`${id}-accent`, rect(36, 96, 72, 3), "", blue, {}, "rect"),
+  { id: `${id}-frame`, type: "shape", shape: "rect", rect: rect(12, 12, 936, 516), z: 0, fill: white, line: { color: "DCE5EF", width: 0.8 }, runs: [] },
+  text(`${id}-title`, rect(36, 26, 650, 42), value, 31, { bold: true, fontFace: "SimHei", color: "102B57" }),
+  text(`${id}-subtitle`, rect(36, 70, 650, 24), subtitle, 14, { color: "29466F", fontFace: "SimHei" }),
+  text(`${id}-tagline`, rect(716, 34, 208, 20), taglineFor(id), 10, { color: "315C93", bold: true, align: "right", fontFace: "SimHei" }),
+  shape(`${id}-accent`, rect(852, 64, 72, 1.5), "", "4C86D7", {}, "rect"),
+  text(`${id}-footer`, rect(36, 514, 260, 10), "以数据洞察  ·  以行动创未来", 7, { color: "8AA0BA", fontFace: "SimHei" }),
+  text(`${id}-page`, rect(888, 514, 36, 10), "01", 7, { color: "315C93", align: "right", fontFace: "SimHei" }),
+];
+
+const metricCard = (id: string, x: number, label: string, value: string, delta: string, fill = "F5F8FC"): SlideElement[] => [
+  shape(`${id}-card`, rect(x, 112, 204, 88), "", fill, {}, "rect"),
+  text(`${id}-label`, rect(x + 18, 124, 168, 18), label, 12, { color: "173B67", bold: true }),
+  text(`${id}-value`, rect(x + 18, 145, 168, 30), value, 24, { color: "102B57", bold: true }),
+  text(`${id}-delta`, rect(x + 18, 177, 168, 16), delta, 10, { color: delta.includes("▼") ? "B45309" : "0F8A83", bold: true }),
 ];
 
 function makeData(
@@ -279,7 +296,7 @@ function makeTemplate(input: {
     folderId: input.folderId,
     previewText: input.previewText,
     payload: {
-      seedRevision: 4,
+      seedRevision: 8,
       ...(firstChart?.chartType ? { chartType: firstChart.chartType } : {}),
       requiredBindings: { main: { roles: Object.keys(input.binding.roles), roleConstraints: roleSchema(input.binding, input.dataSpec) } },
       bindingSchema: { main: { roles: roleSchema(input.binding, input.dataSpec) } },
@@ -291,7 +308,7 @@ function makeTemplate(input: {
       exportCapabilities: ["nativeChart", "editableShapes", "nativeTable"],
       example: {
         identityVersion: 1,
-        designVersion: 5,
+        designVersion: 9,
         slide,
         dataSpec: input.dataSpec,
         businessContext: { background: input.background, scenarios: input.scenarios },
@@ -529,16 +546,20 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     folderId: "template-folder-general",
     previewText: "本期经营总体稳健",
     dataSpec: executiveData,
-    binding: { resultSetId: "result-executive-summary", roles: { columns: ["metricName", "current", "target", "status"] }, computations: [] },
+    binding: { resultSetId: "result-executive-summary", roles: { columns: ["metricName", "current", "target", "status"], categoryKey: "metricId", categoryLabel: "metricName", series: ["current", "target"] }, computations: [] },
     elements: [
       ...title("executive-summary", "本期经营总体稳健，利润与现金流优于目标", "2026年9月经营执行摘要"),
-      shape("executive-revenue", rect(36, 112, 202, 92), "营业收入\n12,800万元", lightBlue, { fontSize: 19, bold: true }),
-      shape("executive-profit", rect(254, 112, 202, 92), "毛利额\n4,620万元", paleGreen, { fontSize: 19, bold: true }),
-      shape("executive-cash", rect(472, 112, 202, 92), "经营现金流\n3,180万元", "E0F2FE", { fontSize: 19, bold: true }),
-      shape("executive-status", rect(690, 112, 234, 92), "整体判断\n稳中向好", paleAmber, { fontSize: 19, bold: true }),
-      table("executive-table", rect(36, 226, 560, 242), ["metricName", "current", "target", "status"], 12),
-      text("executive-conclusion", rect(626, 226, 298, 116), "核心结论\n毛利和现金流超过目标，收入仍有3%的缺口。", 16, { fill: "F8FAFC", line: { color: "CBD5E1", width: 1 }, bold: true }),
-      text("executive-risk", rect(626, 356, 298, 112), "风险与行动\n聚焦华东续约与渠道价格治理，10月完成重点客户联合拜访。", 15, { fill: "FFF7ED", line: { color: "F59E0B", width: 1 } }),
+      ...metricCard("executive-revenue", 36, "营业收入", "12,800 万元", "同比 +10%  ▲", "F3F7FC"),
+      ...metricCard("executive-profit", 256, "毛利额", "4,620 万元", "同比 +17%  ▲", "F1F9F6"),
+      ...metricCard("executive-cash", 476, "经营现金流", "3,180 万元", "同比 +22%  ▲", "F2F8FC"),
+      ...metricCard("executive-status", 696, "整体判断", "稳中向好", "利润、现金流达成", "FFF8E8"),
+      text("executive-chart-label", rect(36, 222, 590, 22), "核心指标（万元）", 13, { bold: true, color: "173B67" }),
+      chart("executive-chart", rect(36, 248, 590, 224), "comparison", { numberFormat: money, direction: "column", showLegend: true, showLabels: true }),
+      shape("executive-conclusion-bg", rect(660, 232, 264, 240), "", "F1F8FA", {}, "rect"),
+      text("executive-conclusion-title", rect(684, 252, 216, 30), "关键结论", 20, { color: "102B57", bold: true }),
+      shape("executive-conclusion-rule", rect(684, 288, 54, 3), "", "159A9C", {}, "rect"),
+      text("executive-conclusion", rect(684, 306, 216, 88), "毛利和现金流超过目标，经营韧性持续增强。", 15, { color: "29466F" }),
+      text("executive-risk", rect(684, 392, 216, 70), "下一步：聚焦客户续约与渠道价格治理", 11, { color: "0F766E", bold: true }),
     ],
     background: "在一页内汇总管理层需要的核心指标、总体判断、风险与下一步，作为经营汇报首页。",
     scenarios: ["月度经营会", "季度业务复盘", "管理层执行摘要"],
@@ -588,11 +609,11 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     binding: { resultSetId: "result-pnl-overview", roles: { columns: ["account", "actual", "budget", "prior"] }, computations: [] },
     elements: [
       ...title("pnl-overview", "收入承压但经营利润优于预算", "2026年9月损益摘要｜单位：万元"),
-      table("pnl-table", rect(36, 118, 610, 326), ["account", "actual", "budget", "prior"], 13),
-      shape("pnl-revenue", rect(676, 118, 248, 88), "营业收入\n12,800", lightBlue, { fontSize: 20, bold: true }),
-      shape("pnl-gross", rect(676, 220, 248, 88), "毛利\n4,620", paleGreen, { fontSize: 20, bold: true }),
-      shape("pnl-profit", rect(676, 322, 248, 88), "经营利润\n2,270", "E0F2FE", { fontSize: 20, bold: true }),
-      text("pnl-note", rect(36, 462, 888, 32), "经营利润高于预算70万元，主要由费用控制和产品组合改善贡献。", 14, { color: muted }),
+      table("pnl-table", rect(36, 118, 888, 324), ["account", "actual", "budget", "prior"], 13),
+      shape("pnl-conclusion-accent", rect(36, 462, 5, 46), "", "E6A100", {}, "rect"),
+      shape("pnl-conclusion-bg", rect(41, 462, 883, 46), "", "F5F8FC", {}, "rect"),
+      text("pnl-conclusion-label", rect(58, 474, 94, 22), "关键结论", 16, { bold: true, color: "102B57" }),
+      text("pnl-note", rect(162, 476, 738, 20), "经营利润高于预算70万元，主要由费用控制和产品组合改善贡献。", 12, { color: "29466F" }),
     ],
     background: "以可编辑表格展示收入、成本、毛利、费用和利润的实际、预算与同期结果，并突出管理结论。",
     scenarios: ["财务月报", "损益复盘", "预算执行分析"],
@@ -644,8 +665,10 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     binding: { resultSetId: "result-roadmap", roles: { columns: ["initiative", "lane", "period", "status"], label: "initiative", lane: "lane", period: "period", status: "status" }, computations: [] },
     elements: [
       ...title("roadmap", "年度路线图", "从数据基础到规模化推广的四阶段计划"),
-      { id: "roadmap-data-view", type: "roadmap", rect: rect(36, 116, 888, 344), z: 4, bindingRef: "main", style: { fontSize: 12 } },
-      text("roadmap-note", rect(36, 480, 888, 26), "当前处于 Q3：自动刷新与多页交付能力进入验收。", 13, { color: muted }),
+      ...["Q1 规划与启动", "Q2 建设与迭代", "Q3 测试与验证", "Q4 上线与推广"].map((label, index) => shape(`roadmap-phase-${index}`, rect(176 + index * 184, 112, 188, 42), label, ["DCEBFA", "5794DF", "2870C9", "123E78"][index], { fontSize: 13, bold: true, color: index ? white : "173B67" }, "chevron")),
+      text("roadmap-lane-label", rect(36, 124, 122, 22), "工作流", 13, { bold: true, color: "173B67" }),
+      { id: "roadmap-data-view", type: "roadmap", rect: rect(36, 168, 888, 286), z: 4, bindingRef: "main", style: { fontSize: 12 } },
+      text("roadmap-note", rect(36, 474, 888, 26), "当前处于 Q3：自动刷新与多页交付能力进入验收。", 12, { color: "315C93" }),
     ],
     background: "按季度或阶段展示重点事项、工作泳道、里程碑和状态，用于沟通高层计划与推进节奏。",
     scenarios: ["产品路线图", "年度战略规划", "项目阶段计划"],
@@ -733,10 +756,22 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     binding: { resultSetId: "result-competitive-positioning", roles: { categoryKey: "companyId", categoryLabel: "company", x: "capability", y: "value" }, computations: [] },
     elements: [
       ...title("competitive-positioning", "竞争定位", "能力完整度 × 客户价值"),
-      chart("competition-chart", rect(36, 112, 610, 344), "scatter", { showLabels: true }),
-      text("competition-quadrant", rect(676, 112, 248, 104), "领先区\n本方案在能力完整度和客户价值两个维度均处于领先位置。", 16, { fill: paleGreen, line: { color: "86EFAC", width: 1 }, bold: true }),
-      text("competition-gap", rect(676, 232, 248, 102), "主要差异\n一体化数据刷新、业务模板与可编辑PPT交付形成组合优势。", 14, { fill: lightBlue, line: { color: "93C5FD", width: 1 } }),
-      text("competition-action", rect(676, 350, 248, 106), "建议\n继续增强项目管理图表，并用高频模板降低首次使用成本。", 14, { fill: "FFF7ED", line: { color: "F59E0B", width: 1 } }),
+      shape("competition-q1", rect(82, 116, 220, 142), "重点发展\n高潜力领域\n加大资源投入", "EAF3FC", { fontSize: 15, bold: true }),
+      shape("competition-q2", rect(306, 116, 220, 142), "核心优势\n巩固领先地位\n扩大市场份额", "E8F6F1", { fontSize: 15, bold: true, color: "0F766E" }),
+      shape("competition-q3", rect(82, 262, 220, 142), "谨慎进入\n保持观察\n控制投入节奏", "F4F5F7", { fontSize: 15, bold: true, color: "475569" }),
+      shape("competition-q4", rect(306, 262, 220, 142), "优化提升\n补齐能力短板\n寻找差异机会", "FFF3DE", { fontSize: 15, bold: true, color: "B45309" }),
+      text("competition-y", rect(36, 196, 34, 142), "客\n户\n价\n值", 12, { bold: true, color: "173B67", align: "center" }),
+      text("competition-x", rect(226, 416, 158, 22), "能力完整度", 12, { bold: true, color: "173B67", align: "center" }),
+      text("competition-insight-title", rect(574, 116, 310, 34), "关键结论", 20, { bold: true, color: "102B57" }),
+      shape("competition-insight-rule", rect(574, 154, 54, 3), "", "1B5FAE", {}, "rect"),
+      ...[
+        ["1", "聚焦一体化数据刷新与业务模板，持续扩大核心优势。", "159A9C"],
+        ["2", "加强项目管理图表，补齐规模化交付能力。", "2D6CC4"],
+        ["3", "用高频模板降低首次使用成本，提升采用率。", "E6A100"],
+      ].flatMap(([number, copy, color], index) => [
+        shape(`competition-index-${index}`, rect(574, 184 + index * 82, 30, 30), String(number), String(color), { fontSize: 13, bold: true, color: white }, "circle"),
+        text(`competition-copy-${index}`, rect(618, 178 + index * 82, 282, 54), String(copy), 13, { color: "29466F" }),
+      ]),
     ],
     background: "用两个关键维度比较方案、品牌或竞争对象，并在页面右侧解释差异与建议。",
     scenarios: ["竞争分析", "方案选型", "产品定位讨论"],

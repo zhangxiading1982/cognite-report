@@ -1,6 +1,6 @@
 export type RoutePoint = { x: number; y: number };
 export type RouteSide = "top" | "right" | "bottom" | "left";
-export type ElbowControlKey = "middle" | "departure" | "corridor";
+export type ElbowControlKey = "middle" | "departure" | "corridor" | "arrival";
 export type ElbowControl = {
   key: ElbowControlKey;
   axis: "x" | "y";
@@ -22,6 +22,7 @@ export type OrthogonalRouteInput = {
   elbowOffset?: number;
   elbowStartOffset?: number;
   elbowCorridorOffset?: number;
+  elbowEndOffset?: number;
 };
 
 const direction: Record<RouteSide, RoutePoint> = {
@@ -69,14 +70,16 @@ function chooseOuterCoordinate(input: OrthogonalRouteInput, axis: "x" | "y", cle
 
 function detour(input: OrthogonalRouteInput, startDirection: RoutePoint, endDirection: RoutePoint, primary: "vertical" | "horizontal", clearance: number) {
   const startDistance = Math.max(12, clearance + Number(input.elbowStartOffset ?? 0));
+  const endDistance = Math.max(12, clearance + Number(input.elbowEndOffset ?? 0));
   const startExit = { x: input.begin.x + startDirection.x * startDistance, y: input.begin.y + startDirection.y * startDistance };
-  const endExit = { x: input.end.x + endDirection.x * clearance, y: input.end.y + endDirection.y * clearance };
+  const endExit = { x: input.end.x + endDirection.x * endDistance, y: input.end.y + endDirection.y * endDistance };
   if (primary === "vertical") {
     const corridor = chooseOuterCoordinate(input, "x", clearance) + Number(input.elbowCorridorOffset ?? 0);
     const points = [input.begin, startExit, { x: corridor, y: startExit.y }, { x: corridor, y: endExit.y }, endExit, input.end];
     return { points, controls: [
       { key: "departure", axis: "y", point: midpoint(points[1], points[2]) },
       { key: "corridor", axis: "x", point: midpoint(points[2], points[3]) },
+      { key: "arrival", axis: "y", point: midpoint(points[3], points[4]) },
     ] as ElbowControl[] };
   }
   const corridor = chooseOuterCoordinate(input, "y", clearance) + Number(input.elbowCorridorOffset ?? 0);
@@ -84,6 +87,7 @@ function detour(input: OrthogonalRouteInput, startDirection: RoutePoint, endDire
   return { points, controls: [
     { key: "departure", axis: "x", point: midpoint(points[1], points[2]) },
     { key: "corridor", axis: "y", point: midpoint(points[2], points[3]) },
+    { key: "arrival", axis: "x", point: midpoint(points[3], points[4]) },
   ] as ElbowControl[] };
 }
 

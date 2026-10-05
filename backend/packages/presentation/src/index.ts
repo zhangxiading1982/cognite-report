@@ -574,6 +574,7 @@ export function compileSlide(
           elbowOffset: line.elbowOffset,
           elbowStartOffset: line.elbowStartOffset,
           elbowCorridorOffset: line.elbowCorridorOffset,
+          elbowEndOffset: line.elbowEndOffset,
         }).points;
       }
     }
