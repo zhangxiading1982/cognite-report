@@ -82,6 +82,7 @@ import {
   type ElbowControlKey,
 } from "./connector-geometry";
 import {toDataSpec} from "./table-import";
+import { resolveTemplateElementData, TemplateElementDataPanel } from "./TemplateElementDataPanel";
 const INSERT_CHART_GROUPS=[
   {label:"比较与趋势",items:[["comparison","簇状柱图",ChartColumn],["line","折线图",ChartLine],["waterfall","瀑布图",GitCompareArrows],["area","面积图",ChartArea]]},
   {label:"构成与组合",items:[["stackedColumn","堆积柱图",Layers3],["percentStackedColumn","百分比堆积柱图",Layers3],["pie","饼图",ChartPie],["donut","圆环图",Circle],["combo","柱线组合图",ChartNoAxesCombined]]},
@@ -113,6 +114,7 @@ export function Editor({
   frozen = false,
   workspaceMode = "document",
   workspaceData,
+  onWorkspaceDataChange,
   initialFullscreen = false,
   onWorkspaceClose,
 }: {
@@ -128,6 +130,7 @@ export function Editor({
   frozen?: boolean;
   workspaceMode?: "document" | "template";
   workspaceData?: any;
+  onWorkspaceDataChange?: (dataSpec: any) => void;
   initialFullscreen?: boolean;
   onWorkspaceClose?: () => void;
 }) {
@@ -409,6 +412,8 @@ export function Editor({
     }
   }, [compiled, embedded]);
   const el = slide.elements.find((e: any) => e.id === selected[0]);
+  const templateElementData = templateWorkspace ? resolveTemplateElementData(slide,data,el) : undefined;
+  const dataTabAvailable = !!el && (["chart","table"].includes(el.type) || !!templateElementData);
   const rect = el ? rectOf(slide, el) : null;
   function changeEl(fn: (e: any) => void, group?: string) {
     if (el) edit((n) => fn(n.elements.find((x: any) => x.id === el.id)), group);
@@ -909,7 +914,7 @@ export function Editor({
               <button
                 key={id}
                 className={tab === id ? "active" : ""}
-                disabled={id==="data"&&!(["chart","table"].includes(el?.type))}
+                disabled={id==="data"&&!dataTabAvailable}
                 onClick={async()=>{try{await chartFlush.current();Tab(id)}catch(e:any){E(e.message)}}}
               >
                 {label}
@@ -917,7 +922,9 @@ export function Editor({
             ))}
           </div>
           <div className="property-body">
-            {tab === "data" && ["chart","table"].includes(el?.type) ? (
+            {tab === "data" && templateElementData ? (
+              <TemplateElementDataPanel slide={slide} element={el} dataSpec={data} onChange={next=>{D(next);onWorkspaceDataChange?.(next)}}/>
+            ) : tab === "data" && ["chart","table"].includes(el?.type) ? (
               <>
                 <ChartDataPanel key={el.id} slideId={slide.id} chartId={el.id} source={slide.extensions?.chartData?.[el.id]} frozen={frozen} registerFlush={fn=>{chartFlush.current=fn}} flushSlide={flushSlide} onReload={reloadChartData} onPreview={source=>{chartDirty.current=true;ChartPreview({...chartPreview,[el.id]:source})}} onChange={source=>edit(n=>{n.extensions={...n.extensions,chartData:{...n.extensions?.chartData,[el.id]:source}}})}/>
               </>

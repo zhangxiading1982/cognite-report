@@ -1077,6 +1077,7 @@ const orgData = makeData("org-chart", "组织结构", [
   { nodeId: "product", name: "产品组", parentId: "committee", title: "需求与体验" },
   { nodeId: "engineering", name: "研发组", parentId: "committee", title: "平台与质量" },
   { nodeId: "business", name: "业务试点组", parentId: "committee", title: "场景与验收" },
+  { nodeId: "customer-success", name: "客户成功组", parentId: "committee", title: "落地与运营" },
   { nodeId: "design", name: "模板设计", parentId: "product", title: "商业模板" },
   { nodeId: "backend", name: "平台研发", parentId: "engineering", title: "数据与导出" },
 ]);
@@ -1229,9 +1230,9 @@ const EXTENDED_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     background: "介绍项目核心成员、角色、经验能力和客户联系人。", scenarios: ["客户提案", "项目启动", "团队能力介绍"],
   }),
   makeTemplate({
-    id: "org-chart", name: "组织结构图", scene: "budgetComparison", folderId: "template-folder-organization", previewText: "项目组织结构", dataSpec: orgData,
+    id: "org-chart", name: "组织结构图", scene: "budgetComparison", folderId: "template-folder-organization", previewText: "项目组织结构", dataSpec: orgData, ...strategyUpgrade,
     binding: { resultSetId: "result-org-chart", roles: { key: "nodeId", label: "name", parent: "parentId", subtitle: "title", columns: ["name", "parentId", "title"] }, computations: [] },
-    elements: [...title("org-chart", "项目组织结构", "决策、产品、研发与业务试点协同"), { id: "org-chart-view", type: "hierarchy", rect: rect(36, 112, 888, 350), z: 4, bindingRef: "main", style: { fontSize: 11 } }, text("org-chart-note", rect(36, 478, 888, 26), "实线表示直接汇报或治理关系；组织节点和职责均来自模板数据。", 12, { color: muted })],
+    elements: [...title("org-chart", "项目组织结构", "决策、产品、研发与业务试点协同"), { id: "org-chart-view", type: "hierarchy", rect: rect(36, 112, 888, 350), z: 4, bindingRef: "main", style: { fontSize: 11, variant: "organization", orientation: "vertical" } }, text("org-chart-note", rect(36, 478, 888, 26), "实线表示直接汇报或治理关系；组织节点和职责均来自模板数据。", 12, { color: muted })],
     background: "以数据驱动层级布局展示组织、职位、部门或项目治理关系。", scenarios: ["组织介绍", "项目治理", "客户联系人结构"],
   }),
   makeTemplate({

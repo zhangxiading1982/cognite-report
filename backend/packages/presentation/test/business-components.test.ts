@@ -51,6 +51,24 @@ describe("data-driven business components", () => {
     expect(leafV.rect.y).toBeGreaterThan(rootV.rect.y);
     expect(vertical.diagnostics.filter(diagnostic => diagnostic.severity === "error")).toEqual([]);
   });
+  it("lays out an arbitrary-depth organization chart with compact nodes and orthogonal light connectors", () => {
+    const item = template("org-chart");
+    const slide = structuredClone(item.payload.example.slide);
+    const data = structuredClone(item.payload.example.dataSpec);
+    data.resultSets[0].rows.push({ nodeId: "design-system", name: "设计系统", parentId: "design", title: "规范与组件" });
+
+    const compiled = compileSlide(slide, data);
+    const nodes = compiled.elements.filter(element => /^org-chart-view-node-\d+$/.test(element.id));
+    const links = compiled.elements.filter(element => element.id.startsWith("org-chart-view-link-"));
+    expect(nodes).toHaveLength(8);
+    expect(nodes.every(node => node.rect.w <= 176 && node.rect.h <= 64)).toBe(true);
+    expect(links.length).toBeGreaterThan(0);
+    expect(links.every(link => link.rect.w === 0 || link.rect.h === 0)).toBe(true);
+    expect(links.every(link => Number(link.line?.width) <= 1)).toBe(true);
+    expect(compiled.elements.find(element => element.id === "org-chart-view-node-7")!.rect.y)
+      .toBeGreaterThan(compiled.elements.find(element => element.id === "org-chart-view-node-5")!.rect.y);
+    expect(compiled.diagnostics.filter(diagnostic => diagnostic.severity === "error")).toEqual([]);
+  });
   it("ships compilable repaired previews for sales proposal and SWOT", () => {
     for (const id of ["sales-proposal", "swot-analysis"]) {
       const item = template(id);

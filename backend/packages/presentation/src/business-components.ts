@@ -442,6 +442,38 @@ export function compileBusinessComponent(
     if (!key || !label || !parent) return { handled: true, elements: [], error: "层级图需要节点、名称和父节点字段" };
     const byKey = new Map(rows.map((row) => [String(value(row, key)), row]));
     const levelOf = (row: Record<string, unknown>) => { let level = 0, cursor = String(value(row, parent) ?? ""); const visited = new Set<string>(); while (cursor && byKey.has(cursor) && !visited.has(cursor)) { visited.add(cursor); level++; cursor = String(value(byKey.get(cursor)!, parent) ?? ""); } return level; };
+    if (style.variant === "organization") {
+      const levels = rows.map(levelOf), maxLevel = Math.max(...levels), levelH = rect.h / (maxLevel + 1), elements: CompiledElement[] = [];
+      const boxes = new Map<string, Rect>();
+      for (let level = 0; level <= maxLevel; level++) {
+        const peers = rows.filter(row => levelOf(row) === level), gap = 16;
+        const width = Math.min(176, (rect.w - gap * Math.max(0, peers.length - 1)) / Math.max(1, peers.length));
+        const height = Math.min(64, Math.max(50, levelH - 26));
+        const rowWidth = peers.length * width + Math.max(0, peers.length - 1) * gap;
+        peers.forEach((row, peerIndex) => boxes.set(String(value(row, key)), {
+          x: rect.x + (rect.w - rowWidth) / 2 + peerIndex * (width + gap),
+          y: rect.y + level * levelH + (levelH - height) / 2,
+          w: width,
+          h: height,
+        }));
+      }
+      rows.forEach((row, index) => {
+        const box = boxes.get(String(value(row, key)))!, parentId = String(value(row, parent) ?? ""), level = levels[index];
+        if (parentId && boxes.has(parentId)) {
+          const parentBox = boxes.get(parentId)!, startX = parentBox.x + parentBox.w / 2, startY = parentBox.y + parentBox.h, endX = box.x + box.w / 2, endY = box.y, middleY = (startY + endY) / 2;
+          elements.push(line(`${element.id}-link-a-${index}`, startX, startY, 0, middleY - startY, "AFC0D3", .9));
+          if (startX !== endX) elements.push(line(`${element.id}-link-b-${index}`, Math.min(startX, endX), middleY, Math.abs(endX - startX), 0, "AFC0D3", .9));
+          elements.push(line(`${element.id}-link-c-${index}`, endX, middleY, 0, endY - middleY, "AFC0D3", .9));
+        }
+        const fill = level === 0 ? "173D68" : level === 1 ? "E8F0FA" : "F8FAFC";
+        const outline = level === 0 ? "173D68" : level === 1 ? "B9CDE3" : "D4DEE9";
+        const color = level === 0 ? "FFFFFF" : "173D68";
+        elements.push(shape(`${element.id}-node-${index}`, box, fill, "roundRect", outline));
+        elements.push(text(`${element.id}-node-label-${index}`, { x: box.x + 10, y: box.y + 6, w: box.w - 20, h: subtitle ? 23 : box.h - 12 }, display(row, label), level === 0 ? 12 : 11, color, { bold: true, align: "center" }));
+        if (subtitle) elements.push(text(`${element.id}-node-subtitle-${index}`, { x: box.x + 10, y: box.y + 28, w: box.w - 20, h: box.h - 32 }, display(row, subtitle), 8.5, level === 0 ? "DCE8F5" : "60758F", { align: "center" }));
+      });
+      return { handled: true, elements };
+    }
     if (style.variant === "decision" && style.orientation === "vertical") {
       const levels = rows.map(levelOf), maxLevel = Math.max(...levels), levelH = rect.h / (maxLevel + 1), elements: CompiledElement[] = [];
       const boxes = new Map<string, Rect>();

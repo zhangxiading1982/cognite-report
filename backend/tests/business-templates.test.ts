@@ -98,8 +98,20 @@ describe("commercial business templates", () => {
     }
   });
 
+  test("every data-driven template element resolves to a sample result set", () => {
+    for (const template of BUSINESS_TEMPLATES) {
+      const { slide, dataSpec } = template.payload.example;
+      const resultIds = new Set(dataSpec.resultSets.map(result => result.id));
+      for (const element of slide.elements.filter(element => element.bindingRef)) {
+        const binding = slide.bindings[element.bindingRef!];
+        expect(binding, `${template.name} / ${element.id} 缺少 bindingRef`).toBeTruthy();
+        expect(resultIds.has(binding.resultSetId), `${template.name} / ${element.id} 找不到样例数据表`).toBe(true);
+      }
+    }
+  });
+
   test("every business template uses the reference-grade presentation frame and hierarchy", () => {
-    const optimized = new Set(["business-process", "customer-journey", "decision-matrix", "decision-tree", "portfolio-prioritization", "regional-market-map", "sales-proposal", "swot-analysis"]);
+    const optimized = new Set(["business-process", "customer-journey", "decision-matrix", "decision-tree", "portfolio-prioritization", "regional-market-map", "sales-proposal", "swot-analysis", "org-chart"]);
     const repaired = new Set(["decision-tree", "sales-proposal", "swot-analysis"]);
     for (const template of BUSINESS_TEMPLATES) {
       const elements = template.payload.example.slide.elements;

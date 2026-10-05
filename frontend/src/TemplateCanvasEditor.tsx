@@ -6,11 +6,13 @@ export function TemplateCanvasEditor({
   slide,
   dataSpec,
   onChange,
+  onDataChange,
   onClose,
 }: {
   slide: any;
   dataSpec: any;
   onChange: (slide: any) => void;
+  onDataChange?: (dataSpec: any) => void;
   onClose: () => void;
 }) {
   return <Editor
@@ -22,6 +24,7 @@ export function TemplateCanvasEditor({
     embedded
     workspaceMode="template"
     workspaceData={dataSpec}
+    onWorkspaceDataChange={onDataChange}
     initialFullscreen
     onWorkspaceClose={onClose}
     onSaved={onChange}
