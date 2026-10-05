@@ -12,6 +12,21 @@ it('compiles table typography, body fill and border styles into the shared rende
  expect(table).toMatchObject({fontFace:'Arial',fontSize:14,color:'112233',bold:true,fill:'DDEEFF',bodyFill:'FFF7ED',line:{color:'AABBCC',width:2}});
  const svg=renderSlideSvg(c);expect(svg).toContain('fill="#FFF7ED"');expect(svg).toContain('stroke="#AABBCC"');expect(svg).toContain('stroke-width="2"');expect(svg).toContain('font-weight="bold"');
 });
+it('compiles presentation-grade table column geometry and semantic cell styles',()=>{
+ const d=structuredClone(fixture) as any,rs=d.resultSets[0];
+ rs.rows[0].actual='120';rs.rows[1].actual='-80';
+ d.measures.find((measure:any)=>measure.id===rs.fields.find((field:any)=>field.id==='actual').semanticRef).format.displayDivisor='1';
+ const c=compileSlide(page({type:'table',bindingRef:'main',fields:['regionName','actual'],style:{fontFace:'SimHei',fontSize:15,headerFontSize:13,fill:'DCEAF7',headerColor:'173B67',firstColumnBold:true,lastRowBold:true,numericAlign:'right',columnWidths:[1.8,1],formatNumbers:true,directionFields:['actual'],positiveColor:'16845B',negativeColor:'C53B43'}}),d),table=c.elements[0]!;
+ expect(table.columnWidths).toEqual([1.8,1]);
+ expect(table.cellStyles[1][0]).toMatchObject({bold:true,align:'left'});
+ expect(table.cellStyles[1][1]).toMatchObject({color:'16845B',align:'right'});
+ expect(table.cellStyles[2][1]).toMatchObject({color:'C53B43',align:'right'});
+ expect(table.rows?.[1][1]).toBe('+120');
+ const svg=renderSlideSvg(c);
+ expect(svg).toContain('fill="#16845B"');
+ expect(svg).toContain('fill="#C53B43"');
+ expect(svg).toContain('text-anchor="end"');
+});
 it('preserves common editable shape types and their outline styles',()=>{
  const c=compileSlide(page({type:'shape',shape:'ellipse',fill:'DDEEFF',line:{color:'123456',width:3}}),fixture as any),shape=c.elements[0]!;
  expect(shape).toMatchObject({type:'shape',shape:'ellipse',fill:'DDEEFF',line:{color:'123456',width:3}});expect(renderSlideSvg(c)).toContain('<ellipse');expect(renderSlideSvg(c)).toContain('stroke="#123456"');

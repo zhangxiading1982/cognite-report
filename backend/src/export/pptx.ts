@@ -85,11 +85,24 @@ export async function writeDeckPptx(
       } else if (e.type === "table") {
         const rows = e.rows as string[][];
         if (!rows?.length || !rows[0]?.length) throw new Error("EMPTY_TABLE");
-        slide.addTable(rows.map((row, i) => row.map(text => ({text, options: {fill: { color: i === 0 ? color(e.fill, "EFF6FF") : i%2===0&&e.bodyStripeFill?color(e.bodyStripeFill):color(e.bodyFill,"FFFFFF") },color:color(i===0?e.headerColor:e.color),bold:i===0?e.headerBold!==false:e.bold===true}}))), {
+        const weights=(Array.isArray(e.columnWidths)&&e.columnWidths.length===rows[0].length?e.columnWidths:rows[0].map(()=>1)).map((value:any)=>Math.max(.01,Number(value)||1));
+        const weightTotal=weights.reduce((sum:number,value:number)=>sum+value,0);
+        const tableRows=rows.map((row,i)=>row.map((text,j)=>{
+          const cell=e.cellStyles?.[i]?.[j]??{};
+          return {text,options:{
+            fill:{color:i===0?color(e.fill,"EFF6FF"):i%2===0&&e.bodyStripeFill?color(e.bodyStripeFill):color(e.bodyFill,"FFFFFF")},
+            color:color(cell.color??(i===0?e.headerColor:e.color)),
+            bold:cell.bold??(i===0?e.headerBold!==false:e.bold===true),
+            fontFace:cell.fontFace??(i===0?e.headerFontFace:e.fontFace)??compiled.theme.fontFace,
+            fontSize:cell.fontSize??(i===0?e.headerFontSize:e.fontSize)??16,
+            align:cell.align??(j===0?'left':'right'),
+          }};
+        }));
+        slide.addTable(tableRows, {
           ...bounds, autoPage: false, rowH: bounds.h / rows.length,
-          colW: Array(rows[0].length).fill(bounds.w / rows[0].length),
+          colW: weights.map((value:number)=>bounds.w*value/weightTotal),
           fontFace: e.fontFace ?? compiled.theme.fontFace, fontSize: e.fontSize ?? 16,
-          color: color(e.color), bold:e.bold===true, margin: [4, 6, 4, 6], valign: "top",
+          color: color(e.color), bold:e.bold===true, margin: [4, 6, 4, 6], valign: "middle",
           border: {type: "solid", color: color(e.borderMode==='horizontal'?'FFFFFF':e.line?.color,"CBD5E1"), pt: e.borderMode==='horizontal'?0:e.line?.width??0.5},
 
         });

@@ -1,6 +1,22 @@
 import type {SlideElement,Rect,CompiledElement} from './types';
 import type {DataSpec} from './schema';
 import {wrapText} from './layout';
+
+function formatTableValue(value:unknown,field:any,style:Record<string,any>,data:DataSpec){
+ if(value===null)return '—';
+ if(value===undefined)return '';
+ if(!style.formatNumbers||!['decimal','integer'].includes(field.type))return String(value);
+ const numeric=Number(value);
+ if(!Number.isFinite(numeric))return String(value);
+ const measure=data.measures.find(item=>item.id===field.semanticRef);
+ const format=measure?.format;
+ const percent=format?.percent===true;
+ const divisor=Number(format?.displayDivisor??1);
+ const display=(percent?numeric*100:numeric)/(Number.isFinite(divisor)&&divisor>0?divisor:1);
+ const decimals=Math.max(0,Math.min(6,Number(format?.decimals??field.displayFormat?.decimalPlaces??0)));
+ const signed=Array.isArray(style.directionFields)&&style.directionFields.includes(field.id)&&display>0;
+ return `${signed?'+':''}${display.toLocaleString('zh-CN',{minimumFractionDigits:decimals,maximumFractionDigits:decimals,useGrouping:field.displayFormat?.useGrouping!==false})}${percent?'%':style.showUnitsInCells?format?.suffix??field.unit??'':''}`;
+}
 export function compileComponent(e:SlideElement,rect:Rect,style:Record<string,any>,data:DataSpec,binding:any,fontFace:string):{elements:CompiledElement[];error?:string}{
  const fail=(error:string)=>({elements:[],error});
  const fs=style.fontSize??16;
@@ -12,10 +28,28 @@ export function compileComponent(e:SlideElement,rect:Rect,style:Record<string,an
   if(!rs.rows.length||rs.rows.length>12)return fail('单页表格支持1–12行数据，请筛选数据或调整粒度');
   const fields=e.fields.map(f=>rs.fields.find(x=>x.id===f)!);
   const fieldName=(field:any)=>field.name??data.measures.find(item=>item.id===field.semanticRef)?.name??data.semanticSchema.tables.flatMap(table=>table.columns).find(column=>column.id===field.semanticRef)?.name??field.id;
-  const rows=[fields.map(fieldName),...rs.rows.map(row=>fields.map(f=>row[f.id]===null?'—':String(row[f.id]??'')))];
-  const rowHeight=rect.h/rows.length,colWidth=rect.w/fields.length;
-  if(rows.some(row=>row.some(cell=>wrapText(cell,colWidth-12,fs).length*fs*1.25>rowHeight-8)))return fail('表格内容超出单元格，请扩大表格、减小字号或减少字段');
-  return {elements:[{id:e.id,type:'table',rect,rows,fontFace,fontSize:fs,color:style.color??'1F2937',bold:style.bold===true,fill:style.fill??'EFF6FF',headerColor:style.headerColor??style.color??'1F2937',headerBold:style.headerBold!==false,bodyFill:style.bodyFill??'FFFFFF',bodyStripeFill:style.bodyStripeFill,borderMode:style.borderMode??'grid',line:{color:style.line?.color??'CBD5E1',width:style.line?.width??0.5}}]};
+  const rows=[fields.map(fieldName),...rs.rows.map(row=>fields.map(f=>formatTableValue(row[f.id],f,style,data)))];
+  const rawRows=[fields.map(()=>undefined),...rs.rows.map(row=>fields.map(f=>row[f.id]))];
+  const configuredWidths=Array.isArray(style.columnWidths)&&style.columnWidths.length===fields.length&&style.columnWidths.every((value:any)=>Number.isFinite(Number(value))&&Number(value)>0)?style.columnWidths.map(Number):fields.map((_,index)=>index===0&&style.firstColumnWide!==false?1.45:1);
+  const totalWidth=configuredWidths.reduce((sum:number,value:number)=>sum+value,0);
+  const pixelWidths=configuredWidths.map((value:number)=>rect.w*value/totalWidth);
+  const headerFontSize=Math.max(8,Math.min(80,Number(style.headerFontSize??fs)));
+  const rowHeight=rect.h/rows.length;
+  if(rows.some((row,rowIndex)=>row.some((cell,columnIndex)=>wrapText(cell,pixelWidths[columnIndex]-12,rowIndex===0?headerFontSize:fs).length*(rowIndex===0?headerFontSize:fs)*1.25>rowHeight-8)))return fail('表格内容超出单元格，请扩大表格、减小字号或减少字段');
+  const directionFields=new Set(Array.isArray(style.directionFields)?style.directionFields:style.valueColorMode==='direction'?fields.filter(field=>['decimal','integer'].includes(field.type)).map(field=>field.id):[]);
+  const positiveColor=String(style.positiveColor??'16845B'),negativeColor=String(style.negativeColor??'C53B43');
+  const cellStyles=rows.map((row,rowIndex)=>row.map((_,columnIndex)=>{
+   const field=fields[columnIndex],numeric=['decimal','integer'].includes(field.type),raw=rawRows[rowIndex][columnIndex];
+   const direction=directionFields.has(field.id)&&raw!==undefined&&raw!==null?Number(raw):0;
+   return {
+    align:rowIndex===0?(style.headerAlign??(columnIndex===0?'left':'center')):(numeric?(style.numericAlign??'right'):(style.textAlign??'left')),
+    bold:rowIndex===0?style.headerBold!==false:(style.bold===true||(style.firstColumnBold===true&&columnIndex===0)||(style.lastRowBold===true&&rowIndex===rows.length-1)),
+    color:rowIndex===0?(style.headerColor??style.color??'1F2937'):(direction>0?positiveColor:direction<0?negativeColor:style.color??'1F2937'),
+    fontSize:rowIndex===0?headerFontSize:fs,
+    fontFace:rowIndex===0?(style.headerFontFace??fontFace):fontFace,
+   };
+  }));
+  return {elements:[{id:e.id,type:'table',rect,rows,cellStyles,columnWidths:configuredWidths,fontFace,fontSize:fs,headerFontFace:style.headerFontFace??fontFace,headerFontSize,color:style.color??'1F2937',bold:style.bold===true,fill:style.fill??'EFF6FF',headerColor:style.headerColor??style.color??'1F2937',headerBold:style.headerBold!==false,bodyFill:style.bodyFill??'FFFFFF',bodyStripeFill:style.bodyStripeFill,borderMode:style.borderMode??'grid',line:{color:style.line?.color??'CBD5E1',width:style.line?.width??0.5}}]};
  }
  if(e.type==='process'){
   if(!Array.isArray(e.steps)||e.steps.length<2||e.steps.length>8||e.steps.some((x:any)=>typeof x!=='string'||!x.trim()||x.length>100))return fail('流程条需要2–8个非空步骤，每步最多100字');

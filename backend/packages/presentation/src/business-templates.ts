@@ -24,7 +24,7 @@ export interface BusinessTemplateDefinition {
   folderId: string;
   previewText: string;
   payload: {
-    seedRevision: 8;
+    seedRevision: 9;
     chartType?: string;
     requiredBindings: Record<string, unknown>;
     bindingSchema: Record<string, unknown>;
@@ -36,7 +36,7 @@ export interface BusinessTemplateDefinition {
     exportCapabilities: string[];
     example: {
       identityVersion: 1;
-      designVersion: 9;
+      designVersion: 10;
       slide: SlideSpec;
       dataSpec: DataSpec;
       businessContext: { background: string; scenarios: string[] };
@@ -104,6 +104,7 @@ const table = (
   box: Rect,
   fields: string[],
   fontSize = 12,
+  style: Record<string, unknown> = {},
 ): SlideElement => ({
   id,
   type: "table",
@@ -111,7 +112,7 @@ const table = (
   z: 4,
   bindingRef: "main",
   fields,
-  style: { fontSize, fill: navy, headerColor: white, headerBold: true, bodyFill: white, bodyStripeFill: "F8FAFC", borderMode: "horizontal", color: navy, line: { color: "E2E8F0", width: 0.6 } },
+  style: { fontFace: "SimHei", fontSize, headerFontSize: Math.max(8, fontSize - 1), fill: "DCEAF7", headerColor: "173B67", headerBold: true, firstColumnBold: true, firstColumnWide: true, numericAlign: "right", formatNumbers: true, bodyFill: white, bodyStripeFill: "F8FAFC", borderMode: "horizontal", color: navy, line: { color: "D8E1EC", width: 0.6 }, ...style },
 });
 const chart = (
   id: string,
@@ -296,7 +297,7 @@ function makeTemplate(input: {
     folderId: input.folderId,
     previewText: input.previewText,
     payload: {
-      seedRevision: 8,
+      seedRevision: 9,
       ...(firstChart?.chartType ? { chartType: firstChart.chartType } : {}),
       requiredBindings: { main: { roles: Object.keys(input.binding.roles), roleConstraints: roleSchema(input.binding, input.dataSpec) } },
       bindingSchema: { main: { roles: roleSchema(input.binding, input.dataSpec) } },
@@ -308,7 +309,7 @@ function makeTemplate(input: {
       exportCapabilities: ["nativeChart", "editableShapes", "nativeTable"],
       example: {
         identityVersion: 1,
-        designVersion: 9,
+        designVersion: 10,
         slide,
         dataSpec: input.dataSpec,
         businessContext: { background: input.background, scenarios: input.scenarios },
@@ -382,13 +383,15 @@ const pnlData = makeData(
     { id: "actual", name: "实际", type: "decimal", description: "本期实际金额", unit: "万元", measure: { baseUnit: "CNY", currency: "CNY", format: money } },
     { id: "budget", name: "预算", type: "decimal", description: "本期预算金额", unit: "万元", measure: { baseUnit: "CNY", currency: "CNY", format: money } },
     { id: "prior", name: "上年同期", type: "decimal", description: "上年同期金额", unit: "万元", measure: { baseUnit: "CNY", currency: "CNY", format: money } },
+    { id: "variance", name: "变动额", type: "decimal", description: "实际金额较上年同期的变动额", unit: "万元", measure: { baseUnit: "CNY", currency: "CNY", format: money, favorableDirection: "neutral" } },
+    { id: "varianceRate", name: "变动幅度", type: "decimal", description: "实际金额较上年同期的变动比例", unit: "%", measure: { baseUnit: "ratio", format: { ...percent, decimals: 0 }, aggregationBehavior: "nonAdditive", favorableDirection: "neutral" } },
   ],
   [
-    { accountId: "revenue", account: "营业收入", actual: "12800", budget: "13200", prior: "11600" },
-    { accountId: "cogs", account: "营业成本", actual: "8180", budget: "8500", prior: "7650" },
-    { accountId: "gross", account: "毛利", actual: "4620", budget: "4700", prior: "3950" },
-    { accountId: "expense", account: "期间费用", actual: "2350", budget: "2500", prior: "2260" },
-    { accountId: "profit", account: "经营利润", actual: "2270", budget: "2200", prior: "1690" },
+    { accountId: "revenue", account: "营业收入", actual: "12800", budget: "13200", prior: "11600", variance: "1200", varianceRate: "0.103" },
+    { accountId: "cogs", account: "营业成本", actual: "8180", budget: "8500", prior: "7650", variance: "530", varianceRate: "0.069" },
+    { accountId: "gross", account: "毛利", actual: "4620", budget: "4700", prior: "3950", variance: "670", varianceRate: "0.170" },
+    { accountId: "expense", account: "期间费用", actual: "2180", budget: "2500", prior: "2260", variance: "-80", varianceRate: "-0.035" },
+    { accountId: "profit", account: "经营利润", actual: "2270", budget: "2200", prior: "1690", variance: "580", varianceRate: "0.343" },
   ],
 );
 
@@ -604,12 +607,12 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     name: "损益表 · 经营结果",
     scene: "budgetComparison",
     folderId: "template-folder-finance",
-    previewText: "收入承压但经营利润优于预算",
+    previewText: "财务表现",
     dataSpec: pnlData,
-    binding: { resultSetId: "result-pnl-overview", roles: { columns: ["account", "actual", "budget", "prior"] }, computations: [] },
+    binding: { resultSetId: "result-pnl-overview", roles: { columns: ["account", "prior", "actual", "variance", "varianceRate"] }, computations: [] },
     elements: [
-      ...title("pnl-overview", "收入承压但经营利润优于预算", "2026年9月损益摘要｜单位：万元"),
-      table("pnl-table", rect(36, 118, 888, 324), ["account", "actual", "budget", "prior"], 13),
+      ...title("pnl-overview", "财务表现", "2025 vs 2026｜单位：万元"),
+      table("pnl-table", rect(36, 118, 888, 324), ["account", "prior", "actual", "variance", "varianceRate"], 15, { headerFontSize: 13, columnWidths: [1.55, 1, 1, 1, 1], directionFields: ["variance", "varianceRate"], positiveColor: "16845B", negativeColor: "C53B43", lastRowBold: true, bodyStripeFill: "FFFFFF" }),
       shape("pnl-conclusion-accent", rect(36, 462, 5, 46), "", "E6A100", {}, "rect"),
       shape("pnl-conclusion-bg", rect(41, 462, 883, 46), "", "F5F8FC", {}, "rect"),
       text("pnl-conclusion-label", rect(58, 474, 94, 22), "关键结论", 16, { bold: true, color: "102B57" }),

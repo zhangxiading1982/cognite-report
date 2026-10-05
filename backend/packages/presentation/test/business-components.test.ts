@@ -8,6 +8,24 @@ const template = (id: string) => {
 };
 
 describe("data-driven business components", () => {
+  it("uses a finance-grade P&L table with readable typography and variance semantics", () => {
+    const item = template("pnl-overview");
+    const table = item.payload.example.slide.elements.find(element => element.id === "pnl-table")!;
+    const fields = item.payload.example.dataSpec.resultSets[0].fields.map(field => field.id);
+    expect(fields).toEqual(expect.arrayContaining(["variance", "varianceRate"]));
+    expect(table.fields).toEqual(["account", "prior", "actual", "variance", "varianceRate"]);
+    expect(table.style).toMatchObject({
+      fontFace: "SimHei",
+      fontSize: 15,
+      headerFontSize: 13,
+      firstColumnBold: true,
+      directionFields: ["variance", "varianceRate"],
+    });
+    const compiled = compileSlide(item.payload.example.slide, item.payload.example.dataSpec);
+    const compiledTable = compiled.elements.find(element => element.id === "pnl-table")!;
+    expect(compiledTable.cellStyles.some((row: any[]) => row.some(cell => cell.color === "16845B"))).toBe(true);
+    expect(compiledTable.rows.some((row: string[]) => row.includes("+10%"))).toBe(true);
+  });
   it("recompiles KPI cards from the current DataSpec without mutating the template", () => {
     const item = template("kpi-dashboard");
     const slide = structuredClone(item.payload.example.slide);

@@ -130,6 +130,28 @@ describe("PowerPoint-like connector geometry", () => {
     expect(arrivalMoved.elements[2].line.elbowEndOffset).toBe(20);
     expect(connectorRoute(arrivalMoved, arrivalMoved.elements[2]).points[4].y).toBe(route.points[4].y - 20);
   });
+  it("moves any internal elbow segment directly and preserves the manual route when a connected shape moves", () => {
+    const routed: any = {
+      ...doc,
+      elements: [
+        { id: "source", type: "shape", shape: "rect", rect: { x: 80, y: 300, w: 120, h: 80 } },
+        { id: "target", type: "shape", shape: "rect", rect: { x: 420, y: 100, w: 120, h: 80 } },
+        { id: "elbow", type: "shape", shape: "elbow", rect: { x: 140, y: 100, w: 340, h: 280 }, line: { beginConnection: { elementId: "source", side: "bottom" }, endConnection: { elementId: "target", side: "top" } } },
+      ],
+    };
+    const route = connectorRoute(routed, routed.elements[2]);
+    expect(route.controls).toHaveLength(3);
+    expect(route.controls.map(control => control.segmentIndex)).toEqual([1, 2, 3]);
+    const corridor = route.controls[1];
+    const adjusted = setElbowControl(routed, "elbow", corridor.key, { ...corridor.point, x: corridor.point.x - 52 });
+    expect(adjusted.elements[2].line.elbowPoints).toHaveLength(6);
+    expect(connectorRoute(adjusted, adjusted.elements[2]).points[2].x).toBe(route.points[2].x - 52);
+    adjusted.layoutOverrides = { target: { rect: { x: 500, y: 120, w: 120, h: 80 } } };
+    const moved = connectorRoute(adjusted, adjusted.elements[2]);
+    expect(moved.end).toEqual({ x: 560, y: 120 });
+    expect(moved.points[2].x).toBe(route.points[2].x - 52);
+    expect(moved.points.at(-2)?.x).toBe(560);
+  });
   it("routes the outer corridor beyond both connected shapes and follows a moved target", () => {
     const routed: any = {
       ...doc,

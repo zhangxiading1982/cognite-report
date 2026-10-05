@@ -63,6 +63,7 @@ export function connectorRoute(document: any, element: any) {
     elbowStartOffset: element.line?.elbowStartOffset,
     elbowCorridorOffset: element.line?.elbowCorridorOffset,
     elbowEndOffset: element.line?.elbowEndOffset,
+    manualPoints: element.line?.elbowPoints,
   });
 }
 
@@ -142,6 +143,13 @@ export function setElbowControl(document: any, connectorId: string, controlKey: 
   if (!control) return next;
   const delta = point[control.axis] - control.point[control.axis];
   const line = connector.line ?? {};
+  if(control.segmentIndex!==undefined&&controlKey!=="middle"){
+    const points=connectorRoute(document,original).points.map(routePoint=>({...routePoint}));
+    const index=control.segmentIndex;
+    points[index][control.axis]=Math.round(points[index][control.axis]+delta);
+    points[index+1][control.axis]=Math.round(points[index+1][control.axis]+delta);
+    line.elbowPoints=points;
+  }
   if (controlKey === "middle") line.elbowOffset = Math.round(Number(line.elbowOffset ?? 0) + delta);
   if (controlKey === "corridor") line.elbowCorridorOffset = Math.round(Number(line.elbowCorridorOffset ?? 0) + delta);
   if (controlKey === "departure") {
