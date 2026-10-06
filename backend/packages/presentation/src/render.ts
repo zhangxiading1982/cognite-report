@@ -18,7 +18,7 @@ const esc = (x: unknown) =>
 const color = (x: unknown, fallback = "1F2937") =>
   typeof x === "string" && /^#?[0-9a-f]{6}$/i.test(x)
     ? "#" + x.replace("#", "")
-    : "#" + fallback;
+    : "#" + fallback.replace("#", "");
 const num = (v: number) => (Number.isFinite(v) ? v : 0);
 const polygon = (points: [number, number][]) =>
   points.map(([x, y]) => `${num(x)},${num(y)}`).join(" ");
@@ -131,12 +131,13 @@ export function renderSlideSvg(c: CompiledSlide): string {
           const fs=Number(cellStyle.fontSize??(i===0?n.headerFontSize:n.fontSize)??16),align=cellStyle.align??(j===0?'left':'right'),padding=Number(n.cellPaddingX??8);
           const lines = wrapText(cell, cw-padding*2, fs),lineHeight=fs*1.2,totalHeight=lines.length*lineHeight;
           const fill=color(cellStyle.fill,i===0?n.fill:(i%2===0&&n.bodyStripeFill?n.bodyStripeFill:n.bodyFill??'FFFFFF'));
-          const stroke=n.borderMode==='horizontal'?'none':color(n.line?.color,'CBD5E1');
+          const stroke=n.borderMode==='grid'?color(n.line?.color,'CBD5E1'):'none';
           const tx=align==='center'?x+cw/2:align==='right'?x+cw-padding:x+padding,anchor=align==='center'?'middle':align==='right'?'end':'start',firstBaseline=y+(rh-totalHeight)/2+fs*.88;
-          return `<rect x="${num(x)}" y="${num(y)}" width="${num(cw)}" height="${num(rh)}" fill="${fill}" stroke="${stroke}" stroke-width="${num(n.line?.width??0.5)}"/><text text-anchor="${anchor}" x="${num(tx)}" y="${num(firstBaseline)}" font-family="${esc(fontCss(cellStyle.fontFace??(i===0?n.headerFontFace:n.fontFace)??c.theme.fontFace))}" font-size="${num(fs)}" font-weight="${cellStyle.bold??(i===0?n.headerBold!==false:n.bold)?'bold':'normal'}" fill="${color(cellStyle.color??(i===0?n.headerColor:n.color))}">${lines.map((line,k)=>`<tspan x="${num(tx)}" dy="${k===0?0:lineHeight}">${esc(line)}</tspan>`).join('')}</text>`;
+          return `<rect x="${num(x)}" y="${num(y)}" width="${num(cw)}" height="${num(rh)}" fill="${fill}" stroke="${stroke}" stroke-width="${num(n.line?.width??0.5)}"${stroke==='none'?'':dash(n.line?.dash)}/><text text-anchor="${anchor}" x="${num(tx)}" y="${num(firstBaseline)}" font-family="${esc(fontCss(cellStyle.fontFace??(i===0?n.headerFontFace:n.fontFace)??c.theme.fontFace))}" font-size="${num(fs)}" font-weight="${cellStyle.bold??(i===0?n.headerBold!==false:n.bold)?'bold':'normal'}" fill="${color(cellStyle.color??(i===0?n.headerColor:n.color))}">${lines.map((line,k)=>`<tspan x="${num(tx)}" dy="${k===0?0:lineHeight}">${esc(line)}</tspan>`).join('')}</text>`;
         }).join('')).join('');
-        const rules=n.borderMode==='horizontal'?rows.slice(1).map((_,i)=>{const rule=i===0&&n.headerLine?n.headerLine:n.line;return `<line x1="${r.x}" x2="${r.x+r.w}" y1="${r.y+rh*(i+1)}" y2="${r.y+rh*(i+1)}" stroke="${color(rule?.color,'E2E8F0')}" stroke-width="${num(rule?.width??0.5)}"/>`}).join(''):'';
-        return `<g>${cells}${rules}</g>`;
+        const rules=n.borderMode==='horizontal'?rows.slice(1).map((_,i)=>{const rule=i===0&&n.headerLine?n.headerLine:n.line;return `<line class="table-rule" x1="${r.x}" x2="${r.x+r.w}" y1="${r.y+rh*(i+1)}" y2="${r.y+rh*(i+1)}" stroke="${color(rule?.color,'E2E8F0')}" stroke-width="${num(rule?.width??0.5)}"${dash(rule?.dash??n.line?.dash)}/>`}).join(''):'';
+        const outline=n.borderMode==='outline'?`<rect class="table-outline" x="${num(r.x)}" y="${num(r.y)}" width="${num(r.w)}" height="${num(r.h)}" fill="none" stroke="${color(n.line?.color,'CBD5E1')}" stroke-width="${num(n.line?.width??0.5)}"${dash(n.line?.dash)}/>`:'';
+        return `<g>${cells}${rules}${outline}</g>`;
       }
       if (n.type === "shape") {
         if (n.shape === "line" || n.shape === "elbow") return lineGeometry(n);

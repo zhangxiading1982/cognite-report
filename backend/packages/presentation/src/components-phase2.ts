@@ -55,7 +55,7 @@ export function compileComponent(e:SlideElement,rect:Rect,style:Record<string,an
     fontFace:rowIndex===0?(style.headerFontFace??fontFace):fontFace,
    };
   }));
-  return {elements:[{id:e.id,type:'table',rect,rows,cellStyles,columnWidths:configuredWidths,fontFace,fontSize:fs,headerFontFace:style.headerFontFace??fontFace,headerFontSize,color:style.color??'1F2937',bold:style.bold===true,fill:style.fill??'EFF6FF',headerColor:style.headerColor??style.color??'1F2937',headerBold:style.headerBold!==false,bodyFill:style.bodyFill??'FFFFFF',bodyStripeFill:style.bodyStripeFill,borderMode:style.borderMode??'grid',line:{color:style.line?.color??'CBD5E1',width:style.line?.width??0.5},headerLine:style.headerLine,lastRowFill:style.lastRowFill,cellPaddingX:style.cellPaddingX,tablePreset:style.tablePreset,tableDesignVersion:style.tableDesignVersion}]};
+  return {elements:[{id:e.id,type:'table',rect,rows,cellStyles,columnWidths:configuredWidths,fontFace,fontSize:fs,headerFontFace:style.headerFontFace??fontFace,headerFontSize,color:style.color??'1F2937',bold:style.bold===true,fill:style.fill??'EFF6FF',headerColor:style.headerColor??style.color??'1F2937',headerBold:style.headerBold!==false,bodyFill:style.bodyFill??'FFFFFF',bodyStripeFill:style.bodyStripeFill,borderMode:style.borderMode??'grid',line:{...style.line,color:style.line?.color??'CBD5E1',width:style.line?.width??0.5},headerLine:style.headerLine,lastRowFill:style.lastRowFill,cellPaddingX:style.cellPaddingX,tablePreset:style.tablePreset,tableDesignVersion:style.tableDesignVersion}]};
  }
  if(e.type==='process'){
   if(!Array.isArray(e.steps)||e.steps.length<2||e.steps.length>8||e.steps.some((x:any)=>typeof x!=='string'||!x.trim()||x.length>100))return fail('流程条需要2–8个非空步骤，每步最多100字');

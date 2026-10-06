@@ -9,3 +9,9 @@ it('exports a single editable styled native table without generating extra slide
  expect(xml).toContain('DDEEFF');expect(xml).toContain('FFF7ED');expect(xml).toContain('FBE9E7');expect(xml).toContain('667085');expect(xml).toContain(' b="1"');
  }finally{await rm(dir,{recursive:true,force:true})}
 });
+it('exports a PPT table outline with the configured color, width and dash style',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'slidebi-table-border-'));
+ try{await writePptx({canvas:{width:960,height:540,unit:'pt'},theme:{fontFace:'SimHei',background:'FFFFFF',textColor:'1F2937',seriesColors:['2563EB']},diagnostics:[],elements:[{id:'table',type:'table',rect:{x:40,y:40,w:600,h:200},rows:[['地区','收入'],['华东','120']],cellStyles:[[{},{},],[{},{}]],fontSize:14,fontFace:'SimHei',fill:'DDEEFF',bodyFill:'FFFFFF',borderMode:'outline',line:{color:'123456',width:2,dash:'dash'}}]},join(dir,'t.pptx'),async()=>{throw Error('unexpected asset')});
+ const zip=await JSZip.loadAsync(await readFile(join(dir,'t.pptx')));const xml=await zip.file('ppt/slides/slide1.xml')!.async('string');expect(xml).toContain('<a:tbl>');expect(xml).toContain('123456');expect(xml).toContain('<a:prstDash val="dash"/>');
+ }finally{await rm(dir,{recursive:true,force:true})}
+});

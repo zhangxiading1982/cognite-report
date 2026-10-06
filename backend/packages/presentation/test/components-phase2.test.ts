@@ -12,6 +12,15 @@ it('compiles table typography, body fill and border styles into the shared rende
  expect(table).toMatchObject({fontFace:'Arial',fontSize:14,color:'112233',bold:true,fill:'DDEEFF',bodyFill:'FFF7ED',line:{color:'AABBCC',width:2}});
  const svg=renderSlideSvg(c);expect(svg).toContain('fill="#FFF7ED"');expect(svg).toContain('stroke="#AABBCC"');expect(svg).toContain('stroke-width="2"');expect(svg).toContain('font-weight="bold"');
 });
+it('keeps editable table outline and dash styles in the shared renderer',()=>{
+ const c=compileSlide(page({type:'table',bindingRef:'main',fields:['regionName','actual'],style:{borderMode:'outline',line:{color:'123456',width:2,dash:'dash'}}}),fixture as any),table=c.elements[0]!;
+ expect(table).toMatchObject({borderMode:'outline',line:{color:'123456',width:2,dash:'dash'}});
+ const svg=renderSlideSvg(c);expect(svg).toContain('class="table-outline"');expect(svg).toContain('stroke="#123456"');expect(svg).toContain('stroke-width="2"');expect(svg).toContain('stroke-dasharray="8 5"');
+});
+it('supports tables without visible borders',()=>{
+ const c=compileSlide(page({type:'table',bindingRef:'main',fields:['regionName','actual'],style:{borderMode:'none',line:{color:'123456',width:2}}}),fixture as any);
+ const svg=renderSlideSvg(c);expect(svg).not.toContain('stroke="#123456"');expect(svg).not.toContain('class="table-outline"');
+});
 it('compiles presentation-grade table column geometry and semantic cell styles',()=>{
  const d=structuredClone(fixture) as any,rs=d.resultSets[0];
  rs.rows[0].actual='120';rs.rows[1].actual='-80';

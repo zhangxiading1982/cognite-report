@@ -87,6 +87,10 @@ export async function writeDeckPptx(
         if (!rows?.length || !rows[0]?.length) throw new Error("EMPTY_TABLE");
         const weights=(Array.isArray(e.columnWidths)&&e.columnWidths.length===rows[0].length?e.columnWidths:rows[0].map(()=>1)).map((value:any)=>Math.max(.01,Number(value)||1));
         const weightTotal=weights.reduce((sum:number,value:number)=>sum+value,0);
+        const columnWidths=weights.map((value:number)=>bounds.w*value/weightTotal);
+        const dashType=(value?:string)=>value==='dash'?{dashType:'dash' as const}:value==='dot'?{dashType:'sysDot' as const}:value==='dashDot'?{dashType:'dashDot' as const}:{};
+        const lineOptions=(rule:any=e.line)=>({color:color(rule?.color,e.line?.color??'CBD5E1'),width:rule?.width??e.line?.width??0.5,...dashType(rule?.dash??e.line?.dash)});
+        const solidGrid=e.borderMode==='grid'&&(!e.line?.dash||e.line.dash==='solid');
         const tableRows=rows.map((row,i)=>row.map((text,j)=>{
           const cell=e.cellStyles?.[i]?.[j]??{};
           return {text,options:{
@@ -100,13 +104,19 @@ export async function writeDeckPptx(
         }));
         slide.addTable(tableRows, {
           ...bounds, autoPage: false, rowH: bounds.h / rows.length,
-          colW: weights.map((value:number)=>bounds.w*value/weightTotal),
+          colW: columnWidths,
           fontFace: e.fontFace ?? compiled.theme.fontFace, fontSize: e.fontSize ?? 16,
           color: color(e.color), bold:e.bold===true, margin: [4, Number(e.cellPaddingX??6), 4, Number(e.cellPaddingX??6)], valign: "middle",
-          border: {type: "solid", color: color(e.borderMode==='horizontal'?'FFFFFF':e.line?.color,"CBD5E1"), pt: e.borderMode==='horizontal'?0:e.line?.width??0.5},
+          border: solidGrid?{type: "solid",color:color(e.line?.color,"CBD5E1"),pt:e.line?.width??0.5}:{type:"none",color:"FFFFFF",pt:0},
 
         });
-        if(e.borderMode==='horizontal')for(let row=1;row<rows.length;row++){const rule=row===1&&e.headerLine?e.headerLine:e.line;slide.addShape(deck.ShapeType.line,{x:bounds.x,y:bounds.y+bounds.h*row/rows.length,w:bounds.w,h:0,line:{color:color(rule?.color,'E2E8F0'),width:rule?.width??0.5}})};
+        if(e.borderMode==='horizontal')for(let row=1;row<rows.length;row++){const rule=row===1&&e.headerLine?e.headerLine:e.line;slide.addShape(deck.ShapeType.line,{x:bounds.x,y:bounds.y+bounds.h*row/rows.length,w:bounds.w,h:0,line:lineOptions(rule)})}
+        if(e.borderMode==='outline')slide.addShape(deck.ShapeType.rect,{...bounds,fill:{color:'FFFFFF',transparency:100},line:lineOptions()});
+        if(e.borderMode==='grid'&&!solidGrid){
+          slide.addShape(deck.ShapeType.rect,{...bounds,fill:{color:'FFFFFF',transparency:100},line:lineOptions()});
+          for(let row=1;row<rows.length;row++){const rule=row===1&&e.headerLine?e.headerLine:e.line;slide.addShape(deck.ShapeType.line,{x:bounds.x,y:bounds.y+bounds.h*row/rows.length,w:bounds.w,h:0,line:lineOptions(rule)})}
+          let x=bounds.x;for(const width of columnWidths.slice(0,-1)){x+=width;slide.addShape(deck.ShapeType.line,{x,y:bounds.y,w:0,h:bounds.h,line:lineOptions()})}
+        }
       } else if (e.type === "nativeChart") {
         const chartFont = e.options?.fontFace ?? compiled.theme.fontFace;
         const chartFontSize = Number(e.options?.fontSize ?? 11);
