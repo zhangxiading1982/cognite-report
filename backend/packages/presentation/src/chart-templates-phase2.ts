@@ -1,5 +1,6 @@
 import type {DataSpec} from './schema';
 import type {SlideSpec,Binding} from './types';
+import {upgradeTemplateSlideReadability} from './readability';
 const category={categoryKey:{label:'分类唯一键',types:['string','date','datetime'],multiple:false},categoryLabel:{label:'分类标签',types:['string','date','datetime'],multiple:false}};
 const numeric=(label:string,min=1,max=4)=>({label,types:['decimal','integer'],multiple:true,min,max,requiresMeasure:true});
 export const PHASE2_TEMPLATES=[
@@ -15,5 +16,5 @@ export function createPhase2Slide(data:DataSpec,templateId:string,options:{id?:s
  const t=PHASE2_TEMPLATES.find(t=>t.id===templateId);if(!t)throw new Error('UNKNOWN_TEMPLATE');
  const hint=data.chartHints?.find(h=>h.chartType===t.chartType);if(!hint?.roles||!data.resultSets.some(r=>r.id===hint.resultSetId))throw new Error('AMBIGUOUS_BINDING: explicit chart roles required');
  const id=options.id??`slide-${templateId}`,title=options.title??t.name;
- return {specVersion:'1.0',id,revision:1,title,scene:t.scene,templateRef:{id:templateId,version:1},themeRef:{id:'corporate-blue',version:1},canvas:{width:960,height:540,unit:'pt'},snapshotRef:data.snapshot.id,bindings:{main:{resultSetId:hint.resultSetId,roles:hint.roles as Binding['roles'],computations:[]}},elements:[{id:id+'-title',type:'text',rect:{x:24,y:24,w:912,h:60},z:1,style:{fontSize:28},runs:[{text:title}]},{id:id+'-chart',type:'chart',rect:{x:40,y:100,w:880,h:365},z:2,bindingRef:'main',chartType:t.chartType,options:{showLegend:true,showLabels:true,...(t.chartType==='combo'?{secondaryAxis:true}:{})},exportPolicy:'nativeChart'},{id:id+'-source',type:'sourceFooter',rect:{x:24,y:490,w:912,h:25},z:3,style:{fontSize:10}}],annotations:[],layoutOverrides:{},reviewState:{status:'needsReview',snapshotId:data.snapshot.id}};
+ return upgradeTemplateSlideReadability({specVersion:'1.0',id,revision:1,title,scene:t.scene,templateRef:{id:templateId,version:1},themeRef:{id:'corporate-blue',version:1},canvas:{width:960,height:540,unit:'pt'},snapshotRef:data.snapshot.id,bindings:{main:{resultSetId:hint.resultSetId,roles:hint.roles as Binding['roles'],computations:[]}},elements:[{id:id+'-title',type:'text',rect:{x:24,y:24,w:912,h:60},z:1,style:{fontSize:28},runs:[{text:title}]},{id:id+'-chart',type:'chart',rect:{x:40,y:100,w:880,h:365},z:2,bindingRef:'main',chartType:t.chartType,options:{showLegend:true,showLabels:true,...(t.chartType==='combo'?{secondaryAxis:true}:{})},exportPolicy:'nativeChart'},{id:id+'-source',type:'sourceFooter',rect:{x:24,y:490,w:912,h:25},z:3,style:{fontSize:10}}],annotations:[],layoutOverrides:{},reviewState:{status:'needsReview',snapshotId:data.snapshot.id}});
 }

@@ -8,6 +8,19 @@ const template = (id: string) => {
 };
 
 describe("data-driven business components", () => {
+  it("keeps generated labels readable across every commercial business component", () => {
+    for (const item of BUSINESS_TEMPLATES) {
+      const compiled = compileSlide(item.payload.example.slide, item.payload.example.dataSpec);
+      const componentIds = new Set(item.payload.example.slide.elements
+        .filter(element => element.bindingRef && element.type !== "chart" && element.type !== "table" && element.type !== "status")
+        .map(element => element.id));
+      const generatedText = compiled.elements.filter(element => element.type === "text" && [...componentIds].some(id => element.id.startsWith(`${id}-`)));
+      for (const element of generatedText) {
+        expect(Number(element.fontSize), `${item.name} / ${element.id}`).toBeGreaterThanOrEqual(10);
+      }
+    }
+  });
+
   it("renders the eight strategy templates as data-driven executive visuals", () => {
     const expectations: Record<string, { type: string; compiledId: string }> = {
       "business-process": { type: "processFlow", compiledId: "business-process-flow-box-0" },
@@ -31,8 +44,8 @@ describe("data-driven business components", () => {
   });
   it("lays out an arbitrary-depth decision tree horizontally or vertically from current data", () => {
     const item = template("decision-tree");
-    expect(item.payload.seedRevision).toBe(12);
-    expect(item.payload.example.designVersion).toBe(13);
+    expect(item.payload.seedRevision).toBe(13);
+    expect(item.payload.example.designVersion).toBe(14);
     const data = structuredClone(item.payload.example.dataSpec);
     data.resultSets[0].rows.push({ nodeId: "refresh", node: "按小时刷新", parentId: "managed", outcome: "启用增量查询" });
     const slide = structuredClone(item.payload.example.slide);
@@ -72,8 +85,8 @@ describe("data-driven business components", () => {
   it("ships compilable repaired previews for sales proposal and SWOT", () => {
     for (const id of ["sales-proposal", "swot-analysis"]) {
       const item = template(id);
-      expect(item.payload.seedRevision).toBe(12);
-      expect(item.payload.example.designVersion).toBe(13);
+      expect(item.payload.seedRevision).toBe(13);
+      expect(item.payload.example.designVersion).toBe(14);
       expect(compileSlide(item.payload.example.slide, item.payload.example.dataSpec).diagnostics.filter(diagnostic => diagnostic.severity === "error"), id).toEqual([]);
     }
   });

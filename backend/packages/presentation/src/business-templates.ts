@@ -1,6 +1,7 @@
 import type { DataSpec, NumberFormat } from "./schema";
 import type { Binding, Rect, SlideElement, SlideSpec } from "./types";
 import { applyTableStylePreset, inferTableStylePreset } from "./table-style";
+import { upgradeTemplateSlideReadability } from "./readability";
 
 type ScalarType = "string" | "decimal" | "integer" | "boolean" | "date" | "datetime";
 type SampleField = {
@@ -66,8 +67,8 @@ const paleRed = "FEE2E2";
 const white = "FFFFFF";
 const money: NumberFormat = { displayDivisor: "1", decimals: 0, suffix: "万元", percent: false };
 const percent: NumberFormat = { displayDivisor: "1", decimals: 0, suffix: "%", percent: true };
-const strategyUpgrade = { seedRevision: 12, designVersion: 13 } as const;
-const strategyRepair = { seedRevision: 12, designVersion: 13 } as const;
+const strategyUpgrade = { seedRevision: 13, designVersion: 14 } as const;
+const strategyRepair = { seedRevision: 13, designVersion: 14 } as const;
 
 const rect = (x: number, y: number, w: number, h: number): Rect => ({ x, y, w, h });
 const text = (
@@ -278,7 +279,7 @@ function makeTemplate(input: {
   seedRevision?: number;
   designVersion?: number;
 }): BusinessTemplateDefinition {
-  const slide: SlideSpec = {
+  const slide = upgradeTemplateSlideReadability({
     specVersion: "1.0",
     id: `template-example-slide-${input.id}`,
     revision: 1,
@@ -293,8 +294,8 @@ function makeTemplate(input: {
     annotations: [],
     layoutOverrides: {},
     reviewState: { status: "notRequired", snapshotId: input.dataSpec.snapshot.id },
-  };
-  const firstChart = input.elements.find((element) => element.type === "chart");
+  });
+  const firstChart = slide.elements.find((element) => element.type === "chart");
   return {
     id: input.id,
     name: input.name,
@@ -302,19 +303,19 @@ function makeTemplate(input: {
     folderId: input.folderId,
     previewText: input.previewText,
     payload: {
-      seedRevision: input.seedRevision ?? 12,
+      seedRevision: input.seedRevision ?? 13,
       ...(firstChart?.chartType ? { chartType: firstChart.chartType } : {}),
       requiredBindings: { main: { roles: Object.keys(input.binding.roles), roleConstraints: roleSchema(input.binding, input.dataSpec) } },
       bindingSchema: { main: { roles: roleSchema(input.binding, input.dataSpec) } },
       canvas: { ...canvas },
       slots: [],
-      defaultElements: structuredClone(input.elements),
+      defaultElements: structuredClone(slide.elements),
       defaultBindings: { main: structuredClone(input.binding) },
       allowedControls: ["text", "layout", "theme", "chartOptions", "tableStyle", "shapeStyle"],
       exportCapabilities: ["nativeChart", "editableShapes", "nativeTable"],
       example: {
         identityVersion: 1,
-        designVersion: input.designVersion ?? 13,
+        designVersion: input.designVersion ?? 14,
         slide,
         dataSpec: input.dataSpec,
         businessContext: { background: input.background, scenarios: input.scenarios },

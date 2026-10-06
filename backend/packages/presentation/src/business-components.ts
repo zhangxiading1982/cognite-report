@@ -61,6 +61,7 @@ export function compileBusinessComponent(
     return String(raw);
   };
   const fs = Number(style.fontSize ?? 13);
+  const minimumFontSize = Math.max(8, Number(style.minimumFontSize ?? 8));
   const text = (
     id: string,
     box: Rect,
@@ -68,18 +69,21 @@ export function compileBusinessComponent(
     size = fs,
     color = style.color ?? "172033",
     extra: Record<string, unknown> = {},
-  ): CompiledElement => ({
-    id,
-    type: "text",
-    rect: box,
-    text: wrapText(content, Math.max(8, box.w), size).join("\n"),
-    fontFace,
-    fontSize: size,
-    color,
-    margin: 0,
-    valign: "middle",
-    ...extra,
-  });
+  ): CompiledElement => {
+    const readableSize = Math.max(minimumFontSize, size);
+    return {
+      id,
+      type: "text",
+      rect: box,
+      text: wrapText(content, Math.max(8, box.w), readableSize).join("\n"),
+      fontFace,
+      fontSize: readableSize,
+      color,
+      margin: 0,
+      valign: "middle",
+      ...extra,
+    };
+  };
   const shape = (
     id: string,
     box: Rect,

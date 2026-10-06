@@ -146,8 +146,8 @@ describe("commercial business templates", () => {
   test("every business template uses the reference-grade presentation frame and hierarchy", () => {
     for (const template of BUSINESS_TEMPLATES) {
       const elements = template.payload.example.slide.elements;
-      expect(template.payload.seedRevision).toBe(12);
-      expect(template.payload.example.designVersion).toBe(13);
+      expect(template.payload.seedRevision).toBe(13);
+      expect(template.payload.example.designVersion).toBe(14);
       if (["cover-page", "section-page"].includes(template.id)) {
         expect(elements.some((element) => element.type === "text" && Number(element.style?.fontSize) >= 34 && element.style?.bold)).toBe(true);
       } else {
@@ -158,6 +158,28 @@ describe("commercial business templates", () => {
           expect.objectContaining({ id: `${template.id}-footer`, type: "text" }),
           expect.objectContaining({ id: `${template.id}-page`, type: "text" }),
         ]));
+      }
+    }
+  });
+
+  test("every template applies readable typography to charts, tables, body copy and business visuals", () => {
+    const chrome = /-(footer|page)$/;
+    const businessTypes = new Set(["kpiCards", "roadmap", "riskMatrix", "processFlow", "funnel", "multiWaterfall", "gantt", "mekko", "bubble", "positionMatrix", "regionMap", "hierarchy", "statusTable", "journeyMap", "decisionScorecard", "portfolioMatrix", "proposalFlow", "swotMatrix"]);
+    for (const template of BUSINESS_TEMPLATES) {
+      for (const element of template.payload.example.slide.elements) {
+        if (element.type === "chart") {
+          expect(Number(element.style?.fontSize), `${template.name} / ${element.id}`).toBeGreaterThanOrEqual(12);
+          expect(Number(element.style?.labelFontSize), `${template.name} / ${element.id}`).toBeGreaterThanOrEqual(10);
+        } else if (element.type === "table") {
+          const minimum = element.rect.h < 140 || element.rect.w < 360 ? 10 : 11;
+          expect(Number(element.style?.fontSize), `${template.name} / ${element.id}`).toBeGreaterThanOrEqual(minimum);
+          expect(Number(element.style?.headerFontSize), `${template.name} / ${element.id}`).toBeGreaterThanOrEqual(minimum);
+        } else if (businessTypes.has(element.type)) {
+          expect(Number(element.style?.fontSize), `${template.name} / ${element.id}`).toBeGreaterThanOrEqual(12);
+          expect(Number(element.style?.minimumFontSize), `${template.name} / ${element.id}`).toBeGreaterThanOrEqual(10);
+        } else if (element.type === "text" && !chrome.test(element.id) && !element.id.endsWith("-tagline")) {
+          expect(Number(element.style?.fontSize), `${template.name} / ${element.id}`).toBeGreaterThanOrEqual(11);
+        }
       }
     }
   });

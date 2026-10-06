@@ -1,5 +1,6 @@
 export * from "./deck";
-export { BUSINESS_TEMPLATES, BUSINESS_TEMPLATE_FOLDERS } from "./business-templates";
+import { BUSINESS_TEMPLATES, BUSINESS_TEMPLATE_FOLDERS } from "./business-templates";
+export { BUSINESS_TEMPLATES, BUSINESS_TEMPLATE_FOLDERS };
 export type { BusinessTemplateDefinition } from "./business-templates";
 import {PHASE2_TEMPLATES,createPhase2Slide} from "./chart-templates-phase2";
 export {PHASE2_TEMPLATES} from "./chart-templates-phase2";
@@ -11,6 +12,7 @@ import { compileBusinessComponent } from "./business-components";
 import { FONT_OPTIONS } from "./fonts";
 import { buildOrthogonalRoute } from "./connector-route";
 import { CHART_PALETTES, chartTheme, chartVisualOptions } from "./chart-style";
+import { readableTemplateElementRect, readableTemplateElementStyle, upgradeTemplateSlideReadability } from "./readability";
 export { FONT_OPTIONS } from "./fonts";
 import { z } from "zod";
 export * from "./schema";
@@ -21,6 +23,7 @@ export * from "./layout";
 export * from "./connector-route";
 export * from "./chart-style";
 export * from "./table-style";
+export * from "./readability";
 import {
   validateDataSpec,
   formatSchema,
@@ -253,8 +256,18 @@ export function createSlide(
               },
             ],
     });
-  return s;
+  return upgradeTemplateSlideReadability(s);
 }
+
+const readableTemplateIds = new Set([
+  "budget-comparison",
+  "monthly-trend",
+  "revenue-bridge",
+  ...PHASE2_TEMPLATES.map(template => template.id),
+  ...BUSINESS_TEMPLATES.map(template => template.id),
+]);
+export const usesTemplateReadability = (templateId: unknown) =>
+  typeof templateId === "string" && readableTemplateIds.has(templateId);
 
 const rectSchema = z.object({
   x: z.number(),
@@ -549,6 +562,7 @@ export function compileSlide(
   for (const e of [...(slide.elements ?? [])].sort((a, b) => a.z - b.z)) {
     const ov = slide.layoutOverrides?.[e.id];
     let rect = { ...e.rect, ...ov?.rect };
+    if (usesTemplateReadability(slide.templateRef?.id)) rect = readableTemplateElementRect(e, rect);
     let resolvedLine: any = e.line;
     if (e.type === "shape" && (e.shape === "line" || e.shape === "elbow")) {
       const line: any = e.line ?? {};
@@ -580,7 +594,19 @@ export function compileSlide(
         }).points;
       }
     }
-    const style = { ...e.style, ...ov?.style };
+    const rawStyle = { ...e.style, ...ov?.style };
+    if (
+      rawStyle.fontSize !== undefined &&
+      (!Number.isFinite(rawStyle.fontSize) ||
+        rawStyle.fontSize <= 0 ||
+        rawStyle.fontSize > 200)
+    ) {
+      diag("INVALID_STYLE", "Invalid font size", e.id);
+      continue;
+    }
+    const style = usesTemplateReadability(slide.templateRef?.id)
+      ? readableTemplateElementStyle(e, rawStyle)
+      : rawStyle;
     // Legacy default is resolved at render time; immutable saved revisions stay unchanged.
     if (style.fontFace === "Noto Sans CJK SC") style.fontFace = "SimHei";
     if (style.themeId !== undefined && !(style.themeId in CHART_PALETTES)) {
@@ -588,15 +614,6 @@ export function compileSlide(
     }
     const theme = chartTheme(result.theme, style);
 
-    if (
-      style.fontSize !== undefined &&
-      (!Number.isFinite(style.fontSize) ||
-        style.fontSize <= 0 ||
-        style.fontSize > 200)
-    ) {
-      diag("INVALID_STYLE", "Invalid font size", e.id);
-      continue;
-    }
     if (
       Object.values(rect).some((v) => !Number.isFinite(v)) ||
       rect.w <= 0 ||

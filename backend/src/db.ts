@@ -1,4 +1,4 @@
-import {BUSINESS_TEMPLATES,PHASE2_TEMPLATES,createSlide} from "@slidebi/presentation";
+import {BUSINESS_TEMPLATES,PHASE2_TEMPLATES,createSlide,upgradeTemplateSlideReadability,usesTemplateReadability} from "@slidebi/presentation";
 import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import type { Pool, PoolClient } from "pg";
@@ -160,7 +160,7 @@ export async function seed(pool: Pool) {
 
 }
 export function slideRow(r: any) {
-  return {
+  const slide = {
     ...r.payload,
     id: r.slide_id,
     revision: r.revision,
@@ -173,6 +173,9 @@ export function slideRow(r: any) {
     reviewState: { status: r.review_state, snapshotId: r.snapshot_id },
     ...(r.archived_at ? { archivedAt: r.archived_at } : {}),
   };
+  return usesTemplateReadability(slide.templateRef.id)
+    ? upgradeTemplateSlideReadability(slide as any)
+    : slide;
 }
 export async function getSlide(
   db: DB,
