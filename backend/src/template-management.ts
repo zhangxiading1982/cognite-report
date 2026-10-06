@@ -3,6 +3,7 @@ import type {Pool} from 'pg';
 import {compileSlide,validateDataSpec,validateSlideSpec} from '@slidebi/presentation';
 import {authorizeAssets,fail,id,transaction,type DB} from './db.ts';
 import {captureTemplateExample} from './template-examples.ts';
+import {completeTemplatePayloadSchema} from './data-schema.ts';
 export function assertTemplateOwner(t:any,actor:number){if(Number(t.owner_id)!==Number(actor))fail(403,'OWNER_REQUIRED','只有模板 owner 可以修改或删除')}
 export function prepareTemplateDraft(t:any,input:any){
  if(input.expectedVersion!==t.version)fail(409,'VERSION_CONFLICT','模板已更新，请重新打开后编辑');
@@ -20,7 +21,7 @@ export function prepareTemplateDraft(t:any,input:any){
 }
 async function read(db:DB,actor:number,id:string,lock=false){
  const row=(await db.query(`SELECT * FROM app.templates WHERE id=$1 AND archived_at IS NULL AND (owner_id=$2 OR visibility IN ('public','builtin'))${lock?' FOR UPDATE':''}`,[id,actor])).rows[0];if(!row)fail(404,'NOT_FOUND','模板不存在');
- const v=(await db.query('SELECT * FROM app.template_versions WHERE template_id=$1 ORDER BY version DESC LIMIT 1',[id])).rows[0];return {...row,...v,id:row.id};
+ const v=(await db.query('SELECT * FROM app.template_versions WHERE template_id=$1 ORDER BY version DESC LIMIT 1',[id])).rows[0];return {...row,...v,payload:completeTemplatePayloadSchema(v.payload),id:row.id};
 }
 function view(t:any,actor:number){return {...t.payload,folderId:t.folder_id??null,id:t.id,name:t.name,version:t.version,scene:t.scene,themeRef:{id:t.theme_id,version:t.theme_version},ownerId:Number(t.owner_id),visibility:t.visibility,canEdit:Number(t.owner_id)===Number(actor),canDelete:Number(t.owner_id)===Number(actor)}}
 async function validateFolder(db:DB,actor:number,folderId:unknown){

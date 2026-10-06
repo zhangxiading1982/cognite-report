@@ -2,6 +2,7 @@ import type { Express } from 'express';
 import { validateDataSpec, type DataSpec } from '@slidebi/presentation';
 import fixtureData from '../fixtures/monthly-operations.data.json';
 import { HttpError } from './db';
+import { completeDataSpecSchema } from './data-schema.ts';
 
 // This is a local simulator, not a connection to BI Studio. Only simulated source
 // state resets on process restart; persisted user datasets are managed separately.
@@ -12,7 +13,7 @@ const charts = new Map([
 ]);
 
 function initialData(chartId: string): DataSpec {
-  const data = structuredClone(fixtureData);
+  const data = completeDataSpecSchema(fixtureData);
   data.source.system = 'BI Studio Mock';
   data.snapshot.id = `mock-${chartId}-v1`;
   const validated = validateDataSpec(data);

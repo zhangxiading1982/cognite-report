@@ -88,6 +88,7 @@ describe("commercial business templates", () => {
       "market-segmentation-mekko": "mekko",
       "customer-portfolio-bubble": "bubble",
       "regional-market-map": "regionMap",
+      "competitive-positioning": "positionMatrix",
       "decision-tree": "hierarchy",
       "org-chart": "hierarchy",
       "status-table": "statusTable",
@@ -110,8 +111,40 @@ describe("commercial business templates", () => {
     }
   });
 
+  test("every template visual uses table-shaped data with an editable field schema", () => {
+    for (const template of BUSINESS_TEMPLATES) {
+      const { slide, dataSpec } = template.payload.example;
+      for (const element of slide.elements.filter(element => element.bindingRef)) {
+        const binding = slide.bindings[element.bindingRef!];
+        const result = dataSpec.resultSets.find(item => item.id === binding.resultSetId)!;
+        expect(result.primaryKey?.length, `${template.name} / ${element.id} 缺少表格主键`).toBeGreaterThan(0);
+        expect(result.rows.length, `${template.name} / ${element.id} 缺少表格数据`).toBeGreaterThan(0);
+        for (const field of result.fields) {
+          expect(field.id, `${template.name} / ${element.id} 字段缺少 ID`).toBeTruthy();
+          expect(field.name, `${template.name} / ${element.id} 字段缺少名称`).toBeTruthy();
+          expect(field.type, `${template.name} / ${element.id} 字段缺少类型`).toBeTruthy();
+          expect(field.description, `${template.name} / ${element.id} 字段缺少说明`).toBeTruthy();
+        }
+        const fieldIds = new Set(result.fields.map(field => field.id));
+        for (const fieldId of Object.values(binding.roles).flat()) {
+          expect(fieldIds.has(fieldId), `${template.name} / ${element.id} 绑定字段 ${fieldId} 不在表格 Schema 中`).toBe(true);
+        }
+      }
+    }
+  });
+
+  test("every analytical template owns at least one data-bound visual", () => {
+    const narrativeOnly = new Set(["cover-page", "section-page"]);
+    for (const template of BUSINESS_TEMPLATES.filter(item => !narrativeOnly.has(item.id))) {
+      expect(
+        template.payload.example.slide.elements.some(element => element.bindingRef),
+        `${template.name} 缺少可编辑的数据图表`,
+      ).toBe(true);
+    }
+  });
+
   test("every business template uses the reference-grade presentation frame and hierarchy", () => {
-    const optimized = new Set(["business-process", "customer-journey", "decision-matrix", "decision-tree", "portfolio-prioritization", "regional-market-map", "sales-proposal", "swot-analysis", "org-chart"]);
+    const optimized = new Set(["business-process", "competitive-positioning", "customer-journey", "decision-matrix", "decision-tree", "portfolio-prioritization", "regional-market-map", "sales-proposal", "swot-analysis", "org-chart", "metric-scorecard"]);
     const repaired = new Set(["decision-tree", "sales-proposal", "swot-analysis"]);
     for (const template of BUSINESS_TEMPLATES) {
       const elements = template.payload.example.slide.elements;

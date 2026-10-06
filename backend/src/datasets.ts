@@ -8,6 +8,7 @@ import {scopeDataSpec} from './data-scope.ts';
 import {ensureScopedDatasets,splitDataset,createSplitDatasets} from './dataset-inputs.ts';
 import {mockFetchDataSpec,registerMockBiRoutes} from './mock-bi.ts';
 import {loadRuntimeConfig} from './config.ts';
+import {completeDataSpecSchema} from './data-schema.ts';
 export async function datasetMetadata(db:DB,actor:number,input:any,old:any={tags:{用途:['页面数据']},template_ids:[]}){
  const raw=input.tags===undefined?old.tags:input.tags;
  if(!raw||Array.isArray(raw)||typeof raw!=='object'||Object.keys(raw).length>12)fail(422,'INVALID_TAGS','标签最多12个类型');
@@ -55,7 +56,7 @@ export async function lockDataset(db:DB,actor:number,datasetId:string){
 export function expectedVersion(req:Request){const raw=req.get('If-Match')?.replaceAll('"','');if(!raw||!/^\d+$/.test(raw))fail(428,'VERSION_REQUIRED','请提供 If-Match 当前版本');return Number(raw)}
 const semanticHash=(d:any)=>hash(omit(d,['id','snapshot','extensions']));
 export async function storeData(db:DB,actor:number,input:any){
- const d=structuredClone(input);if(!d||typeof d!=='object')fail(422,'INVALID_DATA_SPEC','数据格式无效');
+ const d=completeDataSpecSchema(input);if(!d||typeof d!=='object')fail(422,'INVALID_DATA_SPEC','数据格式无效');
  d.id=id('data');d.snapshot={...d.snapshot,id:id('snapshot'),capturedAt:new Date().toISOString(),consistency:d.snapshot?.consistency==='fixture'?'fixture':'importedSnapshot'};
  delete d.snapshot.contentHash;delete d.snapshot.hash;
  const v=validateDataSpec(d);if(!v.valid)throw new HttpError(422,'INVALID_DATA_SPEC','数据校验失败',v.errors);

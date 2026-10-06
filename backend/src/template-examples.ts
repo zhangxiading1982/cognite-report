@@ -3,8 +3,10 @@ import {compileSlide} from '@slidebi/presentation';
 import {fixture,getData,transaction,hash} from './db.ts';
 import {applyTemplate} from './template-application.ts';
 import {scopeDataSpec} from './data-scope.ts';
+import {completeDataSpecSchema} from './data-schema.ts';
 
 export function captureTemplateExample(data:any,slide:any,businessContext?:any){
+ data=completeDataSpecSchema(data);
  const ids=[...new Set(Object.values(slide.bindings).map((b:any)=>b.resultSetId))] as string[];
  const dataSpec=scopeDataSpec(data,ids),exampleSlide=structuredClone(slide);
  delete dataSpec.extensions;delete exampleSlide.extensions;

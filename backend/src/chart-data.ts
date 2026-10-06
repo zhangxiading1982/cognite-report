@@ -2,7 +2,8 @@ import type {Express} from 'express';import type {Pool} from 'pg';
 import {compileSlide,composeChartData} from '@slidebi/presentation';
 import {type DB,id,hash,fail,HttpError,transaction,getSlide,getData,template,insertRevision,fixture} from './db.ts';
 import {getDataset,storeData,expectedVersion} from './datasets.ts';import {applyTemplate} from './template-application.ts';
-const isDataElement=(element:any)=>['chart','table'].includes(element?.type);
+import {completeDataSpecSchema} from './data-schema.ts';
+const isDataElement=(element:any)=>typeof element?.bindingRef==='string'&&element.bindingRef.length>0;
 export function assertPrivateChartDataImmutable(before:any,input:any){
  const previous=before?.extensions?.chartData??{},next=input?.extensions?.chartData??{};
  for(const [chartId,source] of Object.entries(next) as [string,any][]){
@@ -37,7 +38,7 @@ export function registerChartDataRoutes(app:Express,pool:Pool,actor:number,key:(
    const base=await storeData(db,Number(actor),example?.dataSpec??await fixture());
    let s:any=example?.slide?structuredClone(example.slide):applyTemplate(base,t,req.body);s.id=id('slide');s.revision=1;s.title=req.body.title?.trim()||(kind==='blank'?'空白页':t.name);if(!s.title||s.title.length>300)fail(422,'INVALID_TITLE','页面名称需为1至300字');s.templateRef={id:t.template_id,version:t.version};s.snapshotRef=base.snapshot.id;s.reviewState={status:'needsReview',snapshotId:base.snapshot.id};s.extensions={};
    if(kind==='from-template')s.elements=s.elements.filter((element:any)=>element.type!=='sourceFooter');
-   if(kind==='blank'){s.elements=[];s.bindings={};s.annotations=[];}else{s.extensions.chartData={};for(const e of s.elements.filter((e:any)=>e.type==='chart'))s.extensions.chartData[e.id]=req.body.datasetId?{mode:'dataset',datasetId:req.body.datasetId,binding:req.body.bindings?.[e.bindingRef]??s.bindings[e.bindingRef]}:{mode:'private',dataSpec:base,binding:s.bindings[e.bindingRef]};}
+   if(kind==='blank'){s.elements=[];s.bindings={};s.annotations=[];}else{s.extensions.chartData={};for(const e of s.elements.filter(isDataElement))s.extensions.chartData[e.id]=req.body.datasetId?{mode:'dataset',datasetId:req.body.datasetId,binding:req.body.bindings?.[e.bindingRef]??s.bindings[e.bindingRef]}:{mode:'private',dataSpec:base,binding:s.bindings[e.bindingRef]};}
    if(kind==='from-template'&&req.body.datasetId){const dataset=await getDataset(db,Number(actor),req.body.datasetId);for(const source of Object.values(s.extensions.chartData) as any[]){if(!dataset.dataSpec.resultSets.some((r:any)=>r.id===source.binding.resultSetId)){const fields=(Object.values(source.binding.roles).flat() as string[]),matches=dataset.dataSpec.resultSets.filter((r:any)=>fields.every(f=>r.fields.some((x:any)=>x.id===f)));if(matches.length===1)source.binding={...source.binding,resultSetId:matches[0].id};}}}
    await lockChartDatasets(db,Number(actor),s);
    const normalized=await normalizeChartData(db,Number(actor),s,base);s=normalized.slide;check(s,normalized.data);
@@ -49,7 +50,7 @@ export function registerChartDataRoutes(app:Express,pool:Pool,actor:number,key:(
   const owner=(await pool.query('SELECT owner_id,dataset_id FROM app.slides WHERE id=$1',[s.id])).rows[0];let source=s.extensions?.chartData?.[e.id];
   if(!source){const binding=structuredClone(s.bindings[e.bindingRef]);if(e.type==='table'&&!binding.roles?.columns)binding.roles={...binding.roles,columns:[...(e.fields||[])]};source={mode:owner.dataset_id?'dataset':'private',...(owner.dataset_id?{datasetId:owner.dataset_id}:{}),dataSpec:await getData(pool,Number(owner.owner_id),s.snapshotRef),binding};}
   let canEdit=Number(owner.owner_id)===Number(actor);if(source.mode==='dataset'){try{const d=await getDataset(pool,Number(actor),source.datasetId);source={...source,dataSpec:d.dataSpec,datasetVersion:d.version};canEdit=canEdit&&d.canEdit}catch{canEdit=false}}
-  res.json({...source,canEdit});
+  res.json({...source,dataSpec:completeDataSpecSchema(source.dataSpec),canEdit});
  });
  app.put('/api/slides/:id/chart-data/:chartId',async(req,res)=>res.json(await transaction(pool,async db=>{
   const expected=expectedVersion(req),before=await getSlide(db,Number(actor),req.params.id),candidate={...before,extensions:{...before.extensions,chartData:{...before.extensions?.chartData,[req.params.chartId]:req.body}}};assertPrivateChartDataImmutable(before,candidate);await lockChartDatasets(db,Number(actor),candidate);if(!(await db.query('SELECT 1 FROM app.slides WHERE id=$1 AND owner_id=$2 AND archived_at IS NULL FOR UPDATE',[req.params.id,Number(actor)])).rowCount)fail(403,'OWNER_REQUIRED','仅owner可以修改页面');

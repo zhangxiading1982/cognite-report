@@ -10,7 +10,11 @@ export function defaultChartBinding(data:any){
  return {resultSetId:table.id,roles:{categoryKey:category.id,categoryLabel:category.id,series:series.map((f:any)=>f.id)}};
 }
 
-const ROLE_LABELS:Record<string,string>={categoryKey:'分类标识',categoryLabel:'分类名称',series:'数值',stepKey:'步骤标识',label:'名称',role:'步骤类型',value:'数值',sort:'顺序',x:'X 值',y:'Y 值',size:'大小',columns:'表格列'};
+const ROLE_LABELS:Record<string,string>={
+ categoryKey:'分类标识',categoryLabel:'分类名称',series:'数值',stepKey:'步骤标识',label:'名称',role:'步骤类型',value:'数值',sort:'顺序',sortOrder:'顺序',x:'X 值',y:'Y 值',size:'大小',columns:'表格列',
+ key:'主键',parent:'父节点',parentId:'父节点',title:'标题',subtitle:'补充说明',group:'分组',category:'分类',segment:'细分',owner:'负责人',status:'状态',progress:'进度',output:'产出',comment:'说明',
+ amount:'金额',conversion:'转化率',probability:'概率',impact:'影响',start:'开始日期',end:'结束日期',milestone:'里程碑',region:'区域',quadrant:'象限',item:'内容',priority:'优先级',score:'评分',message:'核心信息',evidence:'支撑信息',stage:'阶段',deliverable:'交付物'
+};
 
 export function ChartDataPanel({slideId,chartId,source,frozen=false,onChange,onPreview,onReload,flushSlide,registerFlush}:{slideId:string;chartId:string;source:any;frozen?:boolean;onChange:(source:any)=>void;onPreview:(source:any)=>void;onReload:()=>Promise<void>;flushSlide:()=>Promise<any>;registerFlush:(flush:()=>Promise<void>)=>void}){
  const [value,V]=useState<any>(source),[items,I]=useState<any[]>([]),[folders,Folders]=useState<any[]>([]),[choice,C]=useState(''),[name,N]=useState('图表数据'),[dirty,D]=useState(false),[busy,B]=useState(false),[error,E]=useState(''),[target,T]=useState<any>(),[mapping,Map]=useState<any>(),[linked,Linked]=useState<any>(),[bindingDraft,BindingDraft]=useState<any>(source?.binding);

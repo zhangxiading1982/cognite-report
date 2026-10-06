@@ -12,6 +12,7 @@ const TYPES = new Set([
   "gantt",
   "mekko",
   "bubble",
+  "positionMatrix",
   "regionMap",
   "hierarchy",
   "statusTable",
@@ -111,11 +112,14 @@ export function compileBusinessComponent(
       const col = index % columns, rowIndex = Math.floor(index / columns);
       const box = { x: rect.x + col * (cardW + gap), y: rect.y + rowIndex * (cardH + gap), w: cardW, h: cardH };
       const accent = colorForStatus(value(row, status));
+      const shownValue = display(row, actual);
+      let valueFontSize = 21;
+      while (valueFontSize > 12 && wrapText(shownValue, box.w - 28, valueFontSize).length > 1) valueFontSize--;
       return [
         shape(`${element.id}-card-${index}`, box, "F8FAFC", "roundRect", "CBD5E1"),
         shape(`${element.id}-accent-${index}`, { x: box.x, y: box.y, w: 6, h: box.h }, accent, "rect", accent),
         text(`${element.id}-label-${index}`, { x: box.x + 16, y: box.y + 8, w: box.w - 28, h: 22 }, display(row, label), 12, "64748B"),
-        text(`${element.id}-value-${index}`, { x: box.x + 16, y: box.y + 31, w: box.w - 28, h: 32 }, display(row, actual), 21, "172033", { bold: true }),
+        text(`${element.id}-value-${index}`, { x: box.x + 16, y: box.y + 31, w: box.w - 28, h: 32 }, shownValue, valueFontSize, "172033", { bold: true }),
         text(`${element.id}-meta-${index}`, { x: box.x + 16, y: box.y + box.h - 40, w: box.w - 28, h: 32 }, `${target ? `目标 ${display(row, target)}` : ""}${trend ? `\n趋势 ${display(row, trend)}` : ""}`, 9, accent),
       ];
     }) };
@@ -396,6 +400,30 @@ export function compileBusinessComponent(
       const color = palette[Math.max(0, groups.indexOf(String(value(row, group)))) % palette.length];
       elements.push(shape(`${element.id}-bubble-${index}`, { x: cx - diameter / 2, y: cy - diameter / 2, w: diameter, h: diameter }, color, "ellipse", "FFFFFF"));
       elements.push(text(`${element.id}-bubble-label-${index}`, { x: cx - diameter / 2, y: cy - 11, w: diameter, h: 22 }, display(row, label), 9, "FFFFFF", { bold: true, align: "center" }));
+    });
+    return { handled: true, elements };
+  }
+
+  if (element.type === "positionMatrix") {
+    const label = role("label"), xField = role("x"), yField = role("y"), group = role("group");
+    if (!label || !xField || !yField) return { handled: true, elements: [], error: "定位矩阵需要对象、X 和 Y 字段" };
+    const domainMin = Number(style.domainMin ?? 0), domainMax = Number(style.domainMax ?? 10), span = Math.max(1e-9, domainMax - domainMin);
+    const plot = { x: rect.x + 12, y: rect.y + 12, w: rect.w - 24, h: rect.h - 24 };
+    const groups = [...new Set(rows.map(row => String(value(row, group) ?? "")))];
+    const clamp = (number: number) => Math.min(domainMax, Math.max(domainMin, number));
+    const elements: CompiledElement[] = [
+      line(`${element.id}-mid-x`, plot.x, plot.y + plot.h / 2, plot.w, 0, "B9C7D8", .8),
+      line(`${element.id}-mid-y`, plot.x + plot.w / 2, plot.y, 0, plot.h, "B9C7D8", .8),
+    ];
+    rows.forEach((row, index) => {
+      const xValue = Number(value(row, xField)), yValue = Number(value(row, yField));
+      if (!Number.isFinite(xValue) || !Number.isFinite(yValue)) return;
+      const cx = plot.x + ((clamp(xValue) - domainMin) / span) * plot.w;
+      const cy = plot.y + plot.h - ((clamp(yValue) - domainMin) / span) * plot.h;
+      const groupIndex = Math.max(0, groups.indexOf(String(value(row, group) ?? "")));
+      const fill = palette[groupIndex % palette.length], diameter = index === 0 ? 34 : 28;
+      elements.push(shape(`${element.id}-point-${index}`, { x: cx - diameter / 2, y: cy - diameter / 2, w: diameter, h: diameter }, fill, "ellipse", "FFFFFF"));
+      elements.push(text(`${element.id}-point-label-${index}`, { x: cx - 62, y: cy + diameter / 2 + 3, w: 124, h: 30 }, `${display(row, label)}  ${display(row, xField)} × ${display(row, yField)}`, 8.5, "29466F", { bold: true, align: "center" }));
     });
     return { handled: true, elements };
   }

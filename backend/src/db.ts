@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import type { Pool, PoolClient } from "pg";
 import { HttpError, fail } from "./errors.ts";
 import {ASSET_FOLDERS,TEMPLATE_FOLDERS,templateFolderId} from './catalog-structure.ts';
+import {completeDataSpecSchema,completeTemplatePayloadSchema} from './data-schema.ts';
 export { HttpError, fail } from "./errors.ts";
 export type DB = Pool | PoolClient;
 export const id = (prefix: string) => `${prefix}-${randomUUID()}`;
@@ -45,12 +46,12 @@ export async function transaction<T>(
   }
 }
 export async function fixture(name = "monthly-operations.data") {
-  return JSON.parse(
+  return completeDataSpecSchema(JSON.parse(
     await readFile(
       new URL(`../fixtures/${name}.json`, import.meta.url),
       "utf8",
     ),
-  );
+  ));
 }
 export async function seed(pool: Pool) {
   for(const folder of [...TEMPLATE_FOLDERS,...ASSET_FOLDERS]){
@@ -203,7 +204,7 @@ export async function getData(db: DB, actor: number, snapshot: string) {
     )
   ).rows[0];
   if (!r) fail(404, "NOT_FOUND", "快照不存在");
-  return {
+  return completeDataSpecSchema({
     ...r.payload,
     id: r.data_spec_id,
     specVersion: r.spec_version,
@@ -214,7 +215,7 @@ export async function getData(db: DB, actor: number, snapshot: string) {
       dataAsOf: r.data_as_of?.toISOString() ?? null,
       consistency: r.consistency,
     },
-  };
+  });
 }
 export function assetIds(v: any): string[] {
   const out = new Set<string>();
@@ -258,6 +259,7 @@ export async function template(
     )
   ).rows[0];
   if (!r) fail(404, "TEMPLATE_NOT_FOUND", "模板不存在");
+  r.payload=completeTemplatePayloadSchema(r.payload);
   return r;
 }
 export async function insertRevision(db: DB, actor: number, s: any) {

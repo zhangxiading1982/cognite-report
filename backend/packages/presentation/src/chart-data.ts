@@ -2,7 +2,7 @@
 export function composeChartData(inputSlide:any,inputData:any){
  const slide=structuredClone(inputSlide),data=structuredClone(inputData),usedBindings=new Set<string>();
  for(const element of slide.elements??[]){
-  const source=slide.extensions?.chartData?.[element.id];if(!['chart','table'].includes(element.type)||!source?.dataSpec||!source.binding)continue;
+  const source=slide.extensions?.chartData?.[element.id];if(!element.bindingRef||!source?.dataSpec||!source.binding)continue;
   const d=structuredClone(source.dataSpec),prefix=`chart:${element.id}:`,ref=(s:string)=>prefix+s;
   for(const table of d.semanticSchema.tables){table.id=ref(table.id);for(const col of table.columns)col.id=ref(col.id)}
   for(const r of d.semanticSchema.relationships){r.id=ref(r.id);r.oneColumnId=ref(r.oneColumnId);r.manyColumnId=ref(r.manyColumnId)}

@@ -112,6 +112,20 @@ describe("data-driven business components", () => {
     );
   });
 
+  it("fits edited decimal KPI values into compact scorecard cards", () => {
+    const item = template("metric-scorecard");
+    const slide = structuredClone(item.payload.example.slide);
+    const data = structuredClone(item.payload.example.dataSpec);
+    data.resultSets[0].rows[1].actual = "4943.4";
+
+    const compiled = compileSlide(slide, data);
+    const value = compiled.elements.find(element => element.id === "metric-scorecard-cards-value-1")!;
+
+    expect(value.text).toBe("4,943.4万元");
+    expect(Number(value.fontSize)).toBeLessThanOrEqual(21);
+    expect(compiled.diagnostics.filter(diagnostic => diagnostic.severity === "error")).toEqual([]);
+  });
+
   it("reports an actionable component error when a Gantt task ends before it starts", () => {
     const item = template("gantt-project-plan");
     const slide = structuredClone(item.payload.example.slide);

@@ -5,6 +5,8 @@ import {captureTemplateExample} from '../src/template-examples';
 
 test('template-owned example captures narrative and only its bound chart input independently',async()=>{
  const data=await fixture(),slide=createSlide(data,'budget-comparison');
+ expect(data.resultSets.every((result:any)=>result.fields.every((field:any)=>field.name&&field.description))).toBe(true);
+ expect(data.resultSets.find((result:any)=>result.id==='budget').fields.find((field:any)=>field.id==='actual')).toMatchObject({name:'实际收入',description:'本期实际收入',unit:'万元'});
  const text=slide.elements.find((e:any)=>e.type==='text') as any;
  text.runs=[{text:'销售增长由华东地区贡献。'}];
  slide.extensions={dataset:{id:'managed-live-id',version:1}};

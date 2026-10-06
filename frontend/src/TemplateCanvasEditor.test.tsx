@@ -34,6 +34,17 @@ test("template page editing reuses the full document workspace and saves back to
   expect(close).toHaveBeenCalledOnce();
 });
 
+test("template maintainers can edit non-chart text directly on the canvas", async () => {
+  vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ items: [] }))));
+  const template = BUSINESS_TEMPLATES.find(item => item.id === "chart-insights")!;
+  render(<TemplateCanvasEditor slide={structuredClone(template.payload.example.slide)} dataSpec={structuredClone(template.payload.example.dataSpec)} onChange={() => {}} onClose={() => {}} />);
+  const title = template.payload.example.slide.elements.find((element: any) => element.id === "chart-insights-title")!;
+  fireEvent.doubleClick(screen.getByRole("button", { name: `选择${title.id}` }));
+  const input = await screen.findByRole("textbox", { name: "画布文字编辑" });
+  fireEvent.change(input, { target: { value: "验证文稿的新标题" } });
+  expect(document.querySelector(".svg-content")?.textContent).toContain("验证文稿的新标题");
+});
+
 test("decision trees expose horizontal and vertical data-driven expansion in the shared property panel", async () => {
   vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ items: [] }))));
   const template = BUSINESS_TEMPLATES.find(item => item.id === "decision-tree")!;

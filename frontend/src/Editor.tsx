@@ -413,7 +413,7 @@ export function Editor({
   }, [compiled, embedded]);
   const el = slide.elements.find((e: any) => e.id === selected[0]);
   const templateElementData = templateWorkspace ? resolveTemplateElementData(slide,data,el) : undefined;
-  const dataTabAvailable = !!el && (["chart","table"].includes(el.type) || !!templateElementData);
+  const dataTabAvailable = !!el && (!!el.bindingRef || ["chart","table"].includes(el.type) || !!templateElementData);
   const rect = el ? rectOf(slide, el) : null;
   function changeEl(fn: (e: any) => void, group?: string) {
     if (el) edit((n) => fn(n.elements.find((x: any) => x.id === el.id)), group);
@@ -924,7 +924,7 @@ export function Editor({
           <div className="property-body">
             {tab === "data" && templateElementData ? (
               <TemplateElementDataPanel slide={slide} element={el} dataSpec={data} onChange={next=>{D(next);onWorkspaceDataChange?.(next)}}/>
-            ) : tab === "data" && ["chart","table"].includes(el?.type) ? (
+            ) : tab === "data" && dataTabAvailable ? (
               <>
                 <ChartDataPanel key={el.id} slideId={slide.id} chartId={el.id} source={slide.extensions?.chartData?.[el.id]} frozen={frozen} registerFlush={fn=>{chartFlush.current=fn}} flushSlide={flushSlide} onReload={reloadChartData} onPreview={source=>{chartDirty.current=true;ChartPreview({...chartPreview,[el.id]:source})}} onChange={source=>edit(n=>{n.extensions={...n.extensions,chartData:{...n.extensions?.chartData,[el.id]:source}}})}/>
               </>

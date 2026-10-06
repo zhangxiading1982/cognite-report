@@ -764,14 +764,16 @@ const CORE_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     scene: "budgetComparison",
     folderId: "template-folder-strategy",
     previewText: "竞争定位",
+    ...strategyUpgrade,
     dataSpec: competitionData,
-    binding: { resultSetId: "result-competitive-positioning", roles: { categoryKey: "companyId", categoryLabel: "company", x: "capability", y: "value" }, computations: [] },
+    binding: { resultSetId: "result-competitive-positioning", roles: { key: "companyId", label: "company", x: "capability", y: "value", group: "group", columns: ["company", "capability", "value", "group"] }, computations: [] },
     elements: [
       ...title("competitive-positioning", "竞争定位", "能力完整度 × 客户价值"),
       shape("competition-q1", rect(82, 116, 220, 142), "重点发展\n高潜力领域\n加大资源投入", "EAF3FC", { fontSize: 15, bold: true }),
       shape("competition-q2", rect(306, 116, 220, 142), "核心优势\n巩固领先地位\n扩大市场份额", "E8F6F1", { fontSize: 15, bold: true, color: "0F766E" }),
       shape("competition-q3", rect(82, 262, 220, 142), "谨慎进入\n保持观察\n控制投入节奏", "F4F5F7", { fontSize: 15, bold: true, color: "475569" }),
       shape("competition-q4", rect(306, 262, 220, 142), "优化提升\n补齐能力短板\n寻找差异机会", "FFF3DE", { fontSize: 15, bold: true, color: "B45309" }),
+      { id: "competition-positioning-view", type: "positionMatrix", rect: rect(82, 116, 444, 288), z: 5, bindingRef: "main", style: { fontSize: 10, domainMin: 0, domainMax: 10 } },
       text("competition-y", rect(36, 196, 34, 142), "客\n户\n价\n值", 12, { bold: true, color: "173B67", align: "center" }),
       text("competition-x", rect(226, 416, 158, 22), "能力完整度", 12, { bold: true, color: "173B67", align: "center" }),
       text("competition-insight-title", rect(574, 116, 310, 34), "关键结论", 20, { bold: true, color: "102B57" }),
@@ -1112,7 +1114,7 @@ const statusTableData = makeData("status-table", "重点事项状态", [
 
 const EXTENDED_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
   makeTemplate({
-    id: "metric-scorecard", name: "指标记分卡", scene: "budgetComparison", folderId: "template-folder-finance", previewText: "指标记分卡", dataSpec: scorecardData,
+    id: "metric-scorecard", name: "指标记分卡", scene: "budgetComparison", folderId: "template-folder-finance", previewText: "指标记分卡", dataSpec: scorecardData, ...strategyUpgrade,
     binding: { resultSetId: "result-metric-scorecard", roles: { categoryKey: "metricId", categoryLabel: "metric", series: ["actual", "target"], label: "metric", value: "actual", target: "target", status: "status", owner: "owner", columns: ["metric", "actual", "target", "prior", "status", "owner"] }, computations: [] },
     elements: [...title("metric-scorecard", "指标记分卡", "目标、实际、同期、状态与责任人"), chart("metric-scorecard-chart", rect(36, 112, 520, 280), "comparison", { numberFormat: money }), { id: "metric-scorecard-cards", type: "kpiCards", rect: rect(582, 112, 342, 280), z: 4, bindingRef: "main", columns: 2, style: { fontSize: 11 } }, table("metric-scorecard-table", rect(36, 408, 888, 100), ["metric", "actual", "target", "status", "owner"], 8)],
     background: "把关键指标的目标、实际、同期、状态和负责人集中展示，用于周期性绩效讨论。", scenarios: ["经营记分卡", "部门绩效复盘", "管理层周报"],

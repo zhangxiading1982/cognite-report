@@ -5,6 +5,7 @@ import {registerAuth,requestActor} from './auth.ts';
 import {registerAccess} from './access.ts';
 import {registerContentRoutes} from './contents.ts';
 import {captureTemplateExample} from './template-examples.ts';
+import {completeTemplatePayloadSchema} from './data-schema.ts';
 import {PHASE2_TEMPLATES} from "@slidebi/presentation";
 import express from "express";
 import {getDataset,lockDataset,attachDataset,createDataset,storeData,registerDatasetRoutes,refreshDataset} from './datasets.ts';
@@ -456,7 +457,7 @@ export async function createApp(options: AppOptions = {}) {
           [Number(actor)],
         )
       ).rows.map((r) => ({
-        ...r.payload,
+        ...completeTemplatePayloadSchema(r.payload),
         id: r.id,
         version: r.version,
         name: r.name,
