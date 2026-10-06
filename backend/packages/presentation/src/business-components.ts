@@ -572,16 +572,31 @@ export function compileBusinessComponent(
   if (element.type === "statusTable") {
     const label = role("label"), owner = role("owner"), status = role("status"), progress = role("progress"), comment = role("comment");
     if (!label || !status) return { handled: true, elements: [], error: "状态表需要事项和状态字段" };
-    const header = 28, rowH = (rect.h - header) / rows.length, elements: CompiledElement[] = [shape(`${element.id}-header`, { x: rect.x, y: rect.y, w: rect.w, h: header }, "E8F0FE", "rect", "CBD5E1"), text(`${element.id}-header-text`, { x: rect.x + 12, y: rect.y, w: rect.w - 24, h: header }, "事项                         负责人        进度        状态与说明", 10, "475569", { bold: true })];
+    const header = 30, rowH = (rect.h - header) / rows.length, elements: CompiledElement[] = [];
+    const columns = [
+      { id: "label", value: "事项", x: 0, w: .36 },
+      { id: "owner", value: "负责人", x: .36, w: .14 },
+      { id: "progress", value: "进度", x: .5, w: .19 },
+      { id: "status", value: "状态与说明", x: .69, w: .31 },
+    ];
+    elements.push(shape(`${element.id}-header`, { x: rect.x, y: rect.y, w: rect.w, h: header }, "F3F5F8", "rect", "F3F5F8"));
+    columns.forEach(column => elements.push(text(`${element.id}-header-${column.id}`, { x: rect.x + rect.w * column.x + 12, y: rect.y, w: rect.w * column.w - 20, h: header }, column.value, 9.5, "526071", { bold: true })));
+    elements.push(line(`${element.id}-header-rule`, rect.x, rect.y + header, rect.w, 0, "9DA9B8", 1.1));
     rows.forEach((row, index) => {
-      const y = rect.y + header + index * rowH, progressValue = progress ? Math.max(0, Math.min(1, Number(value(row, progress)))) : 0;
-      elements.push(shape(`${element.id}-row-${index}`, { x: rect.x, y, w: rect.w, h: rowH }, index % 2 ? "F8FAFC" : "FFFFFF", "rect", "E2E8F0"));
-      elements.push(text(`${element.id}-label-${index}`, { x: rect.x + 12, y, w: rect.w * .35, h: rowH }, display(row, label), 11, "172033", { bold: true }));
-      elements.push(text(`${element.id}-owner-${index}`, { x: rect.x + rect.w * .37, y, w: rect.w * .15, h: rowH }, owner ? display(row, owner) : "—", 10, "475569"));
-      elements.push(shape(`${element.id}-progress-track-${index}`, { x: rect.x + rect.w * .53, y: y + rowH / 2 - 5, w: rect.w * .14, h: 10 }, "E2E8F0", "roundRect"));
-      if (progressValue > 0) elements.push(shape(`${element.id}-progress-${index}`, { x: rect.x + rect.w * .53, y: y + rowH / 2 - 5, w: rect.w * .14 * progressValue, h: 10 }, colorForStatus(value(row, status)), "roundRect"));
-      elements.push(shape(`${element.id}-status-dot-${index}`, { x: rect.x + rect.w * .7, y: y + rowH / 2 - 6, w: 12, h: 12 }, colorForStatus(value(row, status)), "ellipse"));
-      elements.push(text(`${element.id}-status-${index}`, { x: rect.x + rect.w * .73, y, w: rect.w * .25, h: rowH }, `${display(row, status)}${comment ? ` · ${display(row, comment)}` : ""}`, 10, "475569"));
+      const y = rect.y + header + index * rowH, rawProgress = progress ? Number(value(row, progress)) : 0, progressValue = Math.max(0, Math.min(1, Number.isFinite(rawProgress) ? rawProgress : 0));
+      const accent = colorForStatus(value(row, status)), pale = accent === "16A34A" ? "E8F5EF" : accent === "DC2626" ? "FBE9E7" : accent === "F59E0B" ? "FFF2D6" : "EEF1F4";
+      elements.push({ ...shape(`${element.id}-row-${index}`, { x: rect.x, y, w: rect.w, h: rowH }, index % 2 ? "FBFCFD" : "FFFFFF", "rect", "FFFFFF"), line: { color: "FFFFFF", width: 0 } });
+      elements.push(text(`${element.id}-label-${index}`, { x: rect.x + 12, y, w: rect.w * .34, h: rowH }, display(row, label), 10.5, "172033", { bold: true }));
+      elements.push(text(`${element.id}-owner-${index}`, { x: rect.x + rect.w * .36 + 12, y, w: rect.w * .14 - 20, h: rowH }, owner ? display(row, owner) : "—", 10, "526071"));
+      const track = { x: rect.x + rect.w * .5 + 12, y: y + rowH / 2 - 3, w: Math.max(28, rect.w * .115), h: 6 };
+      elements.push({ ...shape(`${element.id}-progress-track-${index}`, track, "E4E9EF", "roundRect", "E4E9EF"), line: { color: "E4E9EF", width: 0 } });
+      if (progressValue > 0) elements.push({ ...shape(`${element.id}-progress-${index}`, { ...track, w: track.w * progressValue }, accent, "roundRect", accent), line: { color: accent, width: 0 } });
+      elements.push(text(`${element.id}-progress-value-${index}`, { x: track.x + track.w + 7, y, w: rect.w * .055, h: rowH }, `${Math.round(progressValue * 100)}%`, 9, "526071", { align: "right" }));
+      const statusText = display(row, status), pillW = Math.max(42, Math.min(68, statusText.length * 12 + 20)), pillX = rect.x + rect.w * .69 + 10;
+      elements.push({ ...shape(`${element.id}-status-pill-${index}`, { x: pillX, y: y + rowH / 2 - 11, w: pillW, h: 22 }, pale, "roundRect", pale), line: { color: pale, width: 0 } });
+      elements.push(text(`${element.id}-status-${index}`, { x: pillX + 5, y: y + rowH / 2 - 11, w: pillW - 10, h: 22 }, statusText, 9, accent, { bold: true, align: "center" }));
+      if (comment) elements.push(text(`${element.id}-comment-${index}`, { x: pillX + pillW + 8, y, w: rect.x + rect.w - (pillX + pillW + 16), h: rowH }, display(row, comment), 9, "667085"));
+      if (index < rows.length - 1) elements.push(line(`${element.id}-row-rule-${index}`, rect.x, y + rowH, rect.w, 0, "E2E7ED", .65));
     });
     return { handled: true, elements };
   }

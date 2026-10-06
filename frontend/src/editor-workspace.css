@@ -30,6 +30,7 @@
 .editor.focused-editor .connector-anchor{position:absolute;width:9px;height:9px;transform:translate(-50%,-50%);border:1px solid #1686d9;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #ffffffcc;pointer-events:none;z-index:204}
 .editor.focused-editor .connector-anchor.active{width:13px;height:13px;background:#c9f36a;border-color:#5f7f26;box-shadow:0 0 0 3px #dff7a5aa}
 .chart-palette-preview{display:grid;grid-template-columns:repeat(4,1fr);height:7px;margin:-5px 0 10px;overflow:hidden;border-radius:4px}.chart-palette-preview span{display:block}.chart-style-grid,.chart-style-color-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.chart-style-color-row{margin:8px 0}.chart-style-color-row .ppt-color-picker{min-width:0}.range-field{display:grid!important;grid-template-columns:1fr auto;gap:4px 10px}.range-field input{grid-column:1/-1;width:100%}
+.table-style-preset{margin-bottom:12px}.table-style-preset small{display:block;margin-top:5px;color:#667085;font-size:11px;line-height:1.45}
 .ppt-style-block{margin:16px 0;padding-top:14px;border-top:1px solid #e5eae9}
 .ppt-style-block h4{margin:0 0 8px}
 .ppt-style-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 12px}

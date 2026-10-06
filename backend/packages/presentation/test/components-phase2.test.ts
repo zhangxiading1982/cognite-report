@@ -27,6 +27,13 @@ it('compiles presentation-grade table column geometry and semantic cell styles',
  expect(svg).toContain('fill="#C53B43"');
  expect(svg).toContain('text-anchor="end"');
 });
+it('renders inferred finance and matrix table presentation styles in shared SVG output',()=>{
+ const finance=compileSlide(page({id:'pnl-table',type:'table',bindingRef:'main',fields:['regionName','actual'],style:{fill:'DCEAF7',bodyFill:'FFFFFF',bodyStripeFill:'F8FAFC',borderMode:'horizontal',line:{color:'D8E1EC',width:.6},lastRowBold:true}}),fixture as any),table=finance.elements[0]!;
+ expect(table.tablePreset).toBe('variance');expect(table.lastRowFill).toBe('E9EEF5');expect(table.cellStyles.at(-1)[0].fill).toBe('E9EEF5');expect(renderSlideSvg(finance)).toContain('fill="#E9EEF5"');
+ const data=structuredClone(fixture) as any;data.resultSets[0].fields[0].name='职责';data.resultSets[0].rows[0].regionName='R';data.resultSets[0].rows[1].regionName='A';
+ const matrix=compileSlide(page({id:'raci-matrix-table',type:'table',bindingRef:'main',fields:['regionName']}),data),matrixTable=matrix.elements[0]!;
+ expect(matrixTable.tablePreset).toBe('matrix');expect(matrixTable.cellStyles[1][0]).toMatchObject({fill:'DCEBFA',color:'174A7E',bold:true,align:'center'});expect(renderSlideSvg(matrix)).toContain('fill="#DCEBFA"');
+});
 it('preserves common editable shape types and their outline styles',()=>{
  const c=compileSlide(page({type:'shape',shape:'ellipse',fill:'DDEEFF',line:{color:'123456',width:3}}),fixture as any),shape=c.elements[0]!;
  expect(shape).toMatchObject({type:'shape',shape:'ellipse',fill:'DDEEFF',line:{color:'123456',width:3}});expect(renderSlideSvg(c)).toContain('<ellipse');expect(renderSlideSvg(c)).toContain('stroke="#123456"');

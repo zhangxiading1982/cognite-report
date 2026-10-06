@@ -43,6 +43,9 @@ import {
   createSlide,
   FONT_OPTIONS,
   CHART_PALETTES,
+  TABLE_STYLE_PRESETS,
+  applyTableStylePreset,
+  inferTableStylePreset,
   insertFragment,
 } from "@slidebi/presentation";
 import { api, post, saveSlide, Template } from "./api";
@@ -1577,9 +1580,12 @@ function TextStylePanel({
 
 function TableStylePanel({element,onChange}:{element:any;onChange:(patch:Record<string,any>)=>void}){
  const style=element.style??{};
+ const presetId=style.tablePreset||inferTableStylePreset(element.id,element.fields??[]);
+ const preset=TABLE_STYLE_PRESETS.find(item=>item.id===presetId)??TABLE_STYLE_PRESETS[0];
  const css=(value:string|undefined,fallback:string)=>{const color=value||fallback;return color.startsWith('#')?color:`#${color}`};
  const directionColors=style.valueColorMode==="direction"||(Array.isArray(style.directionFields)&&style.directionFields.length>0);
  return <section className="property-section table-style-panel"><h4>表格样式</h4>
+  <label className="field table-style-preset">展示风格<select aria-label="表格展示风格" value={presetId} onChange={event=>onChange(applyTableStylePreset(event.target.value as any))}>{TABLE_STYLE_PRESETS.map(option=><option key={option.id} value={option.id}>{option.label}</option>)}</select><small>{preset.description}</small></label>
   <div className="chart-style-grid"><label className="field">字体<select aria-label="表格字体" value={style.fontFace||"SimHei"} onChange={event=>onChange({fontFace:event.target.value})}>{FONT_OPTIONS.map(option=><option key={option.id} value={option.id} style={{fontFamily:option.css}}>{option.label}</option>)}</select></label><label className="field">正文字号<input aria-label="表格字号" type="number" min="8" max="80" value={style.fontSize??12} onChange={event=>onChange({fontSize:Math.max(8,Math.min(80,Number(event.target.value)))})}/></label><label className="field">表头字号<input aria-label="表格表头字号" type="number" min="8" max="80" value={style.headerFontSize??Math.max(8,(style.fontSize??12)-1)} onChange={event=>onChange({headerFontSize:Math.max(8,Math.min(80,Number(event.target.value)))})}/></label><label className="field">数值对齐<select aria-label="表格数值对齐" value={style.numericAlign||"right"} onChange={event=>onChange({numericAlign:event.target.value})}><option value="right">右对齐</option><option value="center">居中</option><option value="left">左对齐</option></select></label></div>
   <div className="row"><button type="button" className="text-style-toggle" aria-label="表格粗体" aria-pressed={style.bold===true} onClick={()=>onChange({bold:style.bold!==true})}><Bold size={16}/>全部粗体</button><label className="check"><input aria-label="首列加粗" type="checkbox" checked={style.firstColumnBold===true} onChange={event=>onChange({firstColumnBold:event.target.checked})}/>首列加粗</label><label className="check"><input aria-label="末行加粗" type="checkbox" checked={style.lastRowBold===true} onChange={event=>onChange({lastRowBold:event.target.checked})}/>末行加粗</label></div>
   <div className="chart-style-color-row"><PptColorPicker label="正文" ariaLabel="表格文字颜色" customAriaLabel="表格自定义文字颜色" color={css(style.color,"#334155")} kind="outline" onChange={value=>value&&onChange({color:value})}/><PptColorPicker label="表头文字" ariaLabel="表头文字颜色" customAriaLabel="表头自定义文字颜色" color={css(style.headerColor,"#173B67")} kind="outline" onChange={value=>value&&onChange({headerColor:value})}/><PptColorPicker label="表头底色" ariaLabel="表格表头颜色" customAriaLabel="表格自定义表头颜色" color={css(style.fill,"#DCEAF7")} kind="fill" onChange={value=>value&&onChange({fill:value})}/></div>

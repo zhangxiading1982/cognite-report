@@ -90,7 +90,7 @@ export async function writeDeckPptx(
         const tableRows=rows.map((row,i)=>row.map((text,j)=>{
           const cell=e.cellStyles?.[i]?.[j]??{};
           return {text,options:{
-            fill:{color:i===0?color(e.fill,"EFF6FF"):i%2===0&&e.bodyStripeFill?color(e.bodyStripeFill):color(e.bodyFill,"FFFFFF")},
+            fill:{color:color(cell.fill,i===0?color(e.fill,"EFF6FF"):i%2===0&&e.bodyStripeFill?color(e.bodyStripeFill):color(e.bodyFill,"FFFFFF"))},
             color:color(cell.color??(i===0?e.headerColor:e.color)),
             bold:cell.bold??(i===0?e.headerBold!==false:e.bold===true),
             fontFace:cell.fontFace??(i===0?e.headerFontFace:e.fontFace)??compiled.theme.fontFace,
@@ -102,11 +102,11 @@ export async function writeDeckPptx(
           ...bounds, autoPage: false, rowH: bounds.h / rows.length,
           colW: weights.map((value:number)=>bounds.w*value/weightTotal),
           fontFace: e.fontFace ?? compiled.theme.fontFace, fontSize: e.fontSize ?? 16,
-          color: color(e.color), bold:e.bold===true, margin: [4, 6, 4, 6], valign: "middle",
+          color: color(e.color), bold:e.bold===true, margin: [4, Number(e.cellPaddingX??6), 4, Number(e.cellPaddingX??6)], valign: "middle",
           border: {type: "solid", color: color(e.borderMode==='horizontal'?'FFFFFF':e.line?.color,"CBD5E1"), pt: e.borderMode==='horizontal'?0:e.line?.width??0.5},
 
         });
-        if(e.borderMode==='horizontal')for(let row=1;row<rows.length;row++)slide.addShape(deck.ShapeType.line,{x:bounds.x,y:bounds.y+bounds.h*row/rows.length,w:bounds.w,h:0,line:{color:color(e.line?.color,'E2E8F0'),width:e.line?.width??0.5}});
+        if(e.borderMode==='horizontal')for(let row=1;row<rows.length;row++){const rule=row===1&&e.headerLine?e.headerLine:e.line;slide.addShape(deck.ShapeType.line,{x:bounds.x,y:bounds.y+bounds.h*row/rows.length,w:bounds.w,h:0,line:{color:color(rule?.color,'E2E8F0'),width:rule?.width??0.5}})};
       } else if (e.type === "nativeChart") {
         const chartFont = e.options?.fontFace ?? compiled.theme.fontFace;
         const chartFontSize = Number(e.options?.fontSize ?? 11);

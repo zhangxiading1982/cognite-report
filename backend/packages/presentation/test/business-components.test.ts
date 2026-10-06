@@ -31,8 +31,8 @@ describe("data-driven business components", () => {
   });
   it("lays out an arbitrary-depth decision tree horizontally or vertically from current data", () => {
     const item = template("decision-tree");
-    expect(item.payload.seedRevision).toBe(11);
-    expect(item.payload.example.designVersion).toBe(12);
+    expect(item.payload.seedRevision).toBe(12);
+    expect(item.payload.example.designVersion).toBe(13);
     const data = structuredClone(item.payload.example.dataSpec);
     data.resultSets[0].rows.push({ nodeId: "refresh", node: "按小时刷新", parentId: "managed", outcome: "启用增量查询" });
     const slide = structuredClone(item.payload.example.slide);
@@ -72,8 +72,8 @@ describe("data-driven business components", () => {
   it("ships compilable repaired previews for sales proposal and SWOT", () => {
     for (const id of ["sales-proposal", "swot-analysis"]) {
       const item = template(id);
-      expect(item.payload.seedRevision).toBe(11);
-      expect(item.payload.example.designVersion).toBe(12);
+      expect(item.payload.seedRevision).toBe(12);
+      expect(item.payload.example.designVersion).toBe(13);
       expect(compileSlide(item.payload.example.slide, item.payload.example.dataSpec).diagnostics.filter(diagnostic => diagnostic.severity === "error"), id).toEqual([]);
     }
   });
@@ -94,6 +94,29 @@ describe("data-driven business components", () => {
     const compiledTable = compiled.elements.find(element => element.id === "pnl-table")!;
     expect(compiledTable.cellStyles.some((row: any[]) => row.some(cell => cell.color === "16845B"))).toBe(true);
     expect(compiledTable.rows.some((row: string[]) => row.includes("+10%"))).toBe(true);
+  });
+  it("assigns researched table styles by business meaning for template and copied-page parity", () => {
+    const expected = new Map([
+      ["pnl-table", "variance"],
+      ["raci-matrix-table", "matrix"],
+      ["metric-scorecard-table", "trend"],
+      ["milestone-plan-table", "scorecard"],
+      ["meeting-agenda-table", "editorial"],
+    ]);
+    const tables = BUSINESS_TEMPLATES.flatMap(item => item.payload.example.slide.elements.filter(element => element.type === "table"));
+    expect(tables.length).toBeGreaterThan(10);
+    for (const element of tables) {
+      expect(element.style?.tablePreset, element.id).toBeTruthy();
+      if (expected.has(element.id)) expect(element.style?.tablePreset).toBe(expected.get(element.id));
+    }
+  });
+  it("renders status tables with aligned headers, compact progress values and status pills", () => {
+    const item = template("status-table");
+    const compiled = compileSlide(item.payload.example.slide, item.payload.example.dataSpec);
+    expect(compiled.elements.find(element => element.id === "status-table-view-header-label")?.text).toBe("事项");
+    expect(compiled.elements.find(element => element.id === "status-table-view-header-progress")?.text).toBe("进度");
+    expect(compiled.elements.some(element => element.id.startsWith("status-table-view-status-pill-") && element.shape === "roundRect")).toBe(true);
+    expect(compiled.elements.some(element => element.id.startsWith("status-table-view-progress-value-") && /%/.test(element.text ?? ""))).toBe(true);
   });
   it("recompiles KPI cards from the current DataSpec without mutating the template", () => {
     const item = template("kpi-dashboard");

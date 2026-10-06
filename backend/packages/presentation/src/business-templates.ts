@@ -1,5 +1,6 @@
 import type { DataSpec, NumberFormat } from "./schema";
 import type { Binding, Rect, SlideElement, SlideSpec } from "./types";
+import { applyTableStylePreset, inferTableStylePreset } from "./table-style";
 
 type ScalarType = "string" | "decimal" | "integer" | "boolean" | "date" | "datetime";
 type SampleField = {
@@ -65,8 +66,8 @@ const paleRed = "FEE2E2";
 const white = "FFFFFF";
 const money: NumberFormat = { displayDivisor: "1", decimals: 0, suffix: "万元", percent: false };
 const percent: NumberFormat = { displayDivisor: "1", decimals: 0, suffix: "%", percent: true };
-const strategyUpgrade = { seedRevision: 10, designVersion: 11 } as const;
-const strategyRepair = { seedRevision: 11, designVersion: 12 } as const;
+const strategyUpgrade = { seedRevision: 12, designVersion: 13 } as const;
+const strategyRepair = { seedRevision: 12, designVersion: 13 } as const;
 
 const rect = (x: number, y: number, w: number, h: number): Rect => ({ x, y, w, h });
 const text = (
@@ -114,7 +115,7 @@ const table = (
   z: 4,
   bindingRef: "main",
   fields,
-  style: { fontFace: "SimHei", fontSize, headerFontSize: Math.max(8, fontSize - 1), fill: "DCEAF7", headerColor: "173B67", headerBold: true, firstColumnBold: true, firstColumnWide: true, numericAlign: "right", formatNumbers: true, bodyFill: white, bodyStripeFill: "F8FAFC", borderMode: "horizontal", color: navy, line: { color: "D8E1EC", width: 0.6 }, ...style },
+  style: { ...applyTableStylePreset(inferTableStylePreset(id, fields)), fontFace: "SimHei", fontSize, headerFontSize: Math.max(8, fontSize - 1), headerBold: true, firstColumnWide: true, numericAlign: "right", formatNumbers: true, color: navy, ...style },
 });
 const chart = (
   id: string,
@@ -301,7 +302,7 @@ function makeTemplate(input: {
     folderId: input.folderId,
     previewText: input.previewText,
     payload: {
-      seedRevision: input.seedRevision ?? 9,
+      seedRevision: input.seedRevision ?? 12,
       ...(firstChart?.chartType ? { chartType: firstChart.chartType } : {}),
       requiredBindings: { main: { roles: Object.keys(input.binding.roles), roleConstraints: roleSchema(input.binding, input.dataSpec) } },
       bindingSchema: { main: { roles: roleSchema(input.binding, input.dataSpec) } },
@@ -313,7 +314,7 @@ function makeTemplate(input: {
       exportCapabilities: ["nativeChart", "editableShapes", "nativeTable"],
       example: {
         identityVersion: 1,
-        designVersion: input.designVersion ?? 10,
+        designVersion: input.designVersion ?? 13,
         slide,
         dataSpec: input.dataSpec,
         businessContext: { background: input.background, scenarios: input.scenarios },

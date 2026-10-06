@@ -1,6 +1,7 @@
 import type {SlideElement,Rect,CompiledElement} from './types';
 import type {DataSpec} from './schema';
 import {wrapText} from './layout';
+import {resolveTableStyle} from './table-style';
 
 function formatTableValue(value:unknown,field:any,style:Record<string,any>,data:DataSpec){
  if(value===null)return '—';
@@ -23,6 +24,7 @@ export function compileComponent(e:SlideElement,rect:Rect,style:Record<string,an
  if(!Number.isFinite(fs)||fs<8||fs>80) return fail('组件字号范围8–80');
  const text=(id:string,r:Rect,value:string):CompiledElement=>({id,type:'text',rect:r,text:wrapText(value,r.w,fs).join('\n'),fontSize:fs,fontFace,color:style.color??'1F2937',bold:style.bold===true,italic:style.italic===true,align:style.align??'left',valign:'middle'});
  if(e.type==='table'){
+  style=resolveTableStyle(e.id,Array.isArray(e.fields)?e.fields:[],style);
   const rs=data.resultSets.find(r=>r.id===binding?.resultSetId);
   if(!rs||!Array.isArray(e.fields)||!e.fields.length||e.fields.length>8||new Set(e.fields).size!==e.fields.length||e.fields.some(f=>!rs.fields.some(x=>x.id===f)))return fail('请选择结果集及1–8个有效字段');
   if(!rs.rows.length||rs.rows.length>12)return fail('单页表格支持1–12行数据，请筛选数据或调整粒度');
@@ -38,18 +40,22 @@ export function compileComponent(e:SlideElement,rect:Rect,style:Record<string,an
   if(rows.some((row,rowIndex)=>row.some((cell,columnIndex)=>wrapText(cell,pixelWidths[columnIndex]-12,rowIndex===0?headerFontSize:fs).length*(rowIndex===0?headerFontSize:fs)*1.25>rowHeight-8)))return fail('表格内容超出单元格，请扩大表格、减小字号或减少字段');
   const directionFields=new Set(Array.isArray(style.directionFields)?style.directionFields:style.valueColorMode==='direction'?fields.filter(field=>['decimal','integer'].includes(field.type)).map(field=>field.id):[]);
   const positiveColor=String(style.positiveColor??'16845B'),negativeColor=String(style.negativeColor??'C53B43');
-  const cellStyles=rows.map((row,rowIndex)=>row.map((_,columnIndex)=>{
+  const categorical=style.categoricalCellStyles??{};
+  const cellStyles=rows.map((row,rowIndex)=>row.map((cell,columnIndex)=>{
    const field=fields[columnIndex],numeric=['decimal','integer'].includes(field.type),raw=rawRows[rowIndex][columnIndex];
    const direction=directionFields.has(field.id)&&raw!==undefined&&raw!==null?Number(raw):0;
+   const categoricalStyle=rowIndex>0?(categorical[String(raw??cell).trim().toLowerCase()]??categorical[String(raw??cell).trim()]):undefined;
+   const lastRow=rowIndex===rows.length-1;
    return {
-    align:rowIndex===0?(style.headerAlign??(columnIndex===0?'left':'center')):(numeric?(style.numericAlign??'right'):(style.textAlign??'left')),
-    bold:rowIndex===0?style.headerBold!==false:(style.bold===true||(style.firstColumnBold===true&&columnIndex===0)||(style.lastRowBold===true&&rowIndex===rows.length-1)),
-    color:rowIndex===0?(style.headerColor??style.color??'1F2937'):(direction>0?positiveColor:direction<0?negativeColor:style.color??'1F2937'),
+    align:categoricalStyle?.align??(rowIndex===0?(style.headerAlign??(columnIndex===0?'left':'center')):(numeric?(style.numericAlign??'right'):(style.textAlign??'left'))),
+    bold:categoricalStyle?.bold??(rowIndex===0?style.headerBold!==false:(style.bold===true||(style.firstColumnBold===true&&columnIndex===0)||(style.lastRowBold===true&&lastRow))),
+    color:categoricalStyle?.color??(rowIndex===0?(style.headerColor??style.color??'1F2937'):(direction>0?positiveColor:direction<0?negativeColor:style.color??'1F2937')),
+    fill:categoricalStyle?.fill??(lastRow?style.lastRowFill:undefined),
     fontSize:rowIndex===0?headerFontSize:fs,
     fontFace:rowIndex===0?(style.headerFontFace??fontFace):fontFace,
    };
   }));
-  return {elements:[{id:e.id,type:'table',rect,rows,cellStyles,columnWidths:configuredWidths,fontFace,fontSize:fs,headerFontFace:style.headerFontFace??fontFace,headerFontSize,color:style.color??'1F2937',bold:style.bold===true,fill:style.fill??'EFF6FF',headerColor:style.headerColor??style.color??'1F2937',headerBold:style.headerBold!==false,bodyFill:style.bodyFill??'FFFFFF',bodyStripeFill:style.bodyStripeFill,borderMode:style.borderMode??'grid',line:{color:style.line?.color??'CBD5E1',width:style.line?.width??0.5}}]};
+  return {elements:[{id:e.id,type:'table',rect,rows,cellStyles,columnWidths:configuredWidths,fontFace,fontSize:fs,headerFontFace:style.headerFontFace??fontFace,headerFontSize,color:style.color??'1F2937',bold:style.bold===true,fill:style.fill??'EFF6FF',headerColor:style.headerColor??style.color??'1F2937',headerBold:style.headerBold!==false,bodyFill:style.bodyFill??'FFFFFF',bodyStripeFill:style.bodyStripeFill,borderMode:style.borderMode??'grid',line:{color:style.line?.color??'CBD5E1',width:style.line?.width??0.5},headerLine:style.headerLine,lastRowFill:style.lastRowFill,cellPaddingX:style.cellPaddingX,tablePreset:style.tablePreset,tableDesignVersion:style.tableDesignVersion}]};
  }
  if(e.type==='process'){
   if(!Array.isArray(e.steps)||e.steps.length<2||e.steps.length>8||e.steps.some((x:any)=>typeof x!=='string'||!x.trim()||x.length>100))return fail('流程条需要2–8个非空步骤，每步最多100字');

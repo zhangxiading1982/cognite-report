@@ -128,14 +128,14 @@ export function renderSlideSvg(c: CompiledSlide): string {
         const widthTotal=weights.reduce((sum:number,value:number)=>sum+value,0),widths=weights.map((value:number)=>r.w*value/widthTotal),offsets=widths.map((_:number,index:number)=>widths.slice(0,index).reduce((sum:number,value:number)=>sum+value,0));
         const cells=rows.map((row, i) => row.map((cell, j) => {
           const cw=widths[j],x = r.x + offsets[j], y = r.y + rh * i,cellStyle=n.cellStyles?.[i]?.[j]??{};
-          const fs=Number(cellStyle.fontSize??(i===0?n.headerFontSize:n.fontSize)??16),align=cellStyle.align??(j===0?'left':'right'),padding=8;
+          const fs=Number(cellStyle.fontSize??(i===0?n.headerFontSize:n.fontSize)??16),align=cellStyle.align??(j===0?'left':'right'),padding=Number(n.cellPaddingX??8);
           const lines = wrapText(cell, cw-padding*2, fs),lineHeight=fs*1.2,totalHeight=lines.length*lineHeight;
-          const fill=i===0?color(n.fill):(i%2===0&&n.bodyStripeFill?color(n.bodyStripeFill):color(n.bodyFill,'FFFFFF'));
+          const fill=color(cellStyle.fill,i===0?n.fill:(i%2===0&&n.bodyStripeFill?n.bodyStripeFill:n.bodyFill??'FFFFFF'));
           const stroke=n.borderMode==='horizontal'?'none':color(n.line?.color,'CBD5E1');
           const tx=align==='center'?x+cw/2:align==='right'?x+cw-padding:x+padding,anchor=align==='center'?'middle':align==='right'?'end':'start',firstBaseline=y+(rh-totalHeight)/2+fs*.88;
           return `<rect x="${num(x)}" y="${num(y)}" width="${num(cw)}" height="${num(rh)}" fill="${fill}" stroke="${stroke}" stroke-width="${num(n.line?.width??0.5)}"/><text text-anchor="${anchor}" x="${num(tx)}" y="${num(firstBaseline)}" font-family="${esc(fontCss(cellStyle.fontFace??(i===0?n.headerFontFace:n.fontFace)??c.theme.fontFace))}" font-size="${num(fs)}" font-weight="${cellStyle.bold??(i===0?n.headerBold!==false:n.bold)?'bold':'normal'}" fill="${color(cellStyle.color??(i===0?n.headerColor:n.color))}">${lines.map((line,k)=>`<tspan x="${num(tx)}" dy="${k===0?0:lineHeight}">${esc(line)}</tspan>`).join('')}</text>`;
         }).join('')).join('');
-        const rules=n.borderMode==='horizontal'?rows.slice(1).map((_,i)=>`<line x1="${r.x}" x2="${r.x+r.w}" y1="${r.y+rh*(i+1)}" y2="${r.y+rh*(i+1)}" stroke="${color(n.line?.color,'E2E8F0')}" stroke-width="${num(n.line?.width??0.5)}"/>`).join(''):'';
+        const rules=n.borderMode==='horizontal'?rows.slice(1).map((_,i)=>{const rule=i===0&&n.headerLine?n.headerLine:n.line;return `<line x1="${r.x}" x2="${r.x+r.w}" y1="${r.y+rh*(i+1)}" y2="${r.y+rh*(i+1)}" stroke="${color(rule?.color,'E2E8F0')}" stroke-width="${num(rule?.width??0.5)}"/>`}).join(''):'';
         return `<g>${cells}${rules}</g>`;
       }
       if (n.type === "shape") {

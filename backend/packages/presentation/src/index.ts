@@ -20,6 +20,7 @@ export * from "./render";
 export * from "./layout";
 export * from "./connector-route";
 export * from "./chart-style";
+export * from "./table-style";
 import {
   validateDataSpec,
   formatSchema,
