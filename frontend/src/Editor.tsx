@@ -680,7 +680,12 @@ export function Editor({
   const sharedTextStyle=(key:string,fallback:any)=>{const values=selectedTextElements.map((item:any)=>item.style?.[key]??fallback);return values.length&&values.every((value:any)=>value===values[0])?values[0]:undefined};
   const changeSelectedTextStyle=(patch:Record<string,any>)=>edit((next)=>{for(const item of next.elements)if(selected.includes(item.id)&&(["text","sourceFooter"].includes(item.type)||(item.type==="shape"&&item.runs)))item.style={...item.style,...patch}});
   return (
-    <div className={`editor focused-editor ${inContent ? "embedded-editor" : ""} ${fullscreen ? "editor-fullscreen" : ""}`}>
+    <div
+      className={`editor focused-editor ${inContent ? "embedded-editor" : ""} ${fullscreen ? "editor-fullscreen" : ""}`}
+      role={templateWorkspace ? "dialog" : undefined}
+      aria-label={templateWorkspace ? "编辑模板页面" : undefined}
+      aria-modal={templateWorkspace ? true : undefined}
+    >
       {!inContent && <header className="editor-header">
         <button
           aria-label="返回我的页面"

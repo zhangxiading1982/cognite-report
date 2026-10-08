@@ -1,23 +1,39 @@
-# SlideBI 文档
+# SlideBI 文档导航
 
-本目录是源码仓库内的维护文档入口。架构、配置与运行说明以当前代码为准；历史产品评审材料不作为运行依赖。
+本目录是源码仓库的维护文档入口。运行方式、数据模型和接口以当前 `main` 代码及迁移为准；历史产品评审材料不属于运行依赖。
+
+## 第一次使用
+
+1. [系统功能说明](system-overview.md)：了解产品定位、功能范围和主要工作流。
+2. [环境准备与初始化](environment-setup.md)：安装依赖、初始化 DDL/数据、编译和测试。
+3. [使用说明](user-guide.md)：登录后从数据或模板创建文稿并导出 PPTX。
 
 ## 产品与设计
 
-- [项目背景](project-background.md)：目标、范围和阶段边界。
-- [领域概念](domain-model.md)：文稿、页面、模板、数据、资源与导出的定义。
-- [系统架构](architecture.md)：组件边界、关键数据流与设计约束。
-- [使用说明](user-guide.md)：从数据或模板到多页 PPTX 的基本流程。
-- [目录与内置资源](catalog-organization.md)：模板、资源的默认目录和第三方素材维护规则。
+| 文档 | 内容 |
+| --- | --- |
+| [项目背景与 Roadmap](project-background.md) | 问题、目标、阶段状态和后续演进 |
+| [领域概念](domain-model.md) | 文稿、页面、模板、数据、资源与导出的统一定义 |
+| [系统架构](architecture.md) | 组件边界、关键数据流、设计约束与部署边界 |
+| [目录与内置资源](catalog-organization.md) | 模板/资源目录、内置素材和许可来源 |
 
-## 开发与运维
+## 开发、测试与运维
 
-- [代码结构](code-structure.md)：目录职责和依赖方向。
-- [项目配置](configuration.md)：全部环境变量、默认值与生产建议。
-- [数据库](database.md)：初始化、迁移、备份与测试库隔离。
-- [开发与启动](development.md)：安装、启动和日常命令。
-- [测试](testing.md)：TDD、测试分层和验收命令。
-- [API 概览](api-overview.md)：HTTP 约定与接口分组。
-- [开源准备审查](open-source-readiness.md)：本次优化、已知债务和发布清单。
+| 文档 | 内容 |
+| --- | --- |
+| [代码结构](code-structure.md) | 目录职责、依赖方向和后续拆分原则 |
+| [项目配置](configuration.md) | 环境变量、默认值与生产建议 |
+| [数据库](database.md) | DDL、初始化数据、迁移、备份和测试隔离 |
+| [开发与启动](development.md) | 日常启动、构建和调试命令 |
+| [测试与 TDD](testing.md) | 测试分层、命令和发布门禁 |
+| [API 概览](api-overview.md) | HTTP 约定、接口分组与真实 BI 适配边界 |
+| [开源准备审查](open-source-readiness.md) | 发布检查、已知债务和公开仓库清单 |
 
-仓库级协作和漏洞报告方式见 [CONTRIBUTING.md](../CONTRIBUTING.md) 与 [SECURITY.md](../SECURITY.md)。
+## 版本与协作
+
+- [v0.1.0 发布说明](releases/v0.1.0.md)
+- [版本记录](../CHANGELOG.md)
+- [贡献指南](../CONTRIBUTING.md)
+- [安全说明](../SECURITY.md)
+
+文档分工遵循“一个主题一个事实来源”：环境文档负责从零安装，开发文档负责日常命令，数据库文档负责持久化，使用说明负责产品操作，架构文档解释系统边界。新增内容应优先链接事实来源，避免复制后产生漂移。

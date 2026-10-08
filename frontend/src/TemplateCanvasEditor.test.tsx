@@ -18,6 +18,7 @@ test("template page editing reuses the full document workspace and saves back to
   const slide: any = createSlide(data as any, "budget-comparison");
   render(<TemplateCanvasEditor slide={slide} dataSpec={data} onChange={change} onClose={close} />);
 
+  expect(screen.getByRole("dialog", { name: "编辑模板页面" })).toBeTruthy();
   expect(document.querySelector(".editor-fullscreen")).toBeTruthy();
   expect(screen.getByRole("button", { name: "文本框" })).toBeTruthy();
   expect(screen.getByRole("button", { name: "形状" })).toBeTruthy();

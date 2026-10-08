@@ -1,9 +1,11 @@
 {
   "name": "@slidebi/backend",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "db:seed": "tsx src/seed-db.ts",
     "data:review15:reset": "tsx src/review15-reset.ts"
   },
   "dependencies": {

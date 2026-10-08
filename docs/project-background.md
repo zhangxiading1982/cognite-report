@@ -25,3 +25,20 @@ BI Studio 的真实 Data Spec 与 DAX 查询 API 尚未接入。当前 `chartId`
 | 第三阶段 | 导航、跨文稿页面导入、多页导出、真实 BI 刷新与生产化 | 前三项已实现；真实 BI 刷新待接入 |
 
 本项目受 think-cell 的业务汇报工作流启发，但数据模型、界面和实现均为独立设计。公开发布时应避免使用第三方商标暗示官方关联。
+
+参考资料：
+
+- [think-cell Charts](https://www.think-cell.com/en/product/think-cell-charts)：数据驱动图表、表格和标注；
+- [think-cell Library](https://www.think-cell.com/en/resources/manual/library)：幻灯片、模板、图像和图标复用；
+- [Advanced report automation](https://www.think-cell.com/en/resources/manual/introductionautomation)：使用 Excel 或 JSON 数据填充 PowerPoint 模板。
+
+## 后续 Roadmap
+
+| 优先级 | 演进方向 | 目标 |
+| --- | --- | --- |
+| P0 | BI Studio 适配器 | 落地 `chartId` Data Spec 导出、模型 ID 和具名 DAX 查询刷新 |
+| P0 | 生产安全 | 替换开发账号，完善密码/会话策略、密钥管理、TLS 和审计 |
+| P1 | 对象存储与部署 | 把本地资源和导出文件迁移到共享对象存储，提供容器化部署 |
+| P1 | API 契约 | 为 Data Spec、查询刷新和错误响应生成 OpenAPI/JSON Schema |
+| P1 | 编辑器工程化 | 在行为测试保护下拆分大型编辑器、样式和后端装配模块 |
+| P2 | 汇报智能化 | 增加叙事建议、数据异常提示和自动页面结构编排 |

@@ -1,5 +1,6 @@
 **/node_modules/
 **/dist/
+**/.cache/
 backend/var/
 .env
 .env.*
@@ -7,8 +8,20 @@ backend/var/
 coverage/
 test-results/
 playwright-report/
+tmp/
+temp/
+.tmp/
+.codex/
+.claude/
+.agents/
+*.tsbuildinfo
+*.pid
+*.sock
 *.log
 *.pptx
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 .DS_Store
 .idea/
 .vscode/

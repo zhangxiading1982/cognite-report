@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
+const baseURL=process.env.SLIDEBI_E2E_BASE_URL??'http://127.0.0.1:5173';
 
 test('资源库：SVG上传、自动微调、下载与另存保留原件', async ({page,request}) => {
  const name=`资源加工验收-${randomUUID().slice(0,6)}`;const ids:string[]=[];
@@ -52,6 +53,6 @@ test('资源目录保持展开、路径导航与非owner只读预览',async({pag
   await detail.getByRole('button',{name:'修改资源目录'}).click();await detail.getByLabel('所属目录',{exact:true}).selectOption('');
   await detail.getByRole('button',{name:'关闭',exact:true}).click();await page.getByRole('button',{name:'返回资源库根目录'}).click();
   await expect(page.getByRole('button',{name:`预览 ${name}`,exact:true})).toBeVisible();
-  const context=await browser.newContext({storageState:{cookies:[],origins:[]}});try{await context.request.post('http://127.0.0.1:5173/api/auth/login',{data:{username:'summer',password:'summer'}});const viewer=await context.newPage();await viewer.goto('http://127.0.0.1:5173/assets');await viewer.getByRole('button',{name:`预览 ${name}`,exact:true}).click();const preview=viewer.getByRole('dialog',{name,exact:true});await expect(preview.getByRole('button',{name:'可见性：公开'})).toBeDisabled();await expect(preview.getByRole('button',{name:'修改资源目录'})).toBeDisabled();await expect(preview.getByText('素材微调')).toHaveCount(0);await expect(viewer.getByRole('button',{name:`删除 ${name}`,exact:true})).toHaveCount(0);}finally{await context.close()}
+  const context=await browser.newContext({storageState:{cookies:[],origins:[]}});try{await context.request.post(`${baseURL}/api/auth/login`,{data:{username:'summer',password:'summer'}});const viewer=await context.newPage();await viewer.goto(`${baseURL}/assets`);await viewer.getByRole('button',{name:`预览 ${name}`,exact:true}).click();const preview=viewer.getByRole('dialog',{name,exact:true});await expect(preview.getByRole('button',{name:'可见性：公开'})).toBeDisabled();await expect(preview.getByRole('button',{name:'修改资源目录'})).toBeDisabled();await expect(preview.getByText('素材微调')).toHaveCount(0);await expect(viewer.getByRole('button',{name:`删除 ${name}`,exact:true})).toHaveCount(0);}finally{await context.close()}
  }finally{if(assetId){const r=await request.post(`/api/assets/${assetId}/archive`,{data:{}});expect(r.ok(),await r.text()).toBe(true)}if(folderId){const r=await request.delete(`/api/folders/${folderId}`);expect(r.ok(),await r.text()).toBe(true)}}
 });

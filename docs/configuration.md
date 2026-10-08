@@ -2,6 +2,8 @@
 
 应用从进程环境读取配置，不自动加载 `.env`。本地可以复制 [.env.example](../.env.example)，再用 shell 或进程管理器导出变量。
 
+从零安装和 `.env` 加载示例见[环境准备与初始化](environment-setup.md)。
+
 ## 后端运行参数
 
 | 变量 | 默认值 | 说明 |

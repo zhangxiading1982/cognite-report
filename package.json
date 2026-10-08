@@ -1,5 +1,6 @@
 {
   "name": "slidebi",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -14,20 +15,25 @@
     "dev:backend": "npm run dev -w @slidebi/backend",
     "dev:frontend": "npm run dev -w @slidebi/frontend",
     "build": "npm run build -w @slidebi/frontend",
+    "env:check": "bash scripts/check-environment.sh",
+    "setup": "bash scripts/bootstrap-development.sh",
     "db:setup": "tsx backend/src/setup-db.ts",
     "db:init": "bash scripts/init-database.sh",
+    "db:seed": "npm run db:seed -w @slidebi/backend",
     "test:e2e": "playwright test",
     "db:test:setup": "SLIDEBI_DB_NAME=slidebi_test tsx backend/src/setup-db.ts",
     "data:review15:reset": "npm run data:review15:reset -w @slidebi/backend",
-    "verify": "npm run typecheck && npm test && npm run build"
+    "docs:check": "node scripts/check-doc-links.mjs",
+    "verify": "npm run typecheck && npm test && npm run build",
+    "release:check": "bash scripts/check-release.sh"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "tsx": "^4.20.5",
-    "vitest": "^3.2.4",
-    "concurrently": "^9.2.1",
+    "@playwright/test": "^1.55.0",
     "@types/node": "^22.18.0",
-    "@playwright/test": "^1.55.0"
+    "concurrently": "^9.2.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3"
   },
   "engines": {
     "node": ">=22"

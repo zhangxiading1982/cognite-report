@@ -1,5 +1,7 @@
 # 开发与启动
 
+第一次安装请先阅读[环境准备与初始化](environment-setup.md)。本文只记录已经完成环境初始化后的日常开发命令。
+
 ## 环境要求
 
 - Node.js 22 或更高版本（仓库含 `.nvmrc`）
@@ -10,10 +12,11 @@
 ## 首次启动
 
 ```bash
-git clone <repository-url>
-cd slidebi
+git clone git@github.com:zhangxiading1982/cognite-report.git
+cd cognite-report
 npm ci
 npm run db:init -- --with-test
+npm run db:seed
 npm run dev
 ```
 
@@ -37,10 +40,14 @@ npm run dev
 ## 日常检查
 
 ```bash
+npm run docs:check
 npm run typecheck
 npm test
 npm run build
 npm run verify
+npm run release:check
 ```
 
 提交前运行 `npm run verify`。如果修改了用户路径、目录交互、画布编辑或导出流程，还应在开发服务运行时执行 `npm run test:e2e`。
+
+`npm run release:check` 还会检查文档链接、工作区版本一致性及是否误跟踪运行产物，发布标签前应执行该命令。

@@ -1,58 +1,71 @@
 # 开源准备审查
 
-## 本次完成
+本文件记录 v0.1.0 公开仓库准备情况、发布边界和后续事项。发布命令以[环境准备与初始化](environment-setup.md)和[测试文档](testing.md)为准。
 
-本轮只调整工程结构和配置，没有改变业务功能或界面行为。
+## v0.1.0 已完成
 
-- 将数据库、存储、监听地址、JSON 上限、Origin 和 BI 地址集中到 `backend/src/config.ts`，保留原默认值。
-- 从应用装配中提取 HTTP 策略与错误原语，减少路由文件职责。
-- 从 presentation 桶文件中提取布局函数，消除核心渲染模块的循环导入。
-- 配置 Vite、Playwright 和 E2E 登录参数，移除开发者个人 PostgreSQL 用户名。
-- 增加 `.editorconfig`、`.gitattributes`、Node 版本和数据库初始化入口。
-- 扩充 `.gitignore`，排除依赖、构建目录、运行数据、日志、测试报告和导出文件。
-- 删除未被源码引用的 16MB 字体文件；运行时仍使用系统黑体，行为不变。
-- 将直接上传依赖 `multer` 升级到已修复版本。
-- 以 TDD 增加配置、HTTP 策略和 presentation 布局特征测试，并执行全量回归。
-- 将仍符合当前需求的浏览器验收整理到 `e2e/current`；早期评审中已被后续需求替代的交互脚本移入 `e2e/legacy`。
+- 数据库、存储、监听地址、JSON 上限、Origin、前端代理和 BI 地址均可配置；
+- PostgreSQL 角色、开发库、测试库、18 个迁移和内置数据可以重复初始化；
+- 增加环境检查、一键初始化、显式数据种子、文档链接检查和发布检查脚本；
+- 根 README 保持简洁，详细背景、领域、架构、配置、数据库、测试和使用说明放入 `docs`；
+- `.gitignore` 排除依赖、构建目录、运行数据、日志、测试报告、导出文件和本地 agent/task 状态；
+- 内置资源保留来源 URL、许可证、本地 SHA-256 和修改说明；
+- 兼容升级修复 `proxy-addr`、`sharp`、Vitest 和 Tinypool 的公开安全公告；
+- GitHub Actions 使用 PostgreSQL 16 执行数据库初始化、数据种子、文档检查、完整验证和 critical 依赖门禁；
+- Dependabot 每周检查 npm 依赖、每月检查 GitHub Actions；
+- 采用统一的 v0.1.0 workspace 版本、CHANGELOG 和版本发布说明。
 
-## 验证记录
+## 发布验证
 
-2026-10-04 在本机 PostgreSQL 环境完成：
+发布前执行：
 
-- `npm run db:init -- --with-test`：开发库和测试库初始化/迁移成功。
-- `npm run verify`：TypeScript 通过，76 个 Vitest 文件、464 项测试通过，前端生产构建成功。
-- `npm run test:e2e`：12 项当前浏览器验收通过。
-- 文档内部链接、个人绝对路径和大文件提交候选检查通过。
-- `npm audit --omit=dev` 仍报告 `pptxgenjs` 的两个间接 `image-size` 公告，处理边界见 [SECURITY.md](../SECURITY.md)。
+```bash
+npm run release:check
+npm audit --omit=dev
+git status --short
+```
 
-## 代码审查结论
+2026-10-08 本地验证结果：`release:check` 已通过工作区版本、误跟踪产物、20 个 Markdown 文件链接、类型检查、81 个测试文件/564 项 Vitest 测试和前端生产构建；`e2e/current` 的 13 项浏览器验收全部通过。
 
-### 已解决的高优先级问题
+依赖审计当前只剩 `pptxgenjs` 间接 `image-size` 的两个 high 拒绝服务公告，原因和输入缓解措施记录在 [SECURITY.md](../SECURITY.md)。发布不得使用 `npm audit fix --force` 自动降级 PPTX 引擎。
 
-| 问题 | 影响 | 处理 |
-| --- | --- | --- |
-| 管理员连接写死个人用户名 | 其他开发者无法初始化 | 改为标准本机连接并支持环境变量 |
-| 运行配置散落 | 部署容易遗漏和不一致 | 统一解析、校验与文档 |
-| presentation 循环依赖 | 构建顺序和测试存在隐患 | 直接依赖 `layout.ts` |
-| 运行产物混在工作目录 | 容易误提交数据和导出物 | 完善 ignore 并在提交前核对 |
-| 根 README 是历史评审日志 | 新贡献者无法快速启动 | 改为独立仓库入口，细节移入 docs |
+## 仓库内容边界
 
-### 后续技术债务
+允许提交：
 
-1. `frontend/src/Editor.tsx`、`frontend/src/style.css`、`backend/src/app.ts` 和模板定义文件体积较大。建议按已有特征测试逐个拆分，避免与产品改动混合。
-2. 若干旧模块仍使用紧凑单行代码和 `any`。应按领域逐步收紧类型，不宜一次性格式化整库造成不可审查的大 diff。
-3. 集成测试共享 `slidebi_test` 并串行运行。并行化前需要按 worker 创建独立数据库或 schema。
-4. API 尚无 OpenAPI 契约。真实 BI 集成前应建立 Data Spec、DAX 查询与错误响应的机器可读 schema。
-5. 内置账号和简单密码只适用于开发。生产发布前需提供首次管理员创建、密码策略、密钥轮换和会话安全配置。
-6. 真实 BI Studio Data Spec/DAX 适配器尚未实现，当前只能使用 Mock。
-7. `pptxgenjs@4.0.1` 间接依赖 `image-size@1.2.1`，npm 报告两个拒绝服务高危公告。当前输入会先经 sharp 解码和重编码，并在导出前限制为 PNG/JPEG；仍应跟踪上游修复并在升级后重新执行 PPTX 回归。
+- 前后端和 presentation 源码；
+- PostgreSQL 迁移、确定性 fixtures 与资源许可；
+- 单元、集成和当前浏览器验收测试；
+- 构建配置、环境示例、维护脚本和设计/使用/发布文档。
 
-## 公开发布前清单
+禁止提交：
 
-- [ ] 由项目所有者选择并添加开源许可证。
-- [ ] 确认项目名称和说明不会暗示与 think-cell 官方有关联。
-- [ ] 配置 GitHub Actions 执行 `npm ci`、数据库初始化和 `npm run verify`。
-- [ ] 配置 Dependabot 或同类依赖更新，并处理剩余安全公告。
-- [ ] 删除或替换开发默认账号，补充生产部署与密钥管理方案。
-- [ ] 检查 `backend/fixtures/assets/licenses` 中每份素材的再分发条款。
-- [ ] 再次确认提交不包含 `.env`、数据库文件、日志、PPTX 或测试截图。
+- `.env`、Cookie、密码之外的真实凭据和业务数据；
+- `node_modules`、`dist`、coverage、Playwright/test reports；
+- `backend/var` 中的上传文件、缓存、导出 PPTX 和会话状态；
+- Codex/Claude/agent 工作状态、临时任务文件、日志和 PID；
+- 真实客户截图、数据库备份或生产导出文稿。
+
+## 已知技术债务
+
+1. 真实 BI Studio Data Spec/DAX 适配器尚未实现，当前使用 Mock。
+2. `frontend/src/Editor.tsx`、`frontend/src/style.css`、`backend/src/app.ts` 和模板定义仍较大，应在行为测试保护下渐进拆分。
+3. 集成测试共享 `slidebi_test` 并串行运行，并行前需要按 worker 隔离数据库或 schema。
+4. API 尚无 OpenAPI 契约；真实 BI 接入前应固化 Data Spec、DAX 和错误响应 schema。
+5. 开发账号和简单密码不能用于生产，需增加首次管理员创建、密码策略和会话密钥配置。
+6. 本地文件存储不支持无状态多实例，生产化需要共享对象存储或一致挂载。
+
+## 项目所有者待办
+
+- [ ] 选择并提交开源许可证；未添加许可证时，公开源码不自动授予再分发权利。
+- [ ] 在 GitHub 启用 Private Vulnerability Reporting，并在 `SECURITY.md` 填写联系人和响应时限。
+- [ ] 再次复核 `backend/fixtures/assets/licenses` 中照片和品牌标识的再分发/商标边界。
+- [ ] 为 `main` 开启分支保护，要求测试通过后合并。
+
+## 版本发布流程
+
+1. 更新所有 workspace 版本、`CHANGELOG.md` 和 `docs/releases/vX.Y.Z.md`。
+2. 执行 `npm run release:check`，涉及 UI 时执行当前 E2E。
+3. 检查 `git status`、`git diff --check`、`git ls-files` 和依赖审计。
+4. 使用 Conventional Commit 提交，创建 annotated tag `vX.Y.Z`。
+5. 推送 `main` 和标签，把版本发布说明同步到 GitHub Release。

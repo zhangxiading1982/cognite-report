@@ -28,6 +28,8 @@ npm test                         # Vitest 全量测试
 npm test -- path/to/file.test.ts # 单文件反馈
 npm run verify                   # 类型 + Vitest + 前端构建
 npm run test:e2e                 # 需要先启动 npm run dev
+npm run docs:check               # 校验 Markdown 本地链接
+npm run release:check            # 发布内容 + 文档 + verify
 ```
 
 数据库集成测试串行运行，因为测试文件共享 `slidebi_test`。不要提高 `vitest.config.ts` 的 worker 数量，除非先完成每个测试的数据库隔离。
@@ -35,3 +37,7 @@ npm run test:e2e                 # 需要先启动 npm run dev
 `e2e/legacy` 保存早期评审版本的交互脚本。后续需求已明确移除或改名其中部分控件，因此这些脚本不作为发布门禁；仍有效的业务场景应按当前交互重写到 `e2e/current`。
 
 失败时先保留首个业务错误和对应输入。不要通过延长等待、放宽断言或跳过测试来隐藏竞争条件。
+
+## 发布门禁
+
+`npm run release:check` 会确认所有 workspace 使用同一版本、Git 未跟踪依赖/构建/运行产物、文档链接有效，并运行完整 `verify`。涉及界面流程的版本还应记录 `e2e/current` 验收结果。依赖公告通过 `npm audit --omit=dev` 检查；无法兼容修复的公告必须在 [SECURITY.md](../SECURITY.md) 记录影响与缓解边界。
