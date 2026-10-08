@@ -7,10 +7,10 @@ import {LibraryNavigationProvider,LibraryTree} from './LibraryNavigation';
 vi.mock('./TemplateThumbnail',()=>({TemplateThumbnail:()=>null}));
 afterEach(cleanup);
 test('template maintenance icons only appear for owner and library has no use action',()=>{render(<TemplateLibrary templates={[{id:'a',name:'我的模板',canEdit:true,canDelete:true},{id:'b',name:'公共模板',canEdit:false,canDelete:false}]} onRefresh={()=>{}}/>);expect(screen.queryByRole('button',{name:'编辑 我的模板'})).toBeNull();expect(screen.queryByRole('button',{name:'查看 我的模板'})).toBeNull();expect(screen.getByRole('button',{name:'删除 我的模板'})).toBeTruthy();expect(screen.queryByRole('button',{name:'编辑 公共模板'})).toBeNull();expect(screen.queryByRole('button',{name:'使用模板'})).toBeNull()});
-test('root lists only root templates and directory selection lists that directory',async()=>{
+test('root is an all-template overview and directory selection scopes the cards',async()=>{
  vi.stubGlobal('fetch',async()=>new Response(JSON.stringify({items:[{id:'finance',name:'经营与财务',parentId:null}]})));
  render(<LibraryNavigationProvider kind="templates"><LibraryTree/><TemplateLibrary templates={[{id:'root',name:'根目录模板',folderId:null},{id:'budget',name:'预算模板',folderId:'finance'}]} onRefresh={()=>{}}/></LibraryNavigationProvider>);
- expect(screen.getByText('根目录模板')).toBeTruthy();expect(screen.queryByText('预算模板')).toBeNull();
+ expect(screen.getByText('根目录模板')).toBeTruthy();expect(screen.getByText('预算模板')).toBeTruthy();
  fireEvent.click(await screen.findByRole('button',{name:'目录 经营与财务'}));
  expect(screen.queryByText('根目录模板')).toBeNull();expect(screen.getByText('预算模板')).toBeTruthy();
 });
