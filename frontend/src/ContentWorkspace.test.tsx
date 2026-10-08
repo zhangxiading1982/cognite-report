@@ -5,9 +5,9 @@ import {it,expect,vi,afterEach,beforeEach} from 'vitest';
 import {ContentWorkspace} from './ContentWorkspace';
 const flush=vi.hoisted(()=>vi.fn());
 const download=vi.hoisted(()=>vi.fn());
-vi.mock('./Editor',()=>({Editor:({initial,registerFlush,onOpen}:any)=>{React.useEffect(()=>registerFlush(flush),[]);return <div>正在编辑 {initial.title}<button onClick={()=>onOpen({id:"copy",title:"本地副本"})}>模拟另存副本</button></div>;}}));
+vi.mock('./Editor',()=>({Editor:({initial,registerFlush,onOpen}:any)=>{React.useLayoutEffect(()=>registerFlush(flush),[registerFlush]);return <div>正在编辑 {initial.title}<button onClick={()=>onOpen({id:"copy",title:"本地副本"})}>模拟另存副本</button></div>;}}));
 vi.mock('./export-download',()=>({downloadPptxExport:download}));
-beforeEach(()=>download.mockReset().mockResolvedValue({state:'succeeded'}));
+beforeEach(()=>{flush.mockReset().mockResolvedValue(undefined);download.mockReset().mockResolvedValue({state:'succeeded'});});
 afterEach(()=>{cleanup();vi.restoreAllMocks();history.replaceState({},'','/');});
 it('blocks switching pages when saving the current page fails',async()=>{
  history.replaceState({},'','/contents/c1');flush.mockRejectedValue(new Error('保存失败，请重试'));
