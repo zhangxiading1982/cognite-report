@@ -4,7 +4,7 @@ import { render, screen, fireEvent, cleanup, act } from "@testing-library/react"
 import { afterEach, it, expect, vi } from "vitest";
 import { Editor } from "./Editor";
 import { createSlide } from "@slidebi/presentation";
-import data from "../../../prompt/sd/examples/monthly-operations.data.json";
+import data from "../../backend/fixtures/monthly-operations.data.json";
 async function click(element:HTMLElement,options?:any){await act(async()=>{fireEvent.click(element,options)})}
 afterEach(() => {
   cleanup();

@@ -31,6 +31,7 @@
 
 ## 版本与协作
 
+- [v0.1.1 发布说明](releases/v0.1.1.md)
 - [v0.1.0 发布说明](releases/v0.1.0.md)
 - [版本记录](../CHANGELOG.md)
 - [贡献指南](../CONTRIBUTING.md)

@@ -1,0 +1,209 @@
+{
+  "exportSpecVersion": "1.0",
+  "jobId": "design-example-not-executed",
+  "inputHash": "0598c92b32f2670bea1271cf8d1e8e3400806c9ec57103f6896ea391df4f32d8",
+  "provenance": {
+    "slideRef": {
+      "id": "slide-budget",
+      "revision": 1
+    },
+    "snapshotId": "snapshot-2026-03-demo-v1",
+    "snapshotHash": "e940e3c9df7befc11b51e53ca16808f44364304b491d014e353e684b9928c8b4",
+    "consistency": "fixture",
+    "dataAsOf": "2026-03-31T23:59:59+08:00",
+    "layoutEngineVersion": "design-example",
+    "exporterVersion": "design-example",
+    "fontPackVersion": "design-example"
+  },
+  "canvas": {
+    "width": 960,
+    "height": 540,
+    "unit": "pt"
+  },
+  "theme": {
+    "fontFace": "Noto Sans CJK SC",
+    "background": "FFFFFF",
+    "textColor": "1F2937",
+    "seriesColors": [
+      "2563EB",
+      "94A3B8"
+    ]
+  },
+  "assets": [],
+  "slides": [
+    {
+      "pageId": "page-budget-demo",
+      "physicalIndex": 1,
+      "displayPage": null,
+      "elements": [
+        {
+          "id": "title",
+          "type": "text",
+          "rect": {
+            "x": 24,
+            "y": 24,
+            "w": 912,
+            "h": 68
+          },
+          "text": "2026年3月收入预算对比",
+          "fontFace": "Noto Sans CJK SC",
+          "fontSize": 28,
+          "color": "1F2937",
+          "margin": 0
+        },
+        {
+          "id": "budget-chart",
+          "type": "nativeChart",
+          "rect": {
+            "x": 24,
+            "y": 108,
+            "w": 632,
+            "h": 352
+          },
+          "chartType": "bar",
+          "options": {
+            "direction": "column",
+            "grouping": "clustered",
+            "showLegend": true,
+            "showLabels": true,
+            "fontFace": "Noto Sans CJK SC",
+            "fontSize": 12,
+            "labelNumberFormat": "0"
+          },
+          "categories": [
+            {
+              "id": "east",
+              "label": "华东"
+            },
+            {
+              "id": "west",
+              "label": "华西"
+            },
+            {
+              "id": "south",
+              "label": "华南"
+            }
+          ],
+          "series": [
+            {
+              "id": "actual",
+              "name": "实际",
+              "sourceValues": [
+                "12000000",
+                "8000000",
+                "11000000"
+              ],
+              "values": [
+                1200,
+                800,
+                1100
+              ],
+              "color": "2563EB"
+            },
+            {
+              "id": "budget",
+              "name": "预算",
+              "sourceValues": [
+                "10000000",
+                "9000000",
+                "11000000"
+              ],
+              "values": [
+                1000,
+                900,
+                1100
+              ],
+              "color": "94A3B8"
+            }
+          ],
+          "numericUnit": {
+            "baseUnit": "CNY",
+            "displayDivisor": "10000",
+            "label": "万元"
+          },
+          "valueAxis": {
+            "min": 0,
+            "max": 1400,
+            "step": 200,
+            "title": "收入（万元）"
+          }
+        },
+        {
+          "id": "note",
+          "type": "text",
+          "rect": {
+            "x": 680,
+            "y": 108,
+            "w": 256,
+            "h": 270
+          },
+          "text": "请补充对偏差的业务解释，\n并在核对数据后确认结论。",
+          "fontFace": "Noto Sans CJK SC",
+          "fontSize": 16,
+          "color": "1F2937",
+          "margin": 0
+        },
+        {
+          "id": "kpi",
+          "type": "text",
+          "rect": {
+            "x": 680,
+            "y": 394,
+            "w": 256,
+            "h": 60
+          },
+          "text": "预算差异：100万元\n差异率：3.3%",
+          "fontFace": "Noto Sans CJK SC",
+          "fontSize": 20,
+          "color": "1F2937",
+          "margin": 0
+        },
+        {
+          "id": "source",
+          "type": "text",
+          "rect": {
+            "x": 24,
+            "y": 486,
+            "w": 912,
+            "h": 30
+          },
+          "text": "来源：演示数据｜截至2026-03-31 23:59:59（Asia/Shanghai）｜fixture",
+          "fontFace": "Noto Sans CJK SC",
+          "fontSize": 10,
+          "color": "1F2937",
+          "margin": 0
+        },
+        {
+          "id": "draft",
+          "type": "text",
+          "rect": {
+            "x": 856,
+            "y": 468,
+            "w": 80,
+            "h": 16
+          },
+          "text": "草稿",
+          "fontFace": "Noto Sans CJK SC",
+          "fontSize": 10,
+          "color": "B91C1C",
+          "margin": 0
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "page-budget-demo": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "NEEDS_REVIEW",
+      "elementId": "note"
+    },
+    {
+      "severity": "info",
+      "code": "DESIGN_EXAMPLE_NOT_EXECUTED"
+    }
+  ],
+  "deliveryMode": "draft"
+}

@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
-import fixture from '../../../../../prompt/sd/examples/monthly-operations.data.json';
-import budget from '../../../../../prompt/sd/examples/budget.slide.json';
+import fixture from '../../../fixtures/monthly-operations.data.json';
+import budget from '../../../fixtures/budget.slide.json';
 import {compileSlide,renderSlideSvg,composeChartData} from '../src/index';
 const page=(e:any)=>({...structuredClone(budget),elements:[{id:'component',rect:{x:40,y:40,w:800,h:300},z:1,...e}]}) as any;
 it('binds table to selected current result fields with editable native export semantics',()=>{

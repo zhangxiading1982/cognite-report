@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import JSZip from "jszip";
-import example from "../../../prompt/sd/examples/budget.export.json";
+import example from "../fixtures/budget.export.json";
 import { writePptx } from "../src/export/pptx";
 const budget = { ...example, elements: example.slides[0].elements };
 async function generate(input: unknown) {

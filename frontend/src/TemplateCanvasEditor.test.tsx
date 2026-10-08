@@ -3,7 +3,7 @@ import React from "react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, expect, test, vi } from "vitest";
 import { BUSINESS_TEMPLATES, createSlide } from "@slidebi/presentation";
-import data from "../../../prompt/sd/examples/monthly-operations.data.json";
+import data from "../../backend/fixtures/monthly-operations.data.json";
 import { TemplateCanvasEditor } from "./TemplateCanvasEditor";
 
 afterEach(() => {

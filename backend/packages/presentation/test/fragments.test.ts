@@ -1,7 +1,7 @@
 import {it,expect} from 'vitest';
 import {makeFragment,insertFragment} from '../src/fragments';
-import page from '../../../../../prompt/sd/examples/budget.slide.json';
-import data from '../../../../../prompt/sd/examples/monthly-operations.data.json';
+import page from '../../../fixtures/budget.slide.json';
+import data from '../../../fixtures/monthly-operations.data.json';
 it('copies selected content and immutable resolved styles, rekeys bindings and keeps target theme',()=>{
  const p=structuredClone(page) as any;const id=p.elements.find((e:any)=>e.type==='chart').id;
  const f=makeFragment(p,[id]);expect(f.elements).toHaveLength(1);expect(JSON.stringify(f)).not.toContain('snapshot-2026');

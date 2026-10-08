@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
-import fixture from '../../../../../prompt/sd/examples/monthly-operations.data.json';
-import budget from '../../../../../prompt/sd/examples/budget.slide.json';
+import fixture from '../../../fixtures/monthly-operations.data.json';
+import budget from '../../../fixtures/budget.slide.json';
 import {compileSlide,renderSlideSvg} from '../src/index';
 const sample=()=>{const s=structuredClone(budget) as any;s.elements=[{id:'txt',type:'text',rect:{x:40,y:40,w:400,h:100},z:1,runs:[{text:'业务 Report\n第二行'}],style:{fontSize:20,fontFace:'Microsoft YaHei',bold:true,italic:true,align:'right',valign:'bottom'}}];return s;};
 it('preserves common Office font and both text alignment axes through compilation and SVG',()=>{

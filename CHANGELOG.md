@@ -2,6 +2,14 @@
 
 本项目采用 [Semantic Versioning](https://semver.org/)。公开版本的功能、修复和已知限制记录在此。
 
+## [0.1.1] - 2026-10-08
+
+### Fixed
+
+- 把测试使用的 Data Spec、页面和导出 fixtures 收纳到仓库内，修复全新 checkout 的 TypeScript/CI 失败。
+- 让 E2E 非 owner 场景遵循 `SLIDEBI_E2E_BASE_URL`，支持非默认前端端口。
+- 为模板全屏编辑工作区补充稳定的对话框可访问语义。
+
 ## [0.1.0] - 2026-10-08
 
 ### Added
@@ -23,3 +31,4 @@
 - `pptxgenjs` 的间接 `image-size` 公告仍待上游提供兼容修复。
 
 [0.1.0]: https://github.com/zhangxiading1982/cognite-report/releases/tag/v0.1.0
+[0.1.1]: https://github.com/zhangxiading1982/cognite-report/releases/tag/v0.1.1

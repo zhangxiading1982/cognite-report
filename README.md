@@ -2,7 +2,7 @@
 
 SlideBI 把 BI 图表数据与商业汇报模板组合为可编辑的多页文稿，并导出可直接打开和继续编辑的 PPTX。项目包含 React 前端、Express 后端、共享演示文稿引擎、PostgreSQL 迁移以及完整的自动化测试。
 
-当前公开版本：**v0.1.0**。真实 BI Studio Data Spec/DAX 接口尚未接入，开发环境使用 Mock 适配器。
+当前公开版本：**v0.1.1**。真实 BI Studio Data Spec/DAX 接口尚未接入，开发环境使用 Mock 适配器。
 
 ## 快速开始
 
@@ -46,7 +46,7 @@ npm run release:check   # 完整发布检查
 - [环境准备与初始化](docs/environment-setup.md)
 - [系统架构](docs/architecture.md)
 - [使用说明](docs/user-guide.md)
-- [v0.1.0 发布说明](docs/releases/v0.1.0.md)
+- [v0.1.1 发布说明](docs/releases/v0.1.1.md)
 - [贡献指南](CONTRIBUTING.md)与[安全说明](SECURITY.md)
 
 项目受数据驱动汇报工具的工作流启发，采用独立设计与实现，与 think-cell GmbH 没有关联。

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import fixture from "../../../../../prompt/sd/examples/monthly-operations.data.json";
-import budget from "../../../../../prompt/sd/examples/budget.slide.json";
+import fixture from "../../../fixtures/monthly-operations.data.json";
+import budget from "../../../fixtures/budget.slide.json";
 import * as p from "../src/index";
 const data = () => structuredClone(fixture) as any;
 describe("DataSpec validation", () => {

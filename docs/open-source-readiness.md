@@ -1,8 +1,8 @@
 # 开源准备审查
 
-本文件记录 v0.1.0 公开仓库准备情况、发布边界和后续事项。发布命令以[环境准备与初始化](environment-setup.md)和[测试文档](testing.md)为准。
+本文件记录 v0.1.1 公开仓库准备情况、发布边界和后续事项。发布命令以[环境准备与初始化](environment-setup.md)和[测试文档](testing.md)为准。
 
-## v0.1.0 已完成
+## v0.1.1 已完成
 
 - 数据库、存储、监听地址、JSON 上限、Origin、前端代理和 BI 地址均可配置；
 - PostgreSQL 角色、开发库、测试库、18 个迁移和内置数据可以重复初始化；
@@ -13,7 +13,8 @@
 - 兼容升级修复 `proxy-addr`、`sharp`、Vitest 和 Tinypool 的公开安全公告；
 - GitHub Actions 使用 PostgreSQL 16 执行数据库初始化、数据种子、文档检查、完整验证和 critical 依赖门禁；
 - Dependabot 每周检查 npm 依赖、每月检查 GitHub Actions；
-- 采用统一的 v0.1.0 workspace 版本、CHANGELOG 和版本发布说明。
+- 采用统一的 v0.1.1 workspace 版本、CHANGELOG 和版本发布说明；
+- 所有自动化测试 fixtures 均位于源码仓库内，全新 GitHub checkout 不依赖本机父目录。
 
 ## 发布验证
 

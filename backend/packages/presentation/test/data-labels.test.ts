@@ -1,6 +1,6 @@
 import {test,expect} from 'vitest';
-import fixture from '../../../../../prompt/sd/examples/monthly-operations.data.json';
-import budget from '../../../../../prompt/sd/examples/budget.slide.json';
+import fixture from '../../../fixtures/monthly-operations.data.json';
+import budget from '../../../fixtures/budget.slide.json';
 import {validateDataSpec,compileSlide} from '../src/index';
 
 test('display names for result sets and fields survive validation without changing stable bindings or values',()=>{
