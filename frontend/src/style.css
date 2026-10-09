@@ -146,6 +146,10 @@ small {
   color: #244436;
   letter-spacing: -0.5px;
 }
+.sidebar .brand-name {
+  white-space: nowrap;
+  font-size: 17px;
+}
 .brandmark {
   display: flex;
   align-items: center;
@@ -160,6 +164,8 @@ small {
   font-family: Georgia;
 }
 .beta {
+  flex: none;
+  white-space: nowrap;
   font-size: 10px;
   font-weight: 400;
   border: 1px solid #e0e9e3;

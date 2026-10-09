@@ -11,6 +11,7 @@ it('requires login before rendering workspace and supports logout',async()=>{
  function Workspace(){const auth=useAuth();return <><span>文稿工作区</span><button onClick={auth.logout}>退出</button></>;}
  render(<AuthGate><Workspace/></AuthGate>);
  expect(screen.queryByText('文稿工作区')).toBeNull();
+ expect(await screen.findByText('SLIDE REPORT')).toBeTruthy();
  fireEvent.change(await screen.findByLabelText('用户名'),{target:{value:'marx'}});fireEvent.change(screen.getByLabelText('密码'),{target:{value:'admin'}});fireEvent.click(screen.getByRole('button',{name:'登录'}));
  expect(await screen.findByText('文稿工作区')).toBeTruthy();fireEvent.click(screen.getByText('退出'));expect(await screen.findByLabelText('用户名')).toBeTruthy();
 });

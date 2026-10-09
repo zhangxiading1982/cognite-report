@@ -186,7 +186,7 @@ function makeData(
     specVersion: "1.0",
     id: `template-data-${id}`,
     mode: "snapshot",
-    source: { system: "SlideBI 模板样例", modelId: `template-model-${id}`, modelRevision: "1" },
+    source: { system: "Slide Report 模板样例", modelId: `template-model-${id}`, modelRevision: "1" },
     snapshot: {
       id: `template-snapshot-${id}`,
       capturedAt: "2026-09-30T10:00:00+08:00",
@@ -913,7 +913,7 @@ const projectOverviewData = makeData("project-overview", "项目概览", [
   { itemId: "background", category: "业务背景", detail: "经营汇报制作周期长，口径复核成本高", owner: "经营管理部" },
   { itemId: "objective", category: "项目目标", detail: "建立数据到可编辑PPT的一体化工作台", owner: "项目委员会" },
   { itemId: "scope", category: "本期范围", detail: "模板、数据、编辑、预览和多页导出", owner: "产品与研发" },
-  { itemId: "deliverable", category: "核心交付", detail: "34个商用模板与标准化文稿流程", owner: "SlideBI团队" },
+  { itemId: "deliverable", category: "核心交付", detail: "34个商用模板与标准化文稿流程", owner: "Slide Report 团队" },
 ]);
 
 const milestoneData = makeData("milestone-plan", "里程碑与近期计划", [
@@ -1140,9 +1140,9 @@ const EXTENDED_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     background: "对比多个经营或投资情景的指标、假设和影响，形成可执行建议。", scenarios: ["预算情景分析", "方案选择", "经营预测"],
   }),
   makeTemplate({
-    id: "cover-page", name: "文稿封面", scene: "budgetComparison", folderId: "template-folder-general", previewText: "季度经营复盘", dataSpec: coverData,
+    id: "cover-page", name: "文稿封面", scene: "budgetComparison", folderId: "template-folder-general", previewText: "季度经营复盘", dataSpec: coverData, seedRevision: 14, designVersion: 15,
     binding: { resultSetId: "result-cover-page", roles: { columns: ["label", "content"] }, computations: [] },
-    elements: [shape("cover-accent", rect(0, 0, 280, 540), "", "172033", {}, "rect"), text("cover-kicker", rect(48, 92, 184, 28), "SLIDEBI · BUSINESS REVIEW", 11, { color: "93C5FD", bold: true }), text("cover-title", rect(330, 126, 560, 112), "季度经营复盘", 34, { bold: true, valign: "middle" }), text("cover-subtitle", rect(334, 246, 520, 48), "2026年第三季度｜经营管理部", 17, { color: muted }), shape("cover-line", rect(334, 318, 150, 5), "", "2563EB", {}, "rect"), text("cover-date", rect(334, 352, 520, 28), "2026-10-04", 13, { color: muted })],
+    elements: [shape("cover-accent", rect(0, 0, 280, 540), "", "172033", {}, "rect"), text("cover-kicker", rect(48, 92, 184, 28), "SLIDE REPORT · BUSINESS REVIEW", 11, { color: "93C5FD", bold: true }), text("cover-title", rect(330, 126, 560, 112), "季度经营复盘", 34, { bold: true, valign: "middle" }), text("cover-subtitle", rect(334, 246, 520, 48), "2026年第三季度｜经营管理部", 17, { color: muted }), shape("cover-line", rect(334, 318, 150, 5), "", "2563EB", {}, "rect"), text("cover-date", rect(334, 352, 520, 28), "2026-10-04", 13, { color: muted })],
     background: "用于经营、项目或客户汇报的首页，明确主题、周期、汇报部门和日期。", scenarios: ["经营汇报封面", "项目汇报封面", "客户提案封面"],
   }),
   makeTemplate({
@@ -1152,13 +1152,13 @@ const EXTENDED_BUSINESS_TEMPLATES: readonly BusinessTemplateDefinition[] = [
     background: "用于多页文稿章节之间的过渡，明确章节编号、主题和本节重点。", scenarios: ["经营汇报章节", "项目汇报章节", "客户提案章节"],
   }),
   makeTemplate({
-    id: "closing-page", name: "结束与下一步", scene: "budgetComparison", folderId: "template-folder-general", previewText: "结论与下一步", dataSpec: closingData,
+    id: "closing-page", name: "结束与下一步", scene: "budgetComparison", folderId: "template-folder-general", previewText: "结论与下一步", dataSpec: closingData, seedRevision: 14, designVersion: 15,
     binding: { resultSetId: "result-closing-page", roles: { columns: ["action", "owner", "dueDate"] }, computations: [] },
-    elements: [...title("closing-page", "结论与下一步", "把会议共识转化为明确行动"), shape("closing-conclusion", rect(36, 126, 360, 254), "核心结论\n\n经营总体稳健，利润与现金流优于目标。\n\n下一阶段聚焦重点客户续约和费用预警。", lightBlue, { fontSize: 18, bold: true, align: "left" }), table("closing-actions", rect(426, 126, 498, 186), ["action", "owner", "dueDate"], 11), text("closing-contact", rect(426, 336, 498, 72), "会后联系人\n经营管理部 · SlideBI 项目组", 16, { fill: "F8FAFC", line: { color: "CBD5E1", width: 1 }, bold: true }), text("closing-thanks", rect(36, 440, 888, 42), "谢谢", 24, { bold: true, align: "right" })],
+    elements: [...title("closing-page", "结论与下一步", "把会议共识转化为明确行动"), shape("closing-conclusion", rect(36, 126, 360, 254), "核心结论\n\n经营总体稳健，利润与现金流优于目标。\n\n下一阶段聚焦重点客户续约和费用预警。", lightBlue, { fontSize: 18, bold: true, align: "left" }), table("closing-actions", rect(426, 126, 498, 186), ["action", "owner", "dueDate"], 11), text("closing-contact", rect(426, 336, 498, 72), "会后联系人\n经营管理部 · Slide Report 项目组", 16, { fill: "F8FAFC", line: { color: "CBD5E1", width: 1 }, bold: true }), text("closing-thanks", rect(36, 440, 888, 42), "谢谢", 24, { bold: true, align: "right" })],
     background: "用于文稿收尾，重申结论、下一步行动和会后联系人。", scenarios: ["经营会结束页", "项目总结页", "客户提案下一步"],
   }),
   makeTemplate({
-    id: "project-overview", name: "项目概览", scene: "budgetComparison", folderId: "template-folder-project", previewText: "项目概览", dataSpec: projectOverviewData,
+    id: "project-overview", name: "项目概览", scene: "budgetComparison", folderId: "template-folder-project", previewText: "项目概览", dataSpec: projectOverviewData, seedRevision: 14, designVersion: 15,
     binding: { resultSetId: "result-project-overview", roles: { columns: ["category", "detail", "owner"] }, computations: [] },
     elements: [...title("project-overview", "项目概览", "背景、目标、范围、交付物与治理"), shape("project-overview-goal", rect(36, 116, 426, 112), "项目目标\n建立数据到可编辑PPT的一体化工作台", lightBlue, { fontSize: 18, bold: true }), shape("project-overview-scope", rect(480, 116, 444, 112), "本期范围\n模板、数据、编辑、预览和多页导出", paleGreen, { fontSize: 18, bold: true }), table("project-overview-table", rect(36, 250, 888, 210), ["category", "detail", "owner"], 12), text("project-overview-governance", rect(36, 476, 888, 28), "治理：项目委员会双周决策，产品与研发周度交付，业务试点组按里程碑验收。", 12, { color: muted })],
     background: "在一页中说明项目背景、目标、范围、交付物和治理方式。", scenarios: ["项目启动会", "项目委员会", "客户项目概览"],

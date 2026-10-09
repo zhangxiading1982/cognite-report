@@ -2,15 +2,15 @@
 
 ## 系统定位
 
-SlideBI 是 BI 分析与管理汇报之间的浏览器编排层。BI Studio 负责模型、DAX 计算和图表数据，SlideBI 接收结构化 Data Spec，把数据与商业汇报模板组合为可编辑页面，再组织成多页文稿并导出可继续编辑的 PPTX。
+Slide Report 是 BI 分析与管理汇报之间的浏览器编排层。BI Studio 负责模型、DAX 计算和图表数据，Slide Report 接收结构化 Data Spec，把数据与商业汇报模板组合为可编辑页面，再组织成多页文稿并导出可继续编辑的 PPTX。
 
-产品思路参考了 think-cell 在 PowerPoint 中的数据驱动图表、模板复用和报告自动化能力。think-cell 官方说明中，图表数据表会驱动页面即时更新，Library 集中管理幻灯片和图片资源，自动化接口可用 Excel 或 JSON 数据填充模板。SlideBI 将类似工作流实现为独立的前后端 Web 系统，并采用自己的领域模型、交互和代码实现：
+产品思路参考了 think-cell 在 PowerPoint 中的数据驱动图表、模板复用和报告自动化能力。think-cell 官方说明中，图表数据表会驱动页面即时更新，Library 集中管理幻灯片和图片资源，自动化接口可用 Excel 或 JSON 数据填充模板。Slide Report 将类似工作流实现为独立的前后端 Web 系统，并采用自己的领域模型、交互和代码实现：
 
 - [think-cell Charts](https://www.think-cell.com/en/product/think-cell-charts)
 - [think-cell Library](https://www.think-cell.com/en/resources/manual/library)
 - [Advanced report automation](https://www.think-cell.com/en/resources/manual/introductionautomation)
 
-SlideBI 与 think-cell GmbH 没有关联，也不是 think-cell 产品的兼容实现。
+Slide Report 与 think-cell GmbH 没有关联，也不是 think-cell 产品的兼容实现。
 
 ## 主要功能
 

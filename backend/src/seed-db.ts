@@ -5,4 +5,4 @@ import { createApp } from "./app.ts";
 const app = await createApp({ workerEnabled: false });
 await app.locals.close();
 
-console.log("SlideBI 初始化数据已就绪：主题、模板、目录与内置资源");
+console.log("Slide Report 初始化数据已就绪：主题、模板、目录与内置资源");

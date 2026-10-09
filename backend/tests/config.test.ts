@@ -42,8 +42,16 @@ describe("runtime configuration", () => {
     expect(config.biStudioBaseUrl).toBe("https://bi.example.test/api");
   });
 
+  it("allows the configured local web port when no explicit origin list is provided", () => {
+    const config = loadRuntimeConfig({ SLIDEBI_WEB_PORT: "5175" });
+
+    expect(config.allowedOrigins).toContain("http://127.0.0.1:5175");
+    expect(config.allowedOrigins).toContain("http://localhost:5175");
+  });
+
   it.each([
     [{ SLIDEBI_PORT: "0" }, "SLIDEBI_PORT"],
+    [{ SLIDEBI_WEB_PORT: "70000" }, "SLIDEBI_WEB_PORT"],
     [{ SLIDEBI_JSON_LIMIT: "unlimited" }, "SLIDEBI_JSON_LIMIT"],
     [{ SLIDEBI_ALLOWED_ORIGINS: "file:///tmp/app" }, "SLIDEBI_ALLOWED_ORIGINS"],
     [{ SLIDEBI_DB_NAME: "bad-name" }, "SLIDEBI_DB_NAME"],

@@ -124,7 +124,7 @@ npm run dev
 - Web：<http://127.0.0.1:5173>
 - API 健康检查：<http://127.0.0.1:4310/api/health>
 
-健康检查应返回 `{"status":"ok"}`。如端口已被占用，可设置 `SLIDEBI_WEB_PORT`、`SLIDEBI_PORT`，并同步更新 `SLIDEBI_ALLOWED_ORIGINS` 和 `SLIDEBI_API_PROXY_TARGET`。
+健康检查应返回 `{"status":"ok"}`。如端口已被占用，可设置 `SLIDEBI_WEB_PORT`、`SLIDEBI_PORT`，并在修改 API 端口时同步更新 `SLIDEBI_API_PROXY_TARGET`。未显式设置 `SLIDEBI_ALLOWED_ORIGINS` 时，后端会自动允许 `SLIDEBI_WEB_PORT` 对应的本地来源。
 
 ## 7. 常见问题
 

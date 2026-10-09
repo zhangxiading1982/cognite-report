@@ -701,7 +701,7 @@ export function Editor({
           <ArrowLeft size={18} />
         </button>
         <a className="brand" href="/slides">
-          <span className="brandmark">S</span>SlideBI
+          <span className="brandmark">S</span>Slide Report
         </a>
         <span className="divider" />
         <input

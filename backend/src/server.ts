@@ -8,7 +8,7 @@ const server = app.listen(
   runtimeConfig.http.host,
   () =>
     console.log(
-      `SlideBI API http://${runtimeConfig.http.host}:${runtimeConfig.http.port}`,
+      `Slide Report API http://${runtimeConfig.http.host}:${runtimeConfig.http.port}`,
     ),
 );
 for (const signal of ["SIGTERM", "SIGINT"])

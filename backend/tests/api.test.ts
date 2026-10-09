@@ -245,7 +245,7 @@ test("safe image persistence, unauthorized references, worker retries and immuta
       const download = await request(app).get(result.fileUrl);
       assert.equal(download.status, 200);
       assert.equal(download.headers["content-type"], "application/vnd.openxmlformats-officedocument.presentationml.presentation");
-      assert.match(download.headers["content-disposition"], /attachment; filename="slidebi-.*\.pptx"/);
+      assert.match(download.headers["content-disposition"], /attachment; filename="slide-report-.*\.pptx"/);
       assert.equal((await request(app).get(`/api/export-jobs/${job.body.id}/file`)).status, 200);
       const manifest = await request(app).get(result.manifestUrl);
       assert.equal(manifest.body.provenance.revision, 2);

@@ -47,4 +47,4 @@ if (( failed )); then
   exit 1
 fi
 
-echo "SlideBI 开发环境依赖检查通过"
+echo "Slide Report 开发环境依赖检查通过"

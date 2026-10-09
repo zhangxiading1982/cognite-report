@@ -57,6 +57,13 @@ function parsePort(value: string | undefined): number {
   return port;
 }
 
+function parseWebPort(value: string | undefined): number {
+  const port = value === undefined ? 5173 : Number(value);
+  if (!Number.isInteger(port) || port < 1 || port > 65_535)
+    throw new Error("SLIDEBI_WEB_PORT must be an integer from 1 to 65535");
+  return port;
+}
+
 function parseJsonLimit(value: string | undefined): string {
   const limit = value?.trim().toLowerCase() || "10mb";
   if (!/^\d+(?:kb|mb)$/.test(limit))
@@ -77,6 +84,7 @@ export function loadRuntimeConfig(
   if (!host || /\s/.test(host) || host.length > 255)
     throw new Error("SLIDEBI_HOST must be a valid host name or IP address");
   const port = parsePort(environment.SLIDEBI_PORT ?? environment.PORT);
+  const webPort = parseWebPort(environment.SLIDEBI_WEB_PORT);
   const configuredOrigins = environment.SLIDEBI_ALLOWED_ORIGINS
     ?.split(",")
     .map((value) => value.trim())
@@ -86,8 +94,8 @@ export function loadRuntimeConfig(
       (configuredOrigins?.length
         ? configuredOrigins
         : [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
+            `http://localhost:${webPort}`,
+            `http://127.0.0.1:${webPort}`,
             `http://localhost:${port}`,
             `http://127.0.0.1:${port}`,
           ]

@@ -15,7 +15,7 @@ const PPTX_MIME='application/vnd.openxmlformats-officedocument.presentationml.pr
 export function pptxFilename(title:string){
  const withoutExtension=String(title||'').replace(/\.pptx$/i,'');
  const safe=withoutExtension.replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_').replace(/[. ]+$/g,'').trim().slice(0,100);
- return `${safe||'SlideBI 文稿'}.pptx`;
+ return `${safe||'Slide Report 文稿'}.pptx`;
 }
 
 function stateOf(job:ExportJob){return job.state||job.status||'';}

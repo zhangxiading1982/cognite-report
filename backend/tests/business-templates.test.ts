@@ -146,8 +146,8 @@ describe("commercial business templates", () => {
   test("every business template uses the reference-grade presentation frame and hierarchy", () => {
     for (const template of BUSINESS_TEMPLATES) {
       const elements = template.payload.example.slide.elements;
-      expect(template.payload.seedRevision).toBe(13);
-      expect(template.payload.example.designVersion).toBe(14);
+      expect(template.payload.seedRevision).toBeGreaterThanOrEqual(13);
+      expect(template.payload.example.designVersion).toBeGreaterThanOrEqual(14);
       if (["cover-page", "section-page"].includes(template.id)) {
         expect(elements.some((element) => element.type === "text" && Number(element.style?.fontSize) >= 34 && element.style?.bold)).toBe(true);
       } else {

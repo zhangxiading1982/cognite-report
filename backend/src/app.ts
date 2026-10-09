@@ -686,7 +686,7 @@ export async function createApp(options: AppOptions = {}) {
         revision: s.revision,
         snapshotId: d.snapshot.id,
         snapshotHash: d.snapshot.contentHash,
-        generatorVersion: "slidebi-1",
+        generatorVersion: "slide-report-1",
         dataset: s.extensions?.dataset,
       },
       canvas: c.canvas,
@@ -781,7 +781,7 @@ export async function createApp(options: AppOptions = {}) {
       res.setHeader("X-Content-Type-Options", "nosniff");
       if (kind !== "manifest")
         res.type("application/vnd.openxmlformats-officedocument.presentationml.presentation");
-      res.download(p, `slidebi-${j.id}.${kind !== "manifest" ? "pptx" : "json"}`);
+      res.download(p, `slide-report-${j.id}.${kind !== "manifest" ? "pptx" : "json"}`);
     });
   await registerAssetRoutes(app, pool, actor, storageDir);
   app.use(

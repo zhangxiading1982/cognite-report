@@ -42,14 +42,14 @@ export async function writeDeckPptx(
   const first = compiledSlides[0];
   const deck = new pptxgen();
   deck.defineLayout({
-    name: "SlideBI",
+    name: "Slide Report",
     width: first.canvas.width / 72,
     height: first.canvas.height / 72,
   });
-  deck.layout = "SlideBI";
-  deck.author = "SlideBI";
+  deck.layout = "Slide Report";
+  deck.author = "Slide Report";
   deck.subject = "Editable business report";
-  deck.title = "SlideBI 报告";
+  deck.title = "Slide Report 报告";
   deck.theme = {
     headFontFace: first.theme.fontFace,
     bodyFontFace: first.theme.fontFace,

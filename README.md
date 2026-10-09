@@ -1,12 +1,14 @@
-# SlideBI
+# Slide Report
 
-SlideBI 把 BI 图表数据与商业汇报模板组合为可编辑的多页文稿，并导出可直接打开和继续编辑的 PPTX。项目包含 React 前端、Express 后端、共享演示文稿引擎、PostgreSQL 迁移以及完整的自动化测试。
+Slide Report 把 BI 图表数据与商业汇报模板组合为可编辑的多页文稿，并导出可直接打开和继续编辑的 PPTX。项目包含 React 前端、Express 后端、共享演示文稿引擎、PostgreSQL 迁移以及完整的自动化测试。
 
 当前公开版本：**v0.1.1**。真实 BI Studio Data Spec/DAX 接口尚未接入，开发环境使用 Mock 适配器。
 
+从早期版本升级时可继续使用现有的 `SLIDEBI_*` 环境变量、`slidebi` 数据库和数据库角色；这些技术标识为兼容已有安装而保留，产品名称统一为 **Slide Report**。
+
 ## 从业务数据到可交付汇报
 
-SlideBI 位于 BI 分析与经营汇报之间：数据团队提供结构化图表数据，业务人员选择成熟的商业模板并补充文字、图形和视觉资源，系统负责把各页组织为可预览、可追溯、可继续编辑的 PowerPoint 文稿。
+Slide Report 位于 BI 分析与经营汇报之间：数据团队提供结构化图表数据，业务人员选择成熟的商业模板并补充文字、图形和视觉资源，系统负责把各页组织为可预览、可追溯、可继续编辑的 PowerPoint 文稿。
 
 ```mermaid
 flowchart LR

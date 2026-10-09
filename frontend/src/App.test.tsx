@@ -55,6 +55,7 @@ it("loads actual persisted pages and opens their details", async () => {
       ),
   );
   render(<App />);
+  expect(screen.getByText("Slide Report")).toBeTruthy();
   await screen.findByText("实际保存页面");
   expect(screen.getByText("0 页")).toBeTruthy();
   expect(screen.getByRole("button", { name: "打开 实际保存页面 缩略图" })).toBeTruthy();
@@ -93,7 +94,7 @@ it("downloads PowerPoint with an explicit pptx URL and suggested filename", () =
   );
   const link = screen.getByRole("link", { name: "下载 PPTX" });
   expect(link.getAttribute("href")).toBe("/api/export-jobs/export-1/file.pptx");
-  expect(link.getAttribute("download")).toBe("slidebi-export-1.pptx");
+  expect(link.getAttribute("download")).toBe("slide-report-export-1.pptx");
 });
 it('searches export history by document name and deletes a record after confirmation',async()=>{const deleted=vi.fn();vi.spyOn(window,'confirm').mockReturnValue(true);vi.stubGlobal('fetch',vi.fn(async(_url:string,init:any={})=>new Response(null,{status:init.method==='DELETE'?204:200})));render(<ExportList jobs={[{id:'e1',title:'经营月报',state:'succeeded',revision:2},{id:'e2',title:'销售周报',state:'succeeded',revision:1}]} onError={()=>{}} onDeleted={deleted}/>);fireEvent.change(screen.getByLabelText('文档名称'),{target:{value:'经营'}});expect(screen.getByText('经营月报')).toBeTruthy();expect(screen.queryByText('销售周报')).toBeNull();fireEvent.click(screen.getByRole('button',{name:'删除导出记录 经营月报'}));await waitFor(()=>expect(deleted).toHaveBeenCalledWith('e1'));expect(fetch).toHaveBeenCalledWith('/api/export-jobs/e1',expect.objectContaining({method:'DELETE'}));});
 it("shows resource management without a create-page action on the assets route", async () => {

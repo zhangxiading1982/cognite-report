@@ -6,7 +6,7 @@ afterEach(()=>vi.restoreAllMocks());
 
 it('uses a PowerPoint-safe .pptx filename',()=>{
  expect(pptxFilename('经营/月报:华东.pptx')).toBe('经营_月报_华东.pptx');
- expect(pptxFilename('   ')).toBe('SlideBI 文稿.pptx');
+ expect(pptxFilename('   ')).toBe('Slide Report 文稿.pptx');
 });
 
 it('waits for the export job, verifies PPTX bytes and downloads it directly',async()=>{

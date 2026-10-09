@@ -91,7 +91,7 @@ try {
     }
   }
   await db.query("COMMIT");
-  console.log(`SlideBI 数据库已就绪：${database} / app，运行账号 slidebi_app`);
+  console.log(`Slide Report 数据库已就绪：${database} / app，运行账号 slidebi_app`);
 } catch (error) {
   await db.query("ROLLBACK");
   throw error;
